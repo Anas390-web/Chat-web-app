@@ -4,8 +4,17 @@
    h1 {
       @apply text-3xl font-bold text-gray-900
    }
+   h2 {
+      @apply text-xl font-bold text-gray-900
+   }
    a {
       @apply text-blue-600 hover:underline
+   }
+}
+
+@layer components {
+   .sidebar-icons {
+      @apply h-16 w-16 flex flex-col justify-center items-center rounded-md hover:bg-gray-300 transition ease-in duration-200 cursor-pointer
    }
 }
 
