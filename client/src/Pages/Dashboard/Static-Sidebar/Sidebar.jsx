@@ -1,9 +1,9 @@
-import Dashboard from '../../../public/images/Dashboard.png';
-import Chats from '../../../public/images/chats.png';
-import Groups from '../../../public/images/groups.png';
-import Settings from '../../../public/images/settings.png';
-import Archives from '../../../public/images/Archives.png';
-import { LightIcon, DarkIcon } from '../../../public/icons/Icons.jsx'
+import Dashboard from '../../../../public/images/Dashboard.png';
+import Chats from '../../../../public/images/chats.png';
+import Groups from '../../../../public/images/groups.png';
+import Settings from '../../../../public/images/settings.png';
+import Archives from '../../../../public/images/Archives.png';
+import { LightIcon, DarkIcon } from '../../../../public/icons/Icons.jsx'
 
 
 function Sidebar() {
