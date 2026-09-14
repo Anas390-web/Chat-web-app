@@ -1,14 +1,17 @@
 import SecondarySideBar from "./Secondary-Sidebar/Secondary-Sidebar.jsx"
+import Header from "./Chat-Section/Header.jsx"
+import Chat from "./Chat-Section/Chat.jsx";
 
 function Dashboard() {
   return (
-    <div className='h-screen grid grid-cols-2'>
+    <div className='h-screen flex'>
         <SecondarySideBar />
-      <div>
-        Dashboard
+      <div className="flex-1 min-w-0 flex flex-col">
+        <Header />
+        <Chat />
       </div>
     </div>
   )
 }
 
-export default Dashboard
+export default Dashboard;
