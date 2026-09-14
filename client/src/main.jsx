@@ -7,17 +7,19 @@ import DashboardLayout from './Layouts/dashboard.jsx'
 import SignUp from './Pages/Auth/SignUp.jsx'
 import Login from './Pages/Auth/Login.jsx'
 import Dashboard from './Pages/Dashboard/Dashboard.jsx'
+import Landing from './Pages/Landing/Landing.jsx'
 
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path='/' element={<DashboardLayout />}>
+      <Route path='/dashboard/' element={<DashboardLayout />}>
         <Route path='' element={<Dashboard />} />
       </Route>
       <Route path='/' element={<AuthLayout />}>
         {/* MAKING ROOT ELEMENT SIGNUP */}
         {/* <Route index element={<Navigate to={"/signup"} replace />} /> */}
+        <Route path='' element={<Landing />} />
         <Route path='signup' element={<SignUp />} />
         <Route path='login' element={<Login />} />
         {/* FALLBACK FOR INVALID URLS */}
