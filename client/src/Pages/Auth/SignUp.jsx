@@ -3,8 +3,8 @@ import { NavLink } from "react-router";
 function SignUp() {
   return (
     <div className="h-auto w-full sm:w-120 p-8 flex-col-start justify-between gap-2 shadow-2xl  bg-slate-50">
-      <h1>SignUp</h1>
-      <form className="flex flex-col gap-4 w-full">
+      <h1 className="text-amber-600">SignUp</h1>
+      <form className="flex flex-col gap-4 w-full text-amber-900">
         <label className="flex flex-col gap-1.5 font-medium">
           Username:
           <input
@@ -33,7 +33,7 @@ function SignUp() {
             type="password"
             placeholder="Enter testing password again" />
         </label>
-        <button className="bg-black text-white p-1.5 rounded-sm cursor-pointer mt-2">SUBMIT</button>
+        <button className="bg-amber-900 text-white p-1.5 rounded-sm cursor-pointer mt-2">SUBMIT</button>
       </form>
       <div className="flex gap-0.5">
         <p>Already registered?</p>
