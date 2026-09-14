@@ -5,7 +5,9 @@ function DashboardLayout() {
    return (
       <div className='min-h-dvh overflow-hidden flex'>
          <Sidebar />
-         <Outlet />
+         <div className='flex-1 min-w-0 h-full'>
+            <Outlet />
+         </div>
       </div>
    )
 }
