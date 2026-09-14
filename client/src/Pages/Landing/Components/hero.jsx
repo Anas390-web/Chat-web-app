@@ -1,4 +1,4 @@
-import PeopleChatting from '../../../public/images/PeopleChatting.jpg';
+import PeopleChatting from '../../../../public/images/PeopleChatting.jpg';
 import { useNavigate } from 'react-router';
 
 function Hero() {
