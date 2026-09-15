@@ -27,7 +27,34 @@ const UserSchema = new mongoose.Schema({
    }
 })
 
+// HASHING PASSWORD BEFORE SAVING TO THE DB:
+UserSchema.pre('save', async function () {
+   // IF PASSWORD IS NOT MODIFIED/CHANGED
+   if (!this.isModified('password')) {
+      return;
+   }
+   const salt = await bcrypt.genSalt(10);
+   const hashPassword = bcrypt.hash(this.password, salt)
+   this.password = hashPassword;
+})
 
+// ATTACHING JWT CREATION FUNCTION TO SCHEMA METHODS:
+UserSchema.methods.createJwt = () => {
+   return jwt.sign({
+      username: this.username,
+      userId: this._id
+   }, process.env.JWT_SECRET_KEY,
+      {
+         algorithm: 'HS256',
+         expiresIn: '7d'
+      })
+}
+
+// ATTACHING COMPARE PASSWORD FROM LOGIN TO SCHEMA METHODS:
+UserSchema.methods.comparePassword = async(userPassword) => {
+   const isMatched =  await bcrypt.compare(userPassword, this.password);
+   return isMatched;
+}
 
 
 const Users = mongoose.model('User', UserSchema)
