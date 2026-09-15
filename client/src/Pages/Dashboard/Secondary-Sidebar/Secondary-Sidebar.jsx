@@ -1,5 +1,5 @@
-import {KebabMenuIcon} from '../../../../public/icons/Icons';
-import settings from '../../../../public/images/settings.png';
+import { KebabMenuIcon } from '../../../Icons/Icons.jsx';
+const settings = '/images/settings.png';
 
 
 function SecondarySideBar() {
