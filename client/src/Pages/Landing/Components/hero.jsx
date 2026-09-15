@@ -1,5 +1,5 @@
-import PeopleChatting from '../../../../public/images/PeopleChatting.jpg';
 import { useNavigate } from 'react-router';
+const PeopleChatting = '/images/PeopleChatting.jpg';
 
 function Hero() {
   const navigate = useNavigate();
