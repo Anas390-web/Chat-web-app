@@ -1,4 +1,4 @@
-import { SendIcon } from '../../../../public/icons/Icons.jsx';
+import { SendIcon } from '../../../Icons/Icons.jsx'
 
 
 function Chat() {

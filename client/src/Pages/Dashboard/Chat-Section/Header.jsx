@@ -1,4 +1,4 @@
-import settings from '../../../../public/images/settings.png';
+const settings = '/images/settings.png'
 
 function Header() {
   return (
