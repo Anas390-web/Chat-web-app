@@ -8,6 +8,8 @@ import SignUp from './Pages/Auth/SignUp.jsx'
 import Login from './Pages/Auth/Login.jsx'
 import Dashboard from './Pages/Dashboard/Dashboard.jsx'
 import Landing from './Pages/Landing/Landing.jsx'
+import store from '../store.js'
+import { Provider } from 'react-redux'
 
 
 const router = createBrowserRouter(
@@ -31,6 +33,8 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 )
