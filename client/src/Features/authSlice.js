@@ -41,7 +41,33 @@ export const registerUser = createAsyncThunk(
    }
 )
 
-
+// TO LOGIN USER IN THE DASHBOARD:
+export const loginUser = createAsyncThunk(
+   'auth/loginUser',
+   async (userData, thunkApi) => {
+      try {
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+               'content-type': 'application/json'
+            },
+            body: JSON.stringify(
+               userData
+            )
+         })
+         const data = await response.json();
+         if (!response.ok) {
+            return thunkApi.rejectWithValue(data)
+         }
+         // SAVE TOKEN TO LOCAL STORAGE:
+         const token = data.token;
+         localStorage.setItem("accessToken", token);
+         return data;
+      } catch (error) {
+         console.log(error)
+      }
+   }
+)
 
 const authSlice = createSlice({
    name: 'register',
@@ -66,7 +92,19 @@ const authSlice = createSlice({
             state.isLoading = false;
             state.error = action.payload;
          })
-         
+         // AFTER USER LOGIN:
+         .addCase(loginUser.pending, (state) => {
+            state.isLoading = true
+         })
+         .addCase(loginUser.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.token = action.payload.token;
+            state.username = action.payload.user.username;
+         })
+         .addCase(loginUser.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload
+         })
    }
 })
 
