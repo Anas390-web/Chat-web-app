@@ -34,12 +34,12 @@ UserSchema.pre('save', async function () {
       return;
    }
    const salt = await bcrypt.genSalt(10);
-   const hashPassword = bcrypt.hash(this.password, salt)
+   const hashPassword = await bcrypt.hash(this.password, salt)
    this.password = hashPassword;
 })
 
 // ATTACHING JWT CREATION FUNCTION TO SCHEMA METHODS:
-UserSchema.methods.createJwt = () => {
+UserSchema.methods.createJwt = function () {
    return jwt.sign({
       username: this.username,
       userId: this._id
@@ -51,12 +51,12 @@ UserSchema.methods.createJwt = () => {
 }
 
 // ATTACHING COMPARE PASSWORD FROM LOGIN TO SCHEMA METHODS:
-UserSchema.methods.comparePassword = async(userPassword) => {
+UserSchema.methods.comparePassword = async function (userPassword) {
    const isMatched =  await bcrypt.compare(userPassword, this.password);
    return isMatched;
 }
 
 
-const Users = mongoose.model('User', UserSchema)
+const User = mongoose.model('User', UserSchema)
 
-export default Users
+export default User
