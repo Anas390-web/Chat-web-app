@@ -10,6 +10,8 @@ function SecondarySideBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // ACCESSING AUTH STATE:
+  const { allUsers } = useSelector((store) => store.auth);
   // ACCESSING THE DARK/LIGHT MODE FROM DAYSHBOARD LAYOUT:
   const { mode } = useOutletContext();
   // TOGGLE KEBAB MENU OPEN:
@@ -51,7 +53,17 @@ function SecondarySideBar() {
           <h2 className={mode === 'dark' ? 'text-white' : 'text-black'}>Messages (25)</h2>
         </div>
         <div className='h-10 flex items-center mb-1 px-2'>
-          
+          <select className='flex-1 border border-gray-400 p-1 rounded-md cursor-pointer'>
+            <option value="All users">All users</option>
+            {
+              allUsers.length > 0 &&
+              allUsers.map((user) => {
+                return (
+                  <option key={user._id} value={user.username}>{user.username}</option>
+                )
+              })
+            }
+          </select>
         </div>
         <div className=" h-10 w-full flex mb-1 px-2">
           <input
