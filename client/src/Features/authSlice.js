@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 const initialState = {
+   allUsers: [],
    username: '',
    token: localStorage.getItem('accessToken') || '',
    isLoading: '',
@@ -12,7 +13,6 @@ export const registerUser = createAsyncThunk(
    'auth/registerUser',
    async (userFormData, thunkApi) => {
       try {
-         console.log(userFormData);
          const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/register`, {
             method: 'POST',
             headers: {
@@ -69,6 +69,29 @@ export const loginUser = createAsyncThunk(
    }
 )
 
+// GET ALL THE USERS:
+export const getAllUsers = createAsyncThunk(
+   'auth/getAllUsers',
+   async (token, thunkApi) => {
+      try {
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth`, {
+            method: 'GET',
+            headers: {
+               'Authorization': `Bearer ${token}`,
+               'content-type': 'application/json'
+            }
+         })
+         const data = await response.json();
+         if (!response.ok) {
+            return thunkApi.rejectWithValue(data);
+         }
+         return data;
+      } catch (error) {
+         console.log(error);
+      }
+   }
+)
+
 const authSlice = createSlice({
    name: 'register',
    initialState,
@@ -86,7 +109,7 @@ const authSlice = createSlice({
          })
          .addCase(registerUser.fulfilled, (state, action) => {
             state.isLoading = false;
-            state.username = action.payload.username
+            state.username = action.payload.username;
          })
          .addCase(registerUser.rejected, (state, action) => {
             state.isLoading = false;
@@ -103,7 +126,19 @@ const authSlice = createSlice({
          })
          .addCase(loginUser.rejected, (state, action) => {
             state.isLoading = false;
-            state.error = action.payload
+            state.error = action.payload;
+         })
+         // AFTER GETTING ALL THE USERS:
+         .addCase(getAllUsers.pending, (state) => {
+            state.isLoading = true;
+         })
+         .addCase(getAllUsers.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.allUsers = action.payload.allUsers;
+         })
+         .addCase(getAllUsers.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
          })
    }
 })
