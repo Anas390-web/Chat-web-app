@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import { KebabMenuIcon } from '../../../Icons/Icons.jsx';
 import { signOut } from '../../../Features/authSlice.js';
 const settings = '/images/settings.png';
@@ -9,6 +9,9 @@ const settings = '/images/settings.png';
 function SecondarySideBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // ACCESSING THE DARK/LIGHT MODE FROM DAYSHBOARD LAYOUT:
+  const { mode } = useOutletContext();
   // TOGGLE KEBAB MENU OPEN:
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   function toggleMenu() {
@@ -24,10 +27,10 @@ function SecondarySideBar() {
     }
   }
   return (
-    <aside className="bg-gray-100 h-screen w-full sm:w-70 lg:w-100 flex flex-col justify-start font-semibold border">
+    <aside className="h-screen w-full sm:w-70 lg:w-100 flex flex-col justify-start font-semibold border border-gray-600">
       <div className="flex flex-col gap-2">
-        <div className="bg-purple-300 h-20 flex items-center justify-between px-4 shrink-0 relative">
-          <h1 className='tracking-wide uppercase'>chatty</h1>
+        <div className="bg-[#FF9B51] border-b border-gray-600 h-20 flex items-center justify-between px-4 shrink-0 relative">
+          <h1 className='text-white tracking-wide uppercase'>chatty</h1>
 
           <div className='cursor-pointer relative' onClick={toggleMenu}>
             <KebabMenuIcon />
@@ -45,23 +48,19 @@ function SecondarySideBar() {
         </div>
 
         <div className="h-10 flex items-center mb-1 px-2">
-          <h2>Messages (25)</h2>
+          <h2 className={mode === 'dark' ? 'text-white' : 'text-black'}>Messages (25)</h2>
         </div>
         <div className='h-10 flex items-center mb-1 px-2'>
-          <select className='flex-1 border border-gray-400 p-1 rounded-md cursor-pointer'>
-            <option value="Add users">Add users</option>
-            <option value="User 1">User 1</option>
-            <option value="User 1">User 1</option>
-          </select>
+          
         </div>
         <div className=" h-10 w-full flex mb-1 px-2">
           <input
-            className="h-10 bg-white w-full p-2 rounded-lg"
+            className="h-10 text-black bg-gray-200 w-full p-2 rounded-lg"
             type="text"
             placeholder="Search" />
         </div>
-        <div className='flex gap-2 px-2'>
-          <div className='h-10 w-10 border rounded-full'>
+        <div className={`flex gap-2 mx-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
+          <div className='h-10 w-10 border border-gray-600 rounded-full'>
             <img src={settings} alt="" />
           </div>
           <div>
