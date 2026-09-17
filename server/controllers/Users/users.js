@@ -79,4 +79,27 @@ const loginUser = async (req, res) => {
    }
 }
 
-export { registerUser, loginUser }
+// SEND BACK ALL USERS TO BE LISTED IN THE DASHBOARD:
+const getAllUsers = async (req, res) => {
+   try {
+      // FIND ALL THE USER FROM THE DB:
+      const allUsers = await User.find({}).select('username email');
+      if (!allUsers) {
+         console.log('Users does not exist!');
+         return res.status(StatusCodes.NOT_FOUND).json({
+            msg: 'Users do not exist'
+         })
+      }
+      res.status(StatusCodes.OK).json({
+         allUsers
+      })
+      // RESPOND WITH ALL THE USERS WITH ONLY THEIR USERNAME
+   } catch (error) {
+      console.log(error.message);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         msg: 'Internal server error'
+      })
+   }
+}
+
+export { registerUser, loginUser, getAllUsers }
