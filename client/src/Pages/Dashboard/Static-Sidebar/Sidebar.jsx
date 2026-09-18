@@ -1,5 +1,4 @@
 import { LightIcon, DarkIcon } from '../../../Icons/Icons'
-
 // IMAGES FROM ROOT PUBLIC FOLDER:
 const Dashboard = '/images/Dashboard.png';
 const Chats = '/images/chats.png';
@@ -14,31 +13,51 @@ const WhiteArchives = '/images/White-archives.png'
 const WhiteSettings = '/images/White-settings.png'
 
 
-function Sidebar({ mode, handleLightMode, handleDarkMode }) {
+function Sidebar({ mode, handleLightMode, handleDarkMode, handleSwapComponent }) {
+  const barIcons = [
+    {
+      id: 1,
+      title: 'Chats',
+      src: mode === 'dark' ? WhiteChats : Chats,
+    },
+    {
+      id: 2,
+      title: 'Groups',
+      src: mode === 'dark' ? WhiteGroups : Groups,
+    },
+    {
+      id: 3,
+      title: 'Archives',
+      src: mode === 'dark' ? WhiteArchives : Archives,
+    },
+    {
+      id: 4,
+      title: 'Settings',
+      src: mode === 'dark' ? WhiteSettings : Settings,
+    }
+  ]
+
   return (
     <aside className='bg-[#FF9B51]  h-screen w-24 shrink-0 flex flex-col justify-between items-center px-2 py-1 font-semibold'>
       <div className='flex flex-col gap-4'>
+        {/* DASHBOARD ICON */}
         <div className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'}>
           <img className='size-7' src={mode === 'dark' ? WhiteDashboard : Dashboard} alt="Dashboard Icon" />
         </div>
         <hr />
-        <div className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'}>
-          <img className='size-7' src={mode === 'dark' ? WhiteChats : Chats} alt="Chats Icon" />
-          <p>Chats</p>
-        </div>
-        <div className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'}>
-          <img className='size-7' src={mode === 'dark' ? WhiteGroups : Groups} alt="Groups Icon" />
-          <p>Groups</p>
-        </div>
-        <div className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'}>
-          <img className='size-7' src={mode === 'dark' ? WhiteArchives : Archives} alt="Archives Icon" />
-          <p>Archives</p>
-        </div>
-        <div className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'}>
-          <img className='size-7' src={mode === 'dark' ? WhiteSettings : Settings} alt="Settings Icon" />
-          <p>Settings</p>
-        </div>
+        {/* BAR ICONS */}
+        {
+          barIcons.map((barIcon) => {
+            return (
+              <div key={barIcon.id} onClick={() => handleSwapComponent(barIcon.id)} className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'}>
+                <img className='size-7' src={barIcon.src} alt="Chats Icon" />
+                <p>{barIcon.title}</p>
+              </div>
+            )
+          })
+        }
       </div>
+      {/* LIGHT AND DARK MODE ICONS */}
       <div className='flex flex-col justify-center items-center gap-4'>
         <div className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'} onClick={() => handleLightMode()}>
           <p>{<LightIcon />}</p>
