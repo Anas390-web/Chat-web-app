@@ -3,22 +3,40 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { KebabMenuIcon } from '../../../Icons/Icons.jsx';
 import { signOut } from '../../../Features/authSlice.js';
-const settings = '/images/settings.png';
-
+import { Chats, Groups, Archives, Settings } from './Components/Components.jsx';
 
 function SecondarySideBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   // ACCESSING AUTH STATE:
   const { allUsers } = useSelector((store) => store.auth);
-  // ACCESSING THE DARK/LIGHT MODE FROM DAYSHBOARD LAYOUT:
-  const { mode } = useOutletContext();
+  // ACCESSING THE DARK/LIGHT MODE & COMPONENTID FROM DAYSHBOARD LAYOUT:
+  const { mode, componentId } = useOutletContext();
   // TOGGLE KEBAB MENU OPEN:
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   function toggleMenu() {
     setIsMenuOpen(!isMenuOpen);
   }
+
+  // COMPONENTS ARRAY:
+  const components = [
+    {
+      id: 1,
+      component: <Chats />
+    },
+    {
+      id: 2,
+      component: <Groups />
+    },
+    {
+      id: 3,
+      component: <Archives />
+    },
+    {
+      id: 4,
+      component: <Settings />
+    },
+  ]
 
   // SIGN OUT THE USER:
   function handleSignOut() {
@@ -59,31 +77,31 @@ function SecondarySideBar() {
               allUsers.length > 0 &&
               allUsers.map((user) => {
                 return (
-                  <option key={user._id} value={user.username}>{user.username}</option>
+                  <option className='text-black' key={user._id} value={user.username}>{user.username}</option>
                 )
               })
             }
           </select>
         </div>
+        <div className='flex w-full px-2 mb-1'>
+          <button className='bg-[#FF9B51] border border-amber-900 flex-1 p-1 rounded-md text-white shadow-2xl shadow-gray-400 cursor-pointer'>Add User</button>
+        </div>
         <div className=" h-10 w-full flex mb-1 px-2">
           <input
-            className="h-10 text-black bg-gray-200 w-full p-2 rounded-lg"
+            className="h-10 text-black bg-gray-300 w-full p-2 rounded-lg"
             type="text"
             placeholder="Search" />
         </div>
-        <div className={`flex gap-2 mx-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
-          <div className='h-10 w-10 border border-gray-600 rounded-full'>
-            <img src={settings} alt="" />
-          </div>
-          <div>
-            <div>
-              <p>Ali Haider</p>
-            </div>
-            <div>
-              <p className='font-light text-sm'>Latest message from chats</p>
-            </div>
-          </div>
-        </div>
+        {
+          components.map((barComponent) => {
+            
+            return barComponent.id === componentId && (
+              <div key={barComponent.id}>
+                {barComponent.component}
+              </div>
+            )
+          })
+        }
       </div>
     </aside>
   )
