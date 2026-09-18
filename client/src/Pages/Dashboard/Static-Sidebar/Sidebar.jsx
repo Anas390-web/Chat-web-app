@@ -12,7 +12,6 @@ const WhiteGroups = '/images/White-groups.png'
 const WhiteArchives = '/images/White-archives.png'
 const WhiteSettings = '/images/White-settings.png'
 
-
 function Sidebar({ mode, handleLightMode, handleDarkMode, handleSwapComponent }) {
   const barIcons = [
     {
