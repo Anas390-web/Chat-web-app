@@ -6,6 +6,11 @@ import { useDispatch, useSelector } from 'react-redux'
 
 function DashboardLayout() {
    const dispatch = useDispatch();
+   // SWAP SIDEBAR COMPONENTS (CHATS, GROUPS, ARCHIVES) BASED ON THE ID:
+   const [componentId, setComponentId] = useState(null);
+   function handleSwapComponent(getCompId) {
+      setComponentId(getCompId);
+   }
    // ACCESSING TOKEN FROM THE STORE:
    const { token } = useSelector((store) => store.auth);
    // DARK/LIGHT MODE:
@@ -14,7 +19,7 @@ function DashboardLayout() {
          return localStorage.getItem("theme")
       }
    );
-
+   
    // THE MOMENT MODE IS CHANGED, CHANGE THE THEME TO MODE:
    useEffect(() => {
       localStorage.setItem("theme", mode)
@@ -34,6 +39,7 @@ function DashboardLayout() {
    return (
       <>
          {
+            // ONLY MOUNT DASHBOARD IF THE TOKEN IS PRESENT:
             token ?
                <div
                   className={`min-h-dvh overflow-hidden flex ${mode === 'dark' && 'bg-[#111b21] text-gray-200'} ${mode === 'light' && 'bg-[#f1ebe7]'}`}>
@@ -41,9 +47,10 @@ function DashboardLayout() {
                   <Sidebar
                      mode={mode}
                      handleDarkMode={handleDarkMode}
-                     handleLightMode={handleLightMode} />
+                     handleLightMode={handleLightMode}
+                     handleSwapComponent={handleSwapComponent} />
                   <div className='flex-1 min-w-0 h-full'>
-                     <Outlet context={{ mode }} />
+                     <Outlet context={{ mode, componentId }} />
                   </div>
                </div>
                :
