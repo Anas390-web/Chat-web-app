@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 const initialState = {
    allUsers: [],
    username: '',
+   userAvatar: '',
    token: localStorage.getItem('accessToken') || '',
    isLoading: '',
    error: ''
