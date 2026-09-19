@@ -1,17 +1,33 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { KebabMenuIcon } from '../../../Icons/Icons.jsx';
 import { signOut } from '../../../Features/authSlice.js';
-import { Chats, Groups, Archives, Settings } from './Components/Components.jsx';
+import { Chats, Groups, Archives, Settings } from './Components/ConvoComponents.jsx';
+import { AddUsersButton, AllUsersList } from './Components/OtherComponents.jsx';
 
 function SecondarySideBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // ACCESSING AUTH STATE:
-  const { allUsers } = useSelector((store) => store.auth);
   // ACCESSING THE DARK/LIGHT MODE & COMPONENTID FROM DAYSHBOARD LAYOUT:
   const { mode, componentId } = useOutletContext();
+
+  // SELECTED USERS STATE FROM USERS LIST:
+  const [users, setUsers] = useState([]);
+
+  function handleUserChange(e) {
+    const value = e.target.value;
+    if (!value || value === 'All users') return;
+    setUsers((prev) => {
+      // CHECK FOR NO DUPLICATION:
+      if (prev.includes(value)) return prev;
+      return [
+        ...prev, value
+      ]
+    });
+  }
+
+  console.log(users);
   // TOGGLE KEBAB MENU OPEN:
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   function toggleMenu() {
@@ -70,22 +86,8 @@ function SecondarySideBar() {
         <div className="h-10 flex items-center mb-1 px-2">
           <h2 className={mode === 'dark' ? 'text-white' : 'text-black'}>Messages (25)</h2>
         </div>
-        <div className='h-10 flex items-center mb-1 px-2'>
-          <select className='flex-1 border border-gray-400 p-1 rounded-md cursor-pointer'>
-            <option value="All users">All users</option>
-            {
-              allUsers.length > 0 &&
-              allUsers.map((user) => {
-                return (
-                  <option className='text-black' key={user._id} value={user.username}>{user.username}</option>
-                )
-              })
-            }
-          </select>
-        </div>
-        <div className='flex w-full px-2 mb-1'>
-          <button className='bg-[#FF9B51] border border-amber-900 flex-1 p-1 rounded-md text-white shadow-2xl shadow-gray-400 cursor-pointer'>Add User</button>
-        </div>
+        <AllUsersList users={users} handleUserChange={handleUserChange} />
+        <AddUsersButton users={users} />
         <div className=" h-10 w-full flex mb-1 px-2">
           <input
             className="h-10 text-black bg-gray-300 w-full p-2 rounded-lg"
@@ -94,7 +96,7 @@ function SecondarySideBar() {
         </div>
         {
           components.map((barComponent) => {
-            
+
             return barComponent.id === componentId && (
               <div key={barComponent.id}>
                 {barComponent.component}
