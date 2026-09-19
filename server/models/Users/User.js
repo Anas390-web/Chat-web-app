@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema({
       required: [true, 'Please provide password'],
       minlength: [3, 'Please write atleast 3 letters'],
       maxlength: 50
+   },
+   userAvatarUrl: {
+      type: String,
+      default: null
    }
 })
 
