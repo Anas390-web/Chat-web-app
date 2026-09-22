@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { KebabMenuIcon } from '../../../Icons/Icons.jsx';
 import { signOut } from '../../../Features/authSlice.js';
@@ -26,8 +26,6 @@ function SecondarySideBar() {
       ]
     });
   }
-
-  console.log(users);
   // TOGGLE KEBAB MENU OPEN:
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   function toggleMenu() {
@@ -38,7 +36,7 @@ function SecondarySideBar() {
   const components = [
     {
       id: 1,
-      component: <Chats />
+      component: <Chats users={users} />
     },
     {
       id: 2,
