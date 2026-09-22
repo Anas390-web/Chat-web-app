@@ -14,18 +14,30 @@ const addUsers = async (req, res) => {
             msg: 'Bad Request'
          })
       }
-      // NOT USING CREATE AS IT WILL CREATE A NEW DOCUMENT EACH TIME USER CLICKS ON ADD USERS:
+      // NOT USING CREATE METHOD AS IT WILL CREATE A NEW DOCUMENT EACH TIME USER CLICKS ON ADD USERS:
       const contacts = await Contact.findOneAndUpdate(
          // THIS STORES THE USERID TO THE STOREDBY FIELD
          { storedBy: userId },
-         // TO UNPACK EACH ARRAY AND AVOID DUPLICATES
+         // TO AVOID DUPLICATES & UNPACK EACH ARRAY TO AVOID MULTIPLE ARRAYS TO BE STORED IN AN ARRAY
          { $addToSet: { contacts: { $each: usersList } } },
-         { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true }
+         { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true, runValidators: true }
       )
       if (!contacts) {
          console.log('Contacts were not created');
+         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            msg: 'Internal Server Error'
+         })
       }
-      console.log(contacts);
+      const contactsList = await contacts.populate({
+         path: 'contacts',
+         select: 'username'
+      })
+      console.log(contactsList);
+
+      res.status(StatusCodes.CREATED).json({
+         msg: 'Contacts updated',
+         contactsList
+      })
 
    } catch (error) {
       console.log(error.message)
