@@ -11,7 +11,7 @@ const initialState = {
 // ADD USERS/CHATS:
 export const addUsers = createAsyncThunk(
    'contactList/addUsers',
-   async(users, thunkApi) => {
+   async (users, thunkApi) => {
       try {
          const token = localStorage.getItem("accessToken");
          const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/contacts`, {
@@ -26,7 +26,7 @@ export const addUsers = createAsyncThunk(
          })
          const data = await response.json();
          console.log(data);
-         if(!response.ok){
+         if (!response.ok) {
             return thunkApi.rejectWithValue(data);
          }
          return data;
@@ -41,11 +41,25 @@ const contactListSlice = createSlice({
    name: 'contactList',
    initialState,
    reducers: {
-      
+
+   },
+   // TO ADD CONTACTS/CHATS LIST ON DASHBOARD
+   extraReducers: (builder) => {
+      builder
+         .addCase(addUsers.pending, (state) => {
+            state.isLoading = true
+         })
+         .addCase(addUsers.fulfilled, (state, action) => {
+            state.isLoading = false,
+               state.contactList = action.payload.contactsList.contacts;
+         })
+         .addCase(addUsers.rejected, (state, action) => {
+            state.error = action.payload
+         })
    }
 })
 
 
 const contactListReducer = contactListSlice.reducer;
 
-export {contactListReducer}
+export { contactListReducer }
