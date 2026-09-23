@@ -50,6 +50,14 @@ io.on('connection', (socket) => {
    const { userId } = socket.user;
    console.log('CONNECTED WITH CLIENT', socket.id)
 
+   socket.on('join-room', ({ chatUserId }) => {
+      let roomIdArray = [];
+      roomIdArray.push(userId, chatUserId)
+      const personalRoomId = roomIdArray.sort().join("_");
+      console.log(personalRoomId)
+      socket.join(personalRoomId);
+   })
+
    // UPON USER DISCONNECTING:
    socket.on('disconnect', () => {
       console.log('CLIENT DISCONNECTED', socket.id);
