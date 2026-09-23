@@ -3,14 +3,21 @@ import { useSelector } from "react-redux";
 import { useOutletContext } from "react-router-dom"
 import { useDispatch } from "react-redux";
 import { addUsers } from "../../../../Features/contactsSlice.js";
+import socket from "../../../../Socket/socket.js";
 
 
 const BlankImage = '/images/Blank-User-Image.png';
 
 function Chats({ users }) {
    const dispatch = useDispatch();
-   const { contactList } = useSelector((store) => store.contacts)
-   console.log(contactList)
+   const { contactList } = useSelector((store) => store.contacts);
+
+   // JOIN THE INDIVIDUAL CHAT ROOM:
+
+   function getUserId(chatUserId) {
+      console.log(chatUserId);
+      socket.emit('join-room', { chatUserId })
+   }
 
    useEffect(() => {
       dispatch(addUsers(users));
@@ -22,11 +29,12 @@ function Chats({ users }) {
          {
             contactList.map((contact) => {
                return (
-                  <div key={contact._id} className={`flex gap-2 m-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
+                  <div key={contact._id} className={`flex gap-2 m-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}
+                     onClick={() => getUserId(contact._id)}>
                      <div className='h-10 w-10 border border-gray-600 rounded-full'>
                         <img src={BlankImage} alt="" />
                      </div>
-                     <div>
+                     <div className="cursor-pointer">
                         <div>
                            <p>{contact.username}</p>
                         </div>
