@@ -82,6 +82,8 @@ const loginUser = async (req, res) => {
 // SEND BACK ALL USERS TO BE LISTED IN THE DASHBOARD:
 const getAllUsers = async (req, res) => {
    try {
+      // DE-STRUCTURE USER ID FROM THE AUTHENTICATION PAYLOAD:
+      const { userId } = req.user;
       // FIND ALL THE USER FROM THE DB:
       const allUsers = await User.find({}).select('username email');
       if (!allUsers) {
@@ -90,8 +92,13 @@ const getAllUsers = async (req, res) => {
             msg: 'Users do not exist'
          })
       }
+      // SEND BACK THE ALL THE USERS EXCEPT YOURSELF:
+      const allUsersExceptCurrent = allUsers.filter((user) => {
+         return String(user._id) !== userId;
+      })
+
       res.status(StatusCodes.OK).json({
-         allUsers
+         allUsersExceptCurrent
       })
       // RESPOND WITH ALL THE USERS WITH ONLY THEIR USERNAME
    } catch (error) {
