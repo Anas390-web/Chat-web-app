@@ -4,11 +4,9 @@ import Contact from '../../models/ContactsList/Contact.js'
 const addUsers = async (req, res) => {
    try {
       // AFTER USER AND TOKEN AUTHENTICATION:
-      const { username, userId } = req.user;
+      const { userId } = req.user;
       // REQUEST BODY:
       const usersList = req.body;
-      console.log(username, userId)
-      console.log('Array of users:', usersList)
       if (!usersList) {
          return res.status(StatusCodes.BAD_REQUEST).json({
             msg: 'Bad Request'
@@ -32,7 +30,6 @@ const addUsers = async (req, res) => {
          path: 'contacts',
          select: 'username'
       })
-      console.log(contactsList);
 
       res.status(StatusCodes.CREATED).json({
          msg: 'Contacts updated',
