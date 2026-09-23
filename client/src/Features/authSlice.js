@@ -135,7 +135,7 @@ const authSlice = createSlice({
          })
          .addCase(getAllUsers.fulfilled, (state, action) => {
             state.isLoading = false;
-            state.allUsers = action.payload.allUsers;
+            state.allUsers = action.payload.allUsersExceptCurrent;
          })
          .addCase(getAllUsers.rejected, (state, action) => {
             state.isLoading = false;
