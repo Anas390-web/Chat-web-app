@@ -5,10 +5,12 @@ import { KebabMenuIcon } from '../../../Icons/Icons.jsx';
 import { signOut } from '../../../Features/authSlice.js';
 import { Chats, Groups, Archives, Settings } from './Components/ConvoComponents.jsx';
 import { AddUsersButton, AllUsersList } from './Components/OtherComponents.jsx';
+import socket from '../../../Socket/socket.js';
 
 function SecondarySideBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   // ACCESSING THE DARK/LIGHT MODE & COMPONENTID FROM DAYSHBOARD LAYOUT:
   const { mode, componentId } = useOutletContext();
 
@@ -54,12 +56,16 @@ function SecondarySideBar() {
 
   // SIGN OUT THE USER:
   function handleSignOut() {
+    // WHEN USER SIGN OUT THE SESSION, CLOSE THE CONNECTION:
+    socket.disconnect();
     dispatch(signOut());
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
+    // NAVIGATION TO LOGIN PAGE:
+    const token = localStorage.getItem("accessToken")
+    if(!token) {
       navigate('/login');
     }
   }
+  
   return (
     <aside className="h-screen w-full sm:w-70 lg:w-100 flex flex-col justify-start font-semibold border border-gray-600">
       <div className="flex flex-col gap-2">
