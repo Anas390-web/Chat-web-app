@@ -22,9 +22,10 @@ const joinPersonalRoom = (socket, io) => {
       // JOINING THE ROOM:
       socket.join(conversationId);
       // SENDING CONVERSATION ROOM ID:
-      socket.emit('get-conversationData', { conversationId, chatUserId });
+      socket.emit('get-conversationId', { conversationId });
    })
 }
+
 
 export { joinPersonalRoom }
 
