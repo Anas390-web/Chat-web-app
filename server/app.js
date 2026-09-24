@@ -4,9 +4,9 @@ import { Server } from 'socket.io'
 import express from 'express'
 import connectToDB from './connectDB/connectDB.js'
 import cors from 'cors'
-import jwt from 'jsonwebtoken';
 import authRouter from './routes/Users/users.js'
 import contactsRouter from './routes/Contacts/contacts.js'
+import socketAuth from './middlewares/Auth/socketAuth.js'
 
 const app = express();
 const httpServer = createServer(app);
@@ -31,33 +31,14 @@ const io = new Server(httpServer, {
 
 // TOKEN AUTHENTICATION:
 io.use((socket, next) => {
-   try {
-      const token = socket.handshake.auth.token;
-      const payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
-      socket.user = payload;
-      if (!payload) {
-         return next(new Error('Authentication error: Token missing'))
-      }
-      next();
-   } catch (error) {
-      return next(new Error('Authentication error: Invalid token'));
-   }
+   socketAuth(socket, next)
 })
 
 // CONNECTION WITH CLIENT:
 
 io.on('connection', (socket) => {
-   const { userId } = socket.user;
    console.log('CONNECTED WITH CLIENT', socket.id)
-
-   socket.on('join-room', ({ chatUserId }) => {
-      let roomIdArray = [];
-      roomIdArray.push(userId, chatUserId)
-      const personalRoomId = roomIdArray.sort().join("_");
-      console.log(personalRoomId)
-      socket.join(personalRoomId);
-   })
-
+   
    // UPON USER DISCONNECTING:
    socket.on('disconnect', () => {
       console.log('CLIENT DISCONNECTED', socket.id);
