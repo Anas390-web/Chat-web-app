@@ -8,7 +8,9 @@ function Dashboard() {
         <SecondarySideBar />
       <div className="flex-1 min-w-0 flex flex-col">
         <Header />
-        <Chat />
+        <div className="flex-1 min-h-0 flex flex-col">
+          <Chat />
+        </div>
       </div>
     </div>
   )
