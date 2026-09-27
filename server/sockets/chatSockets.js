@@ -39,8 +39,31 @@ const joinPersonalRoom = (socket, io) => {
    }
 }
 
+const saveMessageInDB = (socket, io) => {
+   try {
+      // EVENT LISTERNER FOR MESSAGE EVENT:
+      socket.on("send-message", async ({ message, conversationData }) => {
+         // PAYLOAD FROM AUTHENTICATION:
+         const { userId } = socket.user;
+         // MESSAGE TO SAVE IN DB:
+         const messageDoc = await Message.create(
+            { conversationId: conversationData.convoId, senderId: userId, messageContent: message }
+         )
+         if (!messageDoc) {
+            console.log('Error: Message document was not saved.')
+            return;
+         }
+         // BROADCAST TO BOTH THE SOCKETS/USERS:
+         io.to(conversationData.convoId).emit("receive-message", messageDoc );
+      })
+   } catch (error) {
+      console.log(error.message);
+      return error.message;
+   }
+
+}
 
 
 
-export { joinPersonalRoom }
+export { joinPersonalRoom, saveMessageInDB }
 
