@@ -7,12 +7,12 @@ const initialState = {
    error: ''
 }
 
+// TO GET ALL MESSAGES:
 export const allMessages = createAsyncThunk(
    'messages/allMessages',
    async (conversationData, thunkApi) => {
       try {
          const token = localStorage.getItem("accessToken");
-         console.log('Conversation Data:' ,conversationData);
          const response = await fetch(import.meta.env.VITE_SERVER_MESSAGES_URL, {
             method: 'POST',
             headers: {
@@ -24,13 +24,12 @@ export const allMessages = createAsyncThunk(
             )
          })
          const data = await response.json();
-         console.log(data)
          if (!response.ok) {
             return thunkApi.rejectWithValue(data)
          }
          return data;
       } catch (error) {
-         console.log('Error:',error.message)
+         console.log('Error:', error.message)
          return thunkApi.rejectWithValue(error.message)
       }
    }
@@ -39,8 +38,10 @@ export const allMessages = createAsyncThunk(
 const messagesSlice = createSlice({
    name: 'messages',
    initialState,
-   reducer: {
-
+   reducers: {
+      addLatestMsg: (state, action) => {
+         state.allMessagesDocs.push(action.payload)
+      }
    },
    extraReducers: (builder) => {
       builder
@@ -51,7 +52,7 @@ const messagesSlice = createSlice({
             state.isLoading = false;
             state.allMessagesDocs = action.payload.allMessagesDocs;
          })
-         .addCase(allMessages.rejected, (state, action) =>{
+         .addCase(allMessages.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.payload
          })
@@ -59,5 +60,7 @@ const messagesSlice = createSlice({
 })
 
 const messagesReducer = messagesSlice.reducer;
+
+export const { addLatestMsg } = messagesSlice.actions;
 
 export default messagesReducer;
