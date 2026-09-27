@@ -7,6 +7,7 @@ import cors from 'cors'
 import authRouter from './routes/Users/users.js'
 import contactsRouter from './routes/Contacts/contacts.js'
 import socketAuth from './middlewares/Auth/socketAuth.js'
+import { joinPersonalRoom, saveMessageInDB } from './sockets/chatSockets.js'
 
 const app = express();
 const httpServer = createServer(app);
@@ -38,7 +39,10 @@ io.use((socket, next) => {
 
 io.on('connection', (socket) => {
    console.log('CONNECTED WITH CLIENT', socket.id)
-   
+   // JOIN-ROOM LISTENER:
+   joinPersonalRoom(socket, io);
+   // SAVE MESSAGES IN THE DB:
+   saveMessageInDB(socket, io);
    // UPON USER DISCONNECTING:
    socket.on('disconnect', () => {
       console.log('CLIENT DISCONNECTED', socket.id);
