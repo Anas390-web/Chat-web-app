@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux'
 import { SendIcon } from '../../../Icons/Icons.jsx'
 import { useOutletContext } from 'react-router-dom';
 import socket from '../../../Socket/socket.js';
 import { MsgBubble } from './DisplayMsgs.jsx';
 
 function Chat() {
+   const dispatch = useDispatch();
    // 1. DE-STRUCTURING MODE FROM THE LAYOUT OUTLET CONTEXT:
    const { mode } = useOutletContext();
 
@@ -40,6 +42,21 @@ function Chat() {
    // 3.3: EVENT HANDLER: HANDLE SUBMIT EMITTING 'SEND-MESSAGE EVENT:
    function handleMsgSubmit(e) {
       e.preventDefault();
+
+      // CHECK IF ID IS PRESENT OTHERWISE STOP EXECUTION:
+      if (!conversationData.convoId) {
+         console.log('Conversation id is not saved in state yet');
+         return;
+      }
+
+      // CHECKT IF MESSAGE IS SAVED IN THE STATE OR NOT OTHER WISE STOP EXECUTION:
+      if (message.length < 1) return;
+
+      // EMIT 'SEND-MESSAGE' EVENT WITH PAYLOAD:
+      socket.emit('send-message', { message, conversationData })
+
+      // SET INPUT TO EMPTY:
+      setMessage('');
    }
 
    return (
