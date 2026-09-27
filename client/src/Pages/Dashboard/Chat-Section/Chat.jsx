@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { SendIcon } from '../../../Icons/Icons.jsx'
 import { useOutletContext } from 'react-router-dom';
 import socket from '../../../Socket/socket.js';
 import { MsgBubble } from './DisplayMsgs.jsx';
+import { addLatestMsg, allMessages } from '../../../Features/messagesSlice.js';
 
 function Chat() {
    const dispatch = useDispatch();
@@ -15,7 +16,7 @@ function Chat() {
    // 3. TO SAVE CONVERSATION ID FROM THE SERVER:
    const [conversationData, setConversationData] = useState({
       convoId: '',
-      chatUserId: ''
+      chatUserId: '' // USER TO CHAT WITH FROM THE LIST OF CHATS ON DASHBOARD
    });
 
    // 3.1: CALLBACK FUNCTION TO BE EXECUTED AFTER LISTENING "GET-CONVERSATIONDATA" EVENT:
@@ -25,6 +26,8 @@ function Chat() {
             ...prev, convoId: conversationId, chatUserId: chatUserId
          })
       });
+      if (!conversationData) return;
+      dispatch(allMessages({ conversationId, chatUserId }))
    }
    // 3.2 GET THE CONVERSATION ID FROM THE SERVER:
    useEffect(() => {
@@ -58,6 +61,20 @@ function Chat() {
       // SET INPUT TO EMPTY:
       setMessage('');
    }
+
+   // 5. RECEIVE THE LATEST MESSAGE FROM THE SERVER AND SAVE IT TO REDUX STORE:
+   function handleLatestMsg(messageDoc) {
+      // ACTION FROM THE MESSAGE SLICE:
+      dispatch(addLatestMsg(messageDoc))
+   }
+
+
+   useEffect(() => {
+      socket.on("receive-message", handleLatestMsg)
+      return () => {
+         socket.off("receive-message", handleLatestMsg)
+      }
+   }, [dispatch])
 
    return (
       <main className="h-full">
