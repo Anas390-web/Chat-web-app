@@ -8,6 +8,7 @@ import authRouter from './routes/Users/users.js'
 import contactsRouter from './routes/Contacts/contacts.js'
 import socketAuth from './middlewares/Auth/socketAuth.js'
 import { joinPersonalRoom, saveMessageInDB } from './sockets/chatSockets.js'
+import messageRouter from './routes/Messages/messages.js'
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,6 +22,7 @@ app.use(express.static('./public'))
 // ROUTES
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/contacts', contactsRouter);
+app.use('/api/v1/messages', messageRouter)
 
 // SOCKET CONNECTION:
 const io = new Server(httpServer, {
