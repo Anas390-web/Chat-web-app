@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
 import { addUsers } from "../../../../Features/contactsSlice.js";
+import { ClosePageIcon } from "../../../../Icons/Icons.jsx";
 
-function AllUsersList({ users, handleUserChange }) {
+function AllUsersList({ users, handleUserChange, handleRemoveUser }) {
    // ACCESSING AUTH STATE:
    const { allUsers } = useSelector((store) => store.auth);
 
@@ -29,11 +29,16 @@ function AllUsersList({ users, handleUserChange }) {
             {
                users.map((user) => {
                   return (
-                     <div key={user.userContactId} className="flex flex-col h-10 justify-center items-center border w-10 rounded-full">
-                        <div className="flex">
-                           <img className="h-4 w-4 rounded" src="/images/Blank-User-Image.png" alt="Blank User Image" />
+                     <div key={user} className="w-11 flex relative">
+                        <div className="flex flex-col h-10 justify-center items-center border w-10 rounded-full">
+                           <div className="flex">
+                              <img className="h-4 w-4 rounded" src="/images/Blank-User-Image.png" alt="Blank User Image" />
+                           </div>
+                           <p></p>
                         </div>
-                        <p></p>
+                        <div>
+                           <ClosePageIcon />
+                        </div>
                      </div>
                   )
                })
