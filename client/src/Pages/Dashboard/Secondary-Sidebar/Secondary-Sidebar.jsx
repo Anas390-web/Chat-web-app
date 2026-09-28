@@ -27,6 +27,14 @@ function SecondarySideBar() {
         ...prev, value
       ]
     });
+  };
+
+  // TO REMOVE THE SELECTED USERS ON CLICKING THE CLOSE ICON:
+  function handleRemoveUser(userId) {
+    const newUsers = users.filter((user) => {
+      return user !== userId
+    })
+    setUsers(newUsers);
   }
   // TOGGLE KEBAB MENU OPEN:
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -90,7 +98,10 @@ function SecondarySideBar() {
         <div className="h-10 flex items-center mb-1 px-2">
           <h2 className={mode === 'dark' ? 'text-white' : 'text-black'}>Messages (25)</h2>
         </div>
-        <AllUsersList users={users} handleUserChange={handleUserChange} />
+        <AllUsersList
+          users={users}
+          handleUserChange={handleUserChange}
+          handleRemoveUser={handleRemoveUser} />
         <AddUsersButton users={users} />
         <div className=" h-10 w-full flex mb-1 px-2">
           <input
