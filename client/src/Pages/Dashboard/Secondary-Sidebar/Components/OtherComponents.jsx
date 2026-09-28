@@ -36,7 +36,7 @@ function AllUsersList({ users, handleUserChange, handleRemoveUser }) {
                            </div>
                            <p></p>
                         </div>
-                        <div>
+                        <div onClick={() => handleRemoveUser(user)} className="absolute right-0 cursor-pointer">
                            <ClosePageIcon />
                         </div>
                      </div>
