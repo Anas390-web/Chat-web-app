@@ -10,7 +10,7 @@ const conversationSchema = new mongoose.Schema({
       ],
       validate: [
          (val) => val.length >= 2,
-         'A conversation must have 2 or more than participants'
+         'A conversation must have 2 or more participants'
       ]
    },
    isGroup: {
