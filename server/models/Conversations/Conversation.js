@@ -19,7 +19,6 @@ const conversationSchema = new mongoose.Schema({
    },
    groupName: {
       type: String,
-      unique: true
    },
    admin: {
       type: mongoose.Schema.Types.ObjectId,
