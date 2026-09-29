@@ -77,7 +77,7 @@ function SecondarySideBar() {
   // OPEN THE GROUP DETAILS BOX TO ADD A NAME:
   const [openDetails, setOpenDetails] = useState(false)
   function openDetailsBox() {
-    setOpenDetails(true)
+    setOpenDetails(true);
   }
   function closeDetailsBox() {
     setOpenDetails(false);
