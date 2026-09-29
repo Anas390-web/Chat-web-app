@@ -4,6 +4,7 @@ import { useOutletContext } from "react-router-dom"
 import { useDispatch } from "react-redux";
 import { addUsers } from "../../../../Features/contactsSlice.js";
 import socket from "../../../../Socket/socket.js";
+import { allGroups } from "../../../../Features/groupListSlice.js";
 
 
 const BlankImage = '/images/Blank-User-Image.png';
@@ -51,7 +52,12 @@ function Chats({ users }) {
 }
 
 function Groups() {
+   const dispatch = useDispatch();
    const { mode } = useOutletContext();
+
+   useEffect(() => {
+      dispatch(allGroups());
+   }, [dispatch])
    return (
       <div className={`flex gap-2 mx-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
          <div className='h-10 w-10 border border-gray-600 rounded-full'>
