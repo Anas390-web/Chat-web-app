@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addUsers } from "../../../../Features/contactsSlice.js";
-import { ClosePageIcon } from "../../../../Icons/Icons.jsx";
+import { ClosePageIcon, CrossIcon } from "../../../../Icons/Icons.jsx";
 
 // ALL USERS LIST AS DROP DOWN:
 function AllUsersList({ users, handleUserChange, handleRemoveUser }) {
@@ -65,16 +65,54 @@ function AddUsersButton({ users }) {
 }
 
 // BUTTON WHICH OPENS THE POP-UP TO ADD THE GROUP DETAILS:
-function AddToGroupBtn() {
-
+function AddToGroupBtn({ openDetailsBox, users }) {
    return (
       <div className='flex w-full px-2 mb-1'>
          <button
             className='bg-[#FF9B51] border border-amber-900 flex-1 p-1 rounded-md text-white shadow-2xl shadow-gray-400 cursor-pointer'
+            onClick={() => openDetailsBox()}
             disabled={users.length < 1}
          >Add users to Group</button>
       </div>
    )
 }
 
-export { AllUsersList, AddUsersButton, AddToGroupBtn }
+// A POP UP TO ADD THE GROUP NAME:
+function AddGroupDetails() {
+
+   return (
+
+         <div className="bg-white border border-gray-200 shadow-2xl w-full max-w-md p-5 flex flex-col justify-center items-center gap-2 relative rounded-lg"
+            style={{ width: '100%', maxWidth: '450px' }}>
+            <div className="flex w-full">
+               <div className="flex flex-1 justify-center">
+                  <h2>Add a Name</h2>
+               </div>
+               <div className="cursor-pointer"
+                  >
+                  <CrossIcon />
+               </div>
+            </div>
+            <form className="w-full">
+               <label>
+                  <p className="mb-2">Group name:</p>
+                  <input
+                     className="bg-gray-200 w-full p-2 mb-2"
+                     type="text"
+                     placeholder="add a name" />
+               </label>
+               <div>
+                  <p>Participants: 
+                     
+                  </p>
+               </div>
+               <div className="flex justify-center p-2">
+                  <button
+                     className="bg-orange-400 text-white w-full font-light p-1.5 rounded-md">Create a Group</button>
+               </div>
+            </form>
+         </div>
+   )
+}
+
+export { AllUsersList, AddUsersButton, AddToGroupBtn, AddGroupDetails }
