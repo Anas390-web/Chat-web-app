@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUsers } from "../../../../Features/contactsSlice.js";
 import { ClosePageIcon } from "../../../../Icons/Icons.jsx";
 
+// ALL USERS LIST AS DROP DOWN:
 function AllUsersList({ users, handleUserChange, handleRemoveUser }) {
    // ACCESSING AUTH STATE:
    const { allUsers } = useSelector((store) => store.auth);
@@ -48,6 +49,7 @@ function AllUsersList({ users, handleUserChange, handleRemoveUser }) {
    )
 }
 
+// BUTTON WHICH SENDS REQUEST TO ADD USERS TO CHAT WITH ON DASHBOARD: 
 function AddUsersButton({ users }) {
    const dispatch = useDispatch();
    function handleAddUsers(users) {
@@ -62,4 +64,17 @@ function AddUsersButton({ users }) {
    )
 }
 
-export { AllUsersList, AddUsersButton }
+// BUTTON WHICH OPENS THE POP-UP TO ADD THE GROUP DETAILS:
+function AddToGroupBtn() {
+
+   return (
+      <div className='flex w-full px-2 mb-1'>
+         <button
+            className='bg-[#FF9B51] border border-amber-900 flex-1 p-1 rounded-md text-white shadow-2xl shadow-gray-400 cursor-pointer'
+            disabled={users.length < 1}
+         >Add users to Group</button>
+      </div>
+   )
+}
+
+export { AllUsersList, AddUsersButton, AddToGroupBtn }
