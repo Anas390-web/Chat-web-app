@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addUsers } from "../../../../Features/contactsSlice.js";
 import { ClosePageIcon, CrossIcon } from "../../../../Icons/Icons.jsx";
+import { creatAGroup } from "../../../../Features/groupListSlice.js";
+import { useState } from "react";
 
 // ALL USERS LIST AS DROP DOWN:
 function AllUsersList({ users, handleUserChange, handleRemoveUser }) {
@@ -78,9 +80,44 @@ function AddToGroupBtn({ openDetailsBox, users }) {
 }
 
 // A POP UP TO ADD THE GROUP NAME:
-function AddGroupDetails() {
+function AddGroupDetails({ closeDetailsBox, users }) {
+   const dispatch = useDispatch();
+   // ACCESSING ALL USERS FROM AUTH STATE:
+   const { allUsers } = useSelector((store) => store.auth);
+
+   // FILTERING THE USERS WHICH ARE SELECTED TO CREATE A GROUP:
+   const selectedUsers = allUsers.filter((regUser) => {
+      return (users.includes(regUser._id))
+   });
+   
+   // SAVING THE GROUP DETAILS:
+   const [groupDetails, setGroupDetails]= useState({
+      groupName: '',
+      selectedUsers: []
+   });
+   function handleChange(e) {
+      setGroupDetails((prev) => {
+         return {
+            ...prev, groupName: e.target.value, selectedUsers: selectedUsers
+         }
+      });
+   }
+   function handleSubmit(e){
+      e.preventDefault();
+      dispatch(creatAGroup(groupDetails));
+      closeDetailsBox();
+   }
+
 
    return (
+      <div
+         className="fixed inset-0 bg-white/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+         onClick={(e) => {
+            // CLOSE THE POP-UP WHEN CLICKED OUTSIDE OF INNER DIV
+            if (e.target === e.currentTarget) {
+               closeDetailsBox();
+            }
+         }}>
 
          <div className="bg-white border border-gray-200 shadow-2xl w-full max-w-md p-5 flex flex-col justify-center items-center gap-2 relative rounded-lg"
             style={{ width: '100%', maxWidth: '450px' }}>
@@ -89,21 +126,27 @@ function AddGroupDetails() {
                   <h2>Add a Name</h2>
                </div>
                <div className="cursor-pointer"
-                  >
+                  onClick={() => closeDetailsBox()}>
                   <CrossIcon />
                </div>
             </div>
-            <form className="w-full">
+            <form onSubmit={handleSubmit} className="w-full">
                <label>
                   <p className="mb-2">Group name:</p>
                   <input
                      className="bg-gray-200 w-full p-2 mb-2"
+                     value={groupDetails.groupName}
                      type="text"
+                     onChange={handleChange}
                      placeholder="add a name" />
                </label>
                <div>
                   <p>Participants: 
-                     
+                     {
+                        selectedUsers.map((user) => {
+                           return <span key={user._id} className="mx-1 text-amber-800">{user.username}</span>
+                        })
+                     }
                   </p>
                </div>
                <div className="flex justify-center p-2">
@@ -112,6 +155,7 @@ function AddGroupDetails() {
                </div>
             </form>
          </div>
+      </div>
    )
 }
 
