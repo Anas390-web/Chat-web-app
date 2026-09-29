@@ -11,7 +11,7 @@ const initialState = {
 // FETCH THE GROUP LIST TO DISPLAY ON DASHBOARD:
 export const creatAGroup = createAsyncThunk(
    'groupList/creatAGroup',
-   async(groupDetails, thunkApi) => {
+   async (groupDetails, thunkApi) => {
       try {
          const token = localStorage.getItem("accessToken");
          const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/groups`, {
@@ -25,8 +25,8 @@ export const creatAGroup = createAsyncThunk(
             )
          })
          const data = await response.json();
-         console.log('Data:' ,data);
-         if(!response.ok){
+         console.log('Data:', data);
+         if (!response.ok) {
             return thunkApi.rejectWithValue(data);
          }
          return data;
@@ -40,7 +40,7 @@ export const creatAGroup = createAsyncThunk(
 // FETCH THE ALL THE GROUPS THAT ARE CREATED:
 export const allGroups = createAsyncThunk(
    'groupList/allGroups',
-   async(_, thunkApi) => {
+   async (_, thunkApi) => {
       try {
          const token = localStorage.getItem("accessToken");
          const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/groups`, {
@@ -51,7 +51,7 @@ export const allGroups = createAsyncThunk(
             }
          });
          const data = await response.json();
-         if(!response.ok){
+         if (!response.ok) {
             console.log('Error:', data);
             return thunkApi.rejectWithValue(data);
          }
@@ -71,21 +71,21 @@ const groupListSlice = createSlice({
    },
    extraReducers: (builder) => {
       builder
-      // FOR ALL GROUPS:
+         // FOR ALL GROUPS:
          .addCase(allGroups.pending, (state) => {
-            state.isLoading = true
+            state.isLoading = true;
          })
          .addCase(allGroups.fulfilled, (state, action) => {
             state.allGroupsList = action.payload.groups;
-            state.isLoading = false
+            state.isLoading = false;
          })
          .addCase(allGroups.rejected, (state, action) => {
-            state.isLoading = false,
-            state.error = action.payload
+            state.isLoading = false;
+            state.error = action.payload;
          })
    }
 })
 
 const groupListReducer = groupListSlice.reducer;
 
-export {groupListReducer}
+export { groupListReducer }
