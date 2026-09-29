@@ -22,7 +22,7 @@ const addUsers = async (req, res) => {
       )
       if (!contacts) {
          console.log('Contacts were not created');
-         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             msg: 'Internal Server Error'
          })
       }
