@@ -29,9 +29,10 @@ export const creatAGroup = createAsyncThunk(
          if(!response.ok){
             return thunkApi.rejectWithValue(data);
          }
+         return data;
       } catch (error) {
          console.log(error.message);
-         return thunkApi.rejectWithValue(data);
+         return thunkApi.rejectWithValue(error.message);
       }
    }
 )
@@ -48,3 +49,7 @@ const groupListSlice = createSlice({
 
    }
 })
+
+const groupListReducer = groupListSlice.reducer;
+
+export {groupListReducer}
