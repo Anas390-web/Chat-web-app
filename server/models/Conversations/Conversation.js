@@ -18,7 +18,12 @@ const conversationSchema = new mongoose.Schema({
       default: false
    },
    groupName: {
-      type: String
+      type: String,
+      unique: true
+   },
+   admin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
    }
 }, { timestamps: true })
 
