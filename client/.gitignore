@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 initial.jsx
+identical
+identical.js
 
 # Environment variables
 .env
