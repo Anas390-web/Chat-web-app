@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 
 const initialState = {
-   groupList: [],
+   allGroupsList: [],
+   specificGroup: {},
    isLoading: true,
    error: ''
 }
@@ -37,6 +38,31 @@ export const creatAGroup = createAsyncThunk(
    }
 )
 
+// FETCH THE ALL THE GROUPS THAT ARE CREATED:
+export const allGroups = createAsyncThunk(
+   'groupList/allGroups',
+   async(_, thunkApi) => {
+      try {
+         const token = localStorage.getItem("accessToken");
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/groups`, {
+            method: 'GET',
+            headers: {
+               'Authorization': `Bearer ${token}`,
+               'content-type': 'application/json'
+            }
+         });
+         const data = await response.json();
+         if(!response.ok){
+            console.log('Error:', data);
+            return thunkApi.rejectWithValue(data);
+         }
+         return data;
+      } catch (error) {
+         console.log(error.message);
+         return thunkApi.rejectWithValue(error.message);
+      }
+   }
+)
 
 
 const groupListSlice = createSlice({
