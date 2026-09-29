@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import Conversation from '../../models/Conversations/Conversation.js'
 
+// TO CREATE A GROUP IN DB:
 const creatAGroup = async (req, res) => {
    try {
       // FROM THE CLIENT:
@@ -8,12 +9,12 @@ const creatAGroup = async (req, res) => {
       // FROM USER AUTHENTICATION:
       const { userId } = req.user;
 
-      if(!groupDetails) {
+      if (!groupDetails) {
          return res.status(StatusCodes.BAD_REQUEST).json({
             msg: 'Error: No group details were found. Try again!'
          })
       }
-      
+
       // TO ONLY HAVE THE SELECTED USERS IDS ARRAY:
       const selectedUsers = groupDetails.selectedUsers;
       const selectedUsersIds = selectedUsers.map((user) => {
@@ -29,7 +30,7 @@ const creatAGroup = async (req, res) => {
             groupName: groupDetails.groupName,
             isGroup: true
          },
-         { $addToSet : {participants: {$each: selectedUsersIds}}},
+         { $addToSet: { participants: { $each: selectedUsersIds } } },
          {
             upsert: true,
             returnDocument: 'after',
@@ -37,7 +38,7 @@ const creatAGroup = async (req, res) => {
          }
       )
       // IF GROUP IS NOT CREATED, SEND ERROR:
-      if(!group) {
+      if (!group) {
          console.log('Error: Group was not created')
          return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             msg: 'INTERNAL_SERVER_ERROR'
@@ -56,5 +57,37 @@ const creatAGroup = async (req, res) => {
    }
 }
 
+// TO FIND ALL THE GROUPS WHICH INVOLVES THE LOGGED-IN USER AND SEND BACK TO THE USER:
+const allGroups = async (req, res) => {
+   try {
+      // FROM USER AUTHETICATION:
+      const { userId } = req.user;
+      console.log(userId)
+      // FIND ALL THE GROUPS:
+      const groups = await Conversation.find(
+         {
+            isGroup: true,
+            participants: userId
+         }
+      );
+      // RESPOND WITH ERROR IF GROUPS WERE NOT FOUND:
+      if(!groups) {
+         console.log('Error: Groups were not found');
+         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            msg: 'INTERNAL_SERVER_ERROR'
+         })
+      }
+      // RESPONSE TO THE REQUEST WITH THE GROUPS ARRAY IN WHICH USE IS INVOLVED:
+      res.status(StatusCodes.OK).json({
+         msg: 'OK',
+         groups
+      })
+   } catch (error) {
+      console.log(error.message);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         msg: 'INTERNAL_SERVER_ERROR'
+      })
+   }
+}
 
-export { creatAGroup }
+export { creatAGroup, allGroups }
