@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { KebabMenuIcon } from '../../../Icons/Icons.jsx';
 import { signOut } from '../../../Features/authSlice.js';
 import { Chats, Groups, Archives, Settings } from './Components/ConvoComponents.jsx';
-import { AddUsersButton, AllUsersList } from './Components/OtherComponents.jsx';
+import { AddUsersButton, AllUsersList, AddToGroupBtn, AddGroupDetails } from './Components/OtherComponents.jsx';
 import socket from '../../../Socket/socket.js';
 
 function SecondarySideBar() {
@@ -69,11 +69,20 @@ function SecondarySideBar() {
     dispatch(signOut());
     // NAVIGATION TO LOGIN PAGE:
     const token = localStorage.getItem("accessToken")
-    if(!token) {
+    if (!token) {
       navigate('/login');
     }
   }
-  
+
+  // OPEN THE GROUP DETAILS BOX TO ADD A NAME:
+  const [openDetails, setOpenDetails] = useState(false)
+  function openDetailsBox() {
+    setOpenDetails(true)
+  }
+  function closeDetailsBox() {
+    setOpenDetails(false);
+  }
+
   return (
     <aside className="h-screen w-full sm:w-70 lg:w-100 flex flex-col justify-start font-semibold border border-gray-600">
       <div className="flex flex-col gap-2">
@@ -102,13 +111,26 @@ function SecondarySideBar() {
           users={users}
           handleUserChange={handleUserChange}
           handleRemoveUser={handleRemoveUser} />
-        <AddUsersButton users={users} />
+        {
+          componentId === 1 ?
+            <AddUsersButton users={users} />
+            :
+            <AddToGroupBtn
+              users={users}
+              openDetailsBox={openDetailsBox} />
+        }
         <div className=" h-10 w-full flex mb-1 px-2">
           <input
             className="h-10 text-black bg-gray-300 w-full p-2 rounded-lg"
             type="text"
             placeholder="Search" />
         </div>
+        {
+          openDetails && users.length > 1 &&
+          <AddGroupDetails
+            users={users}
+            closeDetailsBox={closeDetailsBox} />
+        }
         {
           components.map((barComponent) => {
 
