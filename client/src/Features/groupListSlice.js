@@ -14,7 +14,6 @@ export const creatAGroup = createAsyncThunk(
    async(groupDetails, thunkApi) => {
       try {
          const token = localStorage.getItem("accessToken");
-         console.log(groupDetails);
          const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/groups`, {
             method: 'POST',
             headers: {
@@ -64,7 +63,6 @@ export const allGroups = createAsyncThunk(
    }
 )
 
-
 const groupListSlice = createSlice({
    name: 'groupList',
    initialState,
@@ -72,7 +70,19 @@ const groupListSlice = createSlice({
 
    },
    extraReducers: (builder) => {
-
+      builder
+      // FOR ALL GROUPS:
+         .addCase(allGroups.pending, (state) => {
+            state.isLoading = true
+         })
+         .addCase(allGroups.fulfilled, (state, action) => {
+            state.allGroupsList = action.payload.groups;
+            state.isLoading = false
+         })
+         .addCase(allGroups.rejected, (state, action) => {
+            state.isLoading = false,
+            state.error = action.payload
+         })
    }
 })
 
