@@ -62,16 +62,18 @@ const allGroups = async (req, res) => {
    try {
       // FROM USER AUTHETICATION:
       const { userId } = req.user;
-      console.log(userId)
-      // FIND ALL THE GROUPS:
+      // FIND ALL THE GROUPS AND POPULATE THE PARTICIPANTS WITH THEIR USERNAME:
       const groups = await Conversation.find(
          {
             isGroup: true,
             participants: userId
          }
-      );
+      ).populate({
+         path: 'participants',
+         select: 'username'
+      })
       // RESPOND WITH ERROR IF GROUPS WERE NOT FOUND:
-      if(!groups) {
+      if (groups.length < 1) {
          console.log('Error: Groups were not found');
          return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             msg: 'INTERNAL_SERVER_ERROR'
