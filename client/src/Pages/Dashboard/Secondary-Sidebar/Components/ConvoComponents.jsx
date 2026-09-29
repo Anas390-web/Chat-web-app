@@ -53,25 +53,37 @@ function Chats({ users }) {
 
 function Groups() {
    const dispatch = useDispatch();
+   // DE-STRUCTURE MODE FROM THE OUTLET CONTEXT:
    const { mode } = useOutletContext();
+
+   // ACCESS ALL THE GROUPS WHICH INVOLVES THE LOGGED-IN USER:
+   const { allGroupsList } = useSelector((store) => store.groups);
 
    useEffect(() => {
       dispatch(allGroups());
    }, [dispatch])
    return (
-      <div className={`flex gap-2 mx-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
-         <div className='h-10 w-10 border border-gray-600 rounded-full'>
-            <img src={BlankImage} alt="" />
-         </div>
-         <div>
-            <div>
-               <p>Group 1</p>
-            </div>
-            <div>
-               <p className='font-light text-sm'>Latest message from group chat</p>
-            </div>
-         </div>
-      </div>
+      <>
+         {
+            allGroupsList.map((group) => {
+               return (
+                  <div key={group._id} className={`flex gap-2 mx-2 my-2 p-2 rounded-md cursor-pointer ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
+                     <div className='h-10 w-10 border border-gray-600 rounded-full'>
+                        <img src={BlankImage} alt="" />
+                     </div>
+                     <div>
+                        <div>
+                           <p>{group.groupName}</p>
+                        </div>
+                        <div>
+                           <p className='font-light text-sm'>Latest message from group chat</p>
+                        </div>
+                     </div>
+                  </div>
+               )
+            })
+         }
+      </>
    )
 }
 
