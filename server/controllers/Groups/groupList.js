@@ -46,8 +46,7 @@ const creatAGroup = async (req, res) => {
       console.log(group);
       // RESPOND BACK TO THE REQUEST:
       res.status(StatusCodes.CREATED).json({
-         msg: 'Group was created successfully',
-         group
+         msg: 'Group was created successfully'
       })
    } catch (error) {
       console.log(error.message);
