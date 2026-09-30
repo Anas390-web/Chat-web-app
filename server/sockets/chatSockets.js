@@ -3,8 +3,8 @@ import Message from '../models/Messages/Message.js'
 
 // JOINING THE IDENTICAL ID PERSONAL ROOM FOR BOTH USERS:
 const joinPersonalRoom = (socket, io) => {
-   try {
-      socket.on('join-room', async ({ chatUserId }) => {
+   socket.on('join-room', async ({ chatUserId }) => {
+      try {
          // FROM PAYLOAD IN SOCKET AUTHENTICATION FUNCTION:
          const { userId } = socket.user;
          if (!userId) {
@@ -32,17 +32,17 @@ const joinPersonalRoom = (socket, io) => {
          socket.join(conversationId);
          // SENDING CONVERSATION ROOM ID:
          socket.emit('get-conversationData', { conversationId, chatUserId });
-      })
-   } catch (error) {
-      console.log(error.message);
-      return error.message;
-   }
+      } catch (error) {
+         console.log(error.message);
+         return error.message;
+      }
+   })
 }
 
 const saveMessageInDB = (socket, io) => {
-   try {
-      // EVENT LISTERNER FOR MESSAGE EVENT:
-      socket.on("send-message", async ({ message, conversationData }) => {
+   // EVENT LISTERNER FOR MESSAGE EVENT:
+   socket.on("send-message", async ({ message, conversationData }) => {
+      try {
          // PAYLOAD FROM AUTHENTICATION:
          const { userId } = socket.user;
          // MESSAGE TO SAVE IN DB:
@@ -54,13 +54,12 @@ const saveMessageInDB = (socket, io) => {
             return;
          }
          // BROADCAST TO BOTH THE SOCKETS/USERS:
-         io.to(conversationData.convoId).emit("receive-message", messageDoc );
-      })
-   } catch (error) {
-      console.log(error.message);
-      return error.message;
-   }
-
+         io.to(conversationData.convoId).emit("receive-message", messageDoc);
+      } catch (error) {
+         console.log(error.message);
+         return error.message;
+      }
+   })
 }
 
 
