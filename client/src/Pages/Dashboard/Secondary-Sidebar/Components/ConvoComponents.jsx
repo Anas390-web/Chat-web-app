@@ -61,6 +61,8 @@ function Groups() {
 
    useEffect(() => {
       dispatch(allGroups());
+      // EMITTING JOIN-GROUP-ROOM EVENT UPON GROUPS COMPONENT MOUNTING:
+      socket.emit('join-group-room')
    }, [dispatch])
    return (
       <>
