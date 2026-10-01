@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { addUsers } from "../../../../Features/contactsSlice.js";
 import socket from "../../../../Socket/socket.js";
 import { allGroups } from "../../../../Features/groupListSlice.js";
+import { getGroupId } from "../../../../Features/idsSlice.js";
 
 
 const BlankImage = '/images/Blank-User-Image.png';
@@ -64,6 +65,12 @@ function Groups() {
       // EMITTING JOIN-GROUP-ROOM EVENT UPON GROUPS COMPONENT MOUNTING:
       socket.emit('join-group-room')
    }, [dispatch])
+
+   // WHEN USER CLICKS ON THE GROUP, DISPATCHING TO SAVE THE GROUP ID IN THE IDS STATE AND TO GET ALL THE MESSAGES OF THAT GROUP ID:
+   function handleGroup(groupId) {
+      // GET GROUP ID TO SAVE IN THE IDS STATE:
+      dispatch(getGroupId(groupId));
+   }
    return (
       <>
          {
@@ -73,7 +80,7 @@ function Groups() {
                      <div className='h-10 w-10 border border-gray-600 rounded-full'>
                         <img src={BlankImage} alt="" />
                      </div>
-                     <div>
+                     <div onClick={() => handleGroup(group._id)}>
                         <div>
                            <p>{group.groupName}</p>
                         </div>
