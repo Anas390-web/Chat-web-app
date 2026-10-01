@@ -6,6 +6,7 @@ import { addUsers } from "../../../../Features/contactsSlice.js";
 import socket from "../../../../Socket/socket.js";
 import { allGroups } from "../../../../Features/groupListSlice.js";
 import { getGroupId } from "../../../../Features/idsSlice.js";
+import { allGroupMessages } from "../../../../Features/messagesSlice.js";
 
 
 const BlankImage = '/images/Blank-User-Image.png';
@@ -69,7 +70,9 @@ function Groups() {
    // WHEN USER CLICKS ON THE GROUP, DISPATCHING TO SAVE THE GROUP ID IN THE IDS STATE AND TO GET ALL THE MESSAGES OF THAT GROUP ID:
    function handleGroup(groupId) {
       // GET GROUP ID TO SAVE IN THE IDS STATE:
-      dispatch(getGroupId(groupId));
+      dispatch(getGroupId(groupId))
+      // DISPATCH TO GET ALL THE GROUP MESSAGES:
+      dispatch(allGroupMessages({ groupId }));
    }
    return (
       <>
