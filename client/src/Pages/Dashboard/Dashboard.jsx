@@ -1,7 +1,7 @@
 import SecondarySideBar from "./Secondary-Sidebar/Secondary-Sidebar.jsx"
 import Chat from "./Chat-Section/Chat.jsx";
 import { useSelector } from "react-redux";
-import Group from "./Chat-Section/groupChat.jsx";
+import GroupChat from "./Chat-Section/groupChat.jsx";
 
 function Dashboard() {
   // ACCESSING GROUPID FROM THE STORE:
@@ -14,7 +14,7 @@ function Dashboard() {
         {
           groupId && groupId.length > 0 ?
             <div className="flex-1 min-h-0 flex flex-col">
-              <Group />
+              <GroupChat />
             </div>
             :
             <div className="flex-1 min-h-0 flex flex-col">
