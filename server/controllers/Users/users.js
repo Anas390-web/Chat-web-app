@@ -66,6 +66,7 @@ const loginUser = async (req, res) => {
       // RESPOND THE API REQUEST WITH THE TOKEN:
       res.status(StatusCodes.OK).json({
          user: {
+            userId: user._id,
             username: user.username,
             email: user.email
          },
