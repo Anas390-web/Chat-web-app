@@ -5,6 +5,7 @@ import { useOutletContext } from 'react-router-dom';
 import socket from '../../../Socket/socket.js';
 import { MsgBubble } from './DisplayMsgs.jsx';
 import { addLatestMsg, allMessages } from '../../../Features/messagesSlice.js';
+import ChatHeader from './chatHeader.jsx';
 
 function Chat() {
    const dispatch = useDispatch();
@@ -27,6 +28,7 @@ function Chat() {
          })
       });
       if (!conversationData) return;
+      // GET ALL MESSAGES:
       dispatch(allMessages({ conversationId, chatUserId }))
    }
    // 3.2 GET THE CONVERSATION ID FROM THE SERVER:
@@ -77,42 +79,46 @@ function Chat() {
    }, [dispatch])
 
    return (
-      <main className="h-full">
-         {
-            conversationData.convoId && conversationData.convoId.length > 0 ?
-               <div className="flex flex-col h-full">
-                  <div className={`flex-1 overflow-y-auto ${mode === 'dark' ? "bg-[url(/images/Black-Doodle.jpg)] bg-contain bg-center" : "bg-[url(/images/White-Doodle.jpg)] bg-contain bg-center"}`}>
-                     <div>
-                        <MsgBubble
-                           userIdToChatWith={conversationData.chatUserId}
-                        />
-                     </div>
-                  </div>
-                  <form onSubmit={handleMsgSubmit} className="min-h-16 flex items-center px-3 py-2 w-full box-border border border-gray-600 gap-2">
-                     <input
-                        className="h-10 flex-1 min-w-0 px-3 outline-none rounded border border-gray-600"
-                        type="text"
-                        value={message}
-                        onChange={handleChange}
-                        placeholder='Write message...'
-                     />
-                     <div className='h-10 flex justify-center items-center'>
-                        <button><SendIcon /></button>
-                     </div>
 
-                  </form>
-               </div>
-               :
-               <div className={`flex flex-col justify-center items-center h-full ${mode === 'dark' ? "bg-[url(/images/Black-Doodle.jpg)] bg-contain bg-center" : "bg-[url(/images/White-Doodle.jpg)] bg-contain bg-center"}`}>
-                  <div className='size-1/2 sm:w-3xl'>
-                     <img src="/images/Owl.png" alt="Squared face owl drawing" />
+      <div className='flex flex-col h-full overflow-hidden'>
+         <ChatHeader />
+         <main className="flex-1 min-h-0 flex flex-col">
+            {
+               conversationData.convoId && conversationData.convoId.length > 0 ?
+                  <div className="flex flex-col h-full">
+                     <div className={`flex-1 overflow-y-auto ${mode === 'dark' ? "bg-[url(/images/Black-Doodle.jpg)] bg-contain bg-center" : "bg-[url(/images/White-Doodle.jpg)] bg-contain bg-center"}`}>
+                        <div>
+                           <MsgBubble
+                              userIdToChatWith={conversationData.chatUserId}
+                           />
+                        </div>
+                     </div>
+                     <form onSubmit={handleMsgSubmit} className="min-h-16 flex items-center px-3 py-2 w-full box-border border border-gray-600 gap-2">
+                        <input
+                           className="h-10 flex-1 min-w-0 px-3 outline-none rounded border border-gray-600"
+                           type="text"
+                           value={message}
+                           onChange={handleChange}
+                           placeholder='Write message...'
+                        />
+                        <div className='h-10 flex justify-center items-center'>
+                           <button><SendIcon /></button>
+                        </div>
+
+                     </form>
                   </div>
-                  <div>
-                     <p className='text-3xl text-white bg-amber-800 px-6 py-2 rounded-md'>START A CHAT</p>
+                  :
+                  <div className={`flex flex-col justify-center items-center h-full ${mode === 'dark' ? "bg-[url(/images/Black-Doodle.jpg)] bg-contain bg-center" : "bg-[url(/images/White-Doodle.jpg)] bg-contain bg-center"}`}>
+                     <div className='size-1/2 sm:w-3xl'>
+                        <img src="/images/Owl.png" alt="Squared face owl drawing" />
+                     </div>
+                     <div>
+                        <p className='text-3xl text-white bg-amber-800 px-6 py-2 rounded-md'>START A CHAT</p>
+                     </div>
                   </div>
-               </div>
-         }
-      </main>
+            }
+         </main>
+      </div>
    )
 }
 
