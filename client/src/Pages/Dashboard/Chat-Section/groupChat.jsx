@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux'
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
 import { SendIcon } from '../../../Icons/Icons.jsx'
 import { useOutletContext } from 'react-router-dom';
 import socket from '../../../Socket/socket.js';
 import { GroupMsgBubble } from './DisplayMsgs.jsx';
 import GroupHeader from './GroupHeader.jsx';
+import { addLatestGroupMsg } from '../../../Features/messagesSlice.js';
 
-function GroupChat() {
+function Group() {
+   const dispatch = useDispatch();
    // 1. DE-STRUCTURING MODE FROM THE LAYOUT OUTLET CONTEXT:
    const { mode } = useOutletContext();
 
@@ -14,7 +16,7 @@ function GroupChat() {
    const { groupId } = useSelector((store) => store.ids);
 
 
-   // 3. TO SEND THE MESSAGE TO THE OTHER USERS:
+   // TO SEND THE MESSAGE TO THE OTHER USERS:
    const [groupMessage, setGroupMessage] = useState('');
    function handleGroupMessage(e) {
       setGroupMessage(e.target.value);
@@ -29,6 +31,23 @@ function GroupChat() {
       setGroupMessage('');
    }
 
+   // RECEIVE ALL THE GROUP MESSAGES UPON USER CLICKED GROUP MOUNTING:
+   function handleReceiveGroupMessage(groupMessageDoc) {
+      if (!groupMessageDoc && !groupMessageDoc.messageContent.length < 1) {
+         return;
+      }
+      if (!groupMessageDoc.conversationId === groupId) {
+         return;
+      }
+      dispatch(addLatestGroupMsg(groupMessageDoc));
+   }
+   useEffect(() => {
+      // LISTENING TO RECEIVE-GROUP-MESSAGE EVENT FROM SERVER TO RECEIVE THE LATEST MESSAGE:
+      socket.on("receive-group-message", handleReceiveGroupMessage);
+      return () => {
+         socket.off("receive-group-message", handleReceiveGroupMessage);
+      }
+   }, [dispatch])
    return (
 
       <div className='flex flex-col h-full overflow-hidden'>
@@ -71,4 +90,4 @@ function GroupChat() {
    )
 }
 
-export default GroupChat;
+export default Group;
