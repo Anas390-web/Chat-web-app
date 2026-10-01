@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 const initialState = {
    allUsers: [],
+   loggedInUserId: '',
    username: '',
    userAvatar: '',
    token: localStorage.getItem('accessToken') || '',
@@ -124,6 +125,7 @@ const authSlice = createSlice({
             state.isLoading = false;
             state.token = action.payload.token;
             state.username = action.payload.user.username;
+            state.loggedInUserId = action.payload.user.userId;
          })
          .addCase(loginUser.rejected, (state, action) => {
             state.isLoading = false;
