@@ -1,4 +1,5 @@
 import Conversation from "../models/Conversations/Conversation.js";
+import Message from "../models/Messages/Message.js";
 
 
 const joinGroupRoom = (socket) => {
@@ -23,10 +24,32 @@ const joinGroupRoom = (socket) => {
             socket.join((group._id).toString());
          });
       } catch (error) {
-         console.log('Error while joining the group rooms:' ,error.message);
+         console.log('Error while joining the group rooms:', error.message);
          return;
       }
    })
 }
 
-export { joinGroupRoom }
+function saveGroupMessageInDB(socket, io) {
+   socket.on('send-group-message', async ({ groupMessage, groupId }) => {
+      try {
+         // USER ID FROM TOKEN AUTHENTICAITON FROM SOCKET AUTH:
+         const { userId } = socket.user;
+         // SAVE THE MESSAGE IN DB:
+         const groupMessageDoc = await Message.create(
+            {
+               conversationId: groupId,
+               senderId: userId,
+               messageContent: groupMessage
+            }
+         )
+         // BROADCAST MESSAGE TO EVERYBODY IN THE GROUP:
+         io.to(groupId).emit('receive-group-message', groupMessageDoc);
+      } catch (error) {
+         console.log('Error occured while creating the group message:', error.message);
+         return;
+      }
+   })
+}
+
+export { joinGroupRoom, saveGroupMessageInDB }
