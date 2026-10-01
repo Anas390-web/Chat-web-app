@@ -7,6 +7,7 @@ import { Chats, Groups, Archives, Settings } from './Components/ConvoComponents.
 import { AddUsersButton, AllUsersList, AddToGroupBtn, AddGroupDetails } from './Components/OtherComponents.jsx';
 import socket from '../../../Socket/socket.js';
 
+// FROM DASHBOARD
 function SecondarySideBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
