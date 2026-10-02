@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { addUsers } from "../../../../Features/contactsSlice.js";
 import socket from "../../../../Socket/socket.js";
 import { allGroups } from "../../../../Features/groupListSlice.js";
-import { getGroupId } from "../../../../Features/idsSlice.js";
+import { getPersonalChatId, getGroupId } from "../../../../Features/idsSlice.js";
 import { allGroupMessages } from "../../../../Features/messagesSlice.js";
 
 
@@ -15,10 +15,12 @@ function Chats({ users }) {
    const dispatch = useDispatch();
    const { contactList } = useSelector((store) => store.contacts);
 
-   // JOIN THE INDIVIDUAL CHAT ROOM:
-
+   // WHEN USER CLICKS ON ONE OF LISTED CHATS, DISPATCH THE ACTION TO SAVE THE PERSONAL CHAT ID IN IDS SLICE:
    function getUserId(chatUserId) {
       console.log(chatUserId);
+      dispatch(getPersonalChatId(chatUserId));
+      
+      // JOIN THE INDIVIDUAL CHAT ROOM:
       socket.emit('join-room', { chatUserId })
    }
 
@@ -74,6 +76,7 @@ function Groups() {
       // DISPATCH TO GET ALL THE GROUP MESSAGES:
       dispatch(allGroupMessages({ groupId }));
    }
+
    return (
       <>
          {
