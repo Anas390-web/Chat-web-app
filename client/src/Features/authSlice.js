@@ -1,14 +1,42 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { jwtDecode } from 'jwt-decode';
 
 const initialState = {
    allUsers: [],
-   loggedInUserId: '',
+   loggedInUserId: getUserIdFromToken() || '',
    username: '',
    userAvatar: '',
    token: localStorage.getItem('accessToken') || '',
    isLoading: '',
    error: ''
 }
+
+// TO GET THE USER ID FROM THE DECODED TOKEN:
+function getUserIdFromToken() {
+   try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+         return;
+      }
+      // DECODING THE TOKEN:
+      const decodedToken = jwtDecode(token);
+      // CURRENT TIME:
+      const currentTime = Date.now() / 1000 ;
+      // CHECK IF TOKEN IS EXPIRED:
+      if(!decodedToken || decodedToken.exp < currentTime) {
+         console.log('Access token is expired')
+         return;
+      }
+      // GET THE USER ID FROM DECODED TOKEN:
+      const userId = String(decodedToken.userId);
+      return userId;
+   } catch (error) {
+      console.log('Error while decoding Token: ', error.message);
+      return;
+   }
+}
+
+getUserIdFromToken();
 
 // TO REGISTER USER IN THE DB:
 export const registerUser = createAsyncThunk(
@@ -125,7 +153,6 @@ const authSlice = createSlice({
             state.isLoading = false;
             state.token = action.payload.token;
             state.username = action.payload.user.username;
-            state.loggedInUserId = action.payload.user.userId;
          })
          .addCase(loginUser.rejected, (state, action) => {
             state.isLoading = false;
