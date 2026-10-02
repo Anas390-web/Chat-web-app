@@ -36,13 +36,22 @@ function saveGroupMessageInDB(socket, io) {
          // USER ID FROM TOKEN AUTHENTICAITON FROM SOCKET AUTH:
          const { userId } = socket.user;
          // SAVE THE MESSAGE IN DB:
-         const groupMessageDoc = await Message.create(
+         const groupChatMessageDoc = await Message.create(
             {
                conversationId: groupId,
                senderId: userId,
                messageContent: groupMessage
             }
          )
+         if (!groupChatMessageDoc) {
+            console.log('Error while creating a message')
+            return;
+         }
+         // POPULATING THE MESSAGE DOCUMENT WITH THE USERNAME OF SENDER:
+         const groupMessageDoc = await groupChatMessageDoc.populate({
+            path: 'senderId',
+            select: 'username'
+         })
          // BROADCAST MESSAGE TO EVERYBODY IN THE GROUP:
          io.to(groupId).emit('receive-group-message', groupMessageDoc);
       } catch (error) {
