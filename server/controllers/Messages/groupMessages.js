@@ -13,7 +13,10 @@ const allGroupMessages = async (req, res) => {
          })
       }
       // FIND ALL THE GROUP CONVERSATION ID MESSAGES:
-      const groupMessagesDocs = await Message.find({ conversationId: groupId });
+      const groupMessagesDocs = await Message.find({ conversationId: groupId }).populate({
+            path: 'senderId',
+            select: 'username'
+         })
       
       // IF GROUP MESSAGES WERE NOT FOUND, SEND BACK INTERNAL SERVER ERROR:
       if(!groupMessagesDocs) {
