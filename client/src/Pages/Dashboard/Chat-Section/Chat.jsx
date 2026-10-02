@@ -64,13 +64,12 @@ function Chat() {
       setMessage('');
    }
 
-   // 5. RECEIVE THE LATEST MESSAGE FROM THE SERVER AND SAVE IT TO REDUX STORE:
+   // 5. RECEIVE THE LATEST MESSAGE FROM THE SERVER AND SAVE IT TO ALL MESSAGES ARRAY IN MESSAGES STATE OF STORE:
    function handleLatestMsg(messageDoc) {
       // ACTION FROM THE MESSAGE SLICE:
       dispatch(addLatestMsg(messageDoc))
    }
-
-
+   
    useEffect(() => {
       socket.on("receive-message", handleLatestMsg)
       return () => {
