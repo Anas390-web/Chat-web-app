@@ -56,7 +56,6 @@ export const allGroupMessages = createAsyncThunk(
          if(!response.ok){
             return thunkApi.rejectWithValue(data);
          }
-         console.log(data);
          return data;
       } catch (error) {
          console.log('Error occurred while sending request to get all Group messages:', error.message);
