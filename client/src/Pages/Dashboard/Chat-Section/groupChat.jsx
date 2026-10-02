@@ -6,6 +6,7 @@ import socket from '../../../Socket/socket.js';
 import { GroupMsgBubble } from './DisplayMsgs.jsx';
 import GroupHeader from './GroupHeader.jsx';
 import { addLatestGroupMsg } from '../../../Features/messagesSlice.js';
+import { removeGroupId } from '../../../Features/idsSlice.js'
 
 function Group() {
    const dispatch = useDispatch();
@@ -16,7 +17,7 @@ function Group() {
    const { groupId } = useSelector((store) => store.ids);
 
 
-   // TO SEND THE MESSAGE TO THE OTHER USERS:
+   // 3. TO SEND THE MESSAGE TO THE OTHER USERS:
    const [groupMessage, setGroupMessage] = useState('');
    function handleGroupMessage(e) {
       setGroupMessage(e.target.value);
@@ -31,15 +32,13 @@ function Group() {
       setGroupMessage('');
    }
 
-   // RECEIVE ALL THE GROUP MESSAGES UPON USER CLICKED GROUP MOUNTING:
+   // 4. RECEIVE ALL THE GROUP MESSAGES UPON USER CLICKED GROUP MOUNTING:
    function handleReceiveGroupMessage(groupMessageDoc) {
-      if (!groupMessageDoc && !groupMessageDoc.messageContent.length < 1) {
-         return;
-      }
-      if (!groupMessageDoc.conversationId === groupId) {
+      if (groupMessageDoc.conversationId !== groupId) {
          return;
       }
       dispatch(addLatestGroupMsg(groupMessageDoc));
+      console.log(groupMessageDoc);
    }
    useEffect(() => {
       // LISTENING TO RECEIVE-GROUP-MESSAGE EVENT FROM SERVER TO RECEIVE THE LATEST MESSAGE:
@@ -47,7 +46,22 @@ function Group() {
       return () => {
          socket.off("receive-group-message", handleReceiveGroupMessage);
       }
+   }, [dispatch, groupId, socket])
+
+   // HANDLER FUNCTION TO GET OUT OF GROUP CHATS ON KEYDOWN:
+   function handleEscape(event) {
+      if (event.key === 'Escape') {
+         dispatch(removeGroupId());
+      }
+   }
+
+   useEffect(() => {
+      window.addEventListener('keydown', handleEscape)
+      return () => {
+         window.removeEventListener('keydown', handleEscape)
+      }
    }, [dispatch])
+
    return (
 
       <div className='flex flex-col h-full overflow-hidden'>
