@@ -40,19 +40,30 @@ const joinPersonalRoom = (socket, io) => {
 }
 
 const saveMessageInDB = (socket, io) => {
+   // TO REMOVE ALL THE PREVIOUSLY ATTACHED FUNCTIONS:
+   socket.removeAllListeners("send-message");
    // EVENT LISTERNER FOR MESSAGE EVENT:
    socket.on("send-message", async ({ message, conversationData }) => {
       try {
          // PAYLOAD FROM AUTHENTICATION:
          const { userId } = socket.user;
          // MESSAGE TO SAVE IN DB:
-         const messageDoc = await Message.create(
-            { conversationId: conversationData.convoId, senderId: userId, messageContent: message }
+         const chatMessageDoc = await Message.create(
+            {
+               conversationId: conversationData.convoId,
+               senderId: userId,
+               messageContent: message
+            }
          )
-         if (!messageDoc) {
+         if (!chatMessageDoc) {
             console.log('Error: Message document was not saved.')
             return;
          }
+
+         const messageDoc = await chatMessageDoc.populate({
+            path: 'senderId',
+            select: 'username'
+         })
          // BROADCAST TO BOTH THE SOCKETS/USERS:
          io.to(conversationData.convoId).emit("receive-message", messageDoc);
       } catch (error) {
