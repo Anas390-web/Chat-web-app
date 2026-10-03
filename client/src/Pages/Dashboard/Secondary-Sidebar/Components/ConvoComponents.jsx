@@ -146,19 +146,96 @@ function Archives() {
 
 function Settings() {
    const { mode } = useOutletContext();
+
+   // SHOW EDITING OPTIONS:
+   const [showEditing, setShowEditing] = useState(false);
+   function showEditingOptions() {
+      setShowEditing(true);
+   }
+   function hideEditingOptions() {
+      setShowEditing(false);
+   }
+
+   // AVATARS ARRAY:
+   const avatars = [
+      {
+         id: 1,
+         imgUrl: 'images/beard-man-avatar.jpg'
+      },
+      {
+         id: 2,
+         imgUrl: 'images/african-boy-avatar.jpg'
+      },
+      {
+         id: 3,
+         imgUrl: 'images/old-man-avatar.jpg'
+      },
+      {
+         id: 4,
+         imgUrl: 'images/brown-hair-women-avatar.jpg'
+      },
+      {
+         id: 5,
+         imgUrl: 'images/african-girl-avatar.jpg'
+      },
+      {
+         id: 6,
+         imgUrl: 'images/short-hair-girl-avatar.jpg'
+      },
+   ]
    return (
-      <div className={`flex gap-2 mx-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
-         <div className='h-10 w-10 border border-gray-600 rounded-full'>
-            <img src={BlankImage} alt="" />
-         </div>
-         <div>
-            <div>
-               <p>User</p>
+      <div className={`flex flex-col items-center gap-4 mx-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
+         <div className="flex flex-col w-full p-2 items-center gap-4 border border-gray-200 shadow">
+            <div className='size-15 sm:size-20 border border-gray-600 rounded-full'>
+               <img src={BlankImage} alt="" />
             </div>
             <div>
-               <p className='font-light text-sm'>Latest message from user</p>
+               Name
+            </div>
+            <div className="bg-amber-600 text-white rounded-sm">
+               <button
+                  className="px-2 py-0.5 font-light cursor-pointer text-[13px] shadow"
+                  onClick={showEditingOptions}>Edit Profile</button>
             </div>
          </div>
+         {
+            showEditing &&
+            <div className="w-full">
+               <form className="flex flex-col gap-4">
+                  <label>
+                     <p>Change name:</p>
+                     <input
+                        className="w-full bg-gray-300 p-2 mt-2 rounded-sm text-[14px]"
+                        type="text"
+                        placeholder="edit name" />
+                  </label>
+                  <label>
+                     <p>Change Avatar:</p>
+                     <div className="flex flex-wrap gap-2 mt-2">
+                        {
+                           avatars &&
+                           avatars.map((avatar) => {
+                              return (
+                                 <div key={avatar.id} className="size-10 bg-gray-400 rounded-full">
+                                    <img
+                                       className="rounded-full cursor-pointer"
+                                       src={avatar.imgUrl} alt="" />
+                                 </div>
+                              )
+                           })
+                        }
+                     </div>
+                  </label>
+                  <button
+                     className="bg-amber-600 text-white text-[14px] font-light py-1 rounded-sm shadow cursor-pointer mb-2">Confirm Changes</button>
+               </form>
+               <div className="w-full">
+                  <button
+                     className="w-full border border-red-600 text-red-800 text-[14px] font-medium py-1 rounded-sm shadow cursor-pointer"
+                     onClick={hideEditingOptions}>Cancel Changes</button>
+               </div>
+            </div>
+         }
       </div>
    )
 }
