@@ -61,4 +61,16 @@ function saveGroupMessageInDB(socket, io) {
    })
 }
 
-export { joinGroupRoom, saveGroupMessageInDB }
+function leaveGroupChatRoom(socket, io) {
+   socket.on('leave-group-chat-room', async (groupId) => {
+      try {
+         // LEAVING THE ROOM UPON UNMOUNTING:
+         socket.leave(groupId);
+      } catch (error) {
+         console.log(error.message);
+         return;
+      }
+   })
+}
+
+export { joinGroupRoom, saveGroupMessageInDB, leaveGroupChatRoom }
