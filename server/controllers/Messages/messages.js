@@ -11,7 +11,10 @@ const allMessages = async (req, res) => {
       }
       const allMessagesDocs = await Message.find(
          { conversationId: conversationData.conversationId }
-      )
+      ).populate({
+         path: 'senderId',
+         select: 'username'
+      })
       if (!allMessagesDocs) {
          return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             msg: 'Internal server error'
