@@ -4,6 +4,8 @@ import { jwtDecode } from 'jwt-decode';
 const initialState = {
    allUsers: [],
    loggedInUserId: getUserIdFromToken() || '',
+   selectedUserToChatData: {},
+   selectedGroupToChatData: {},
    username: '',
    userAvatar: '',
    token: localStorage.getItem('accessToken') || '',
@@ -21,9 +23,9 @@ function getUserIdFromToken() {
       // DECODING THE TOKEN:
       const decodedToken = jwtDecode(token);
       // CURRENT TIME:
-      const currentTime = Date.now() / 1000 ;
+      const currentTime = Date.now() / 1000;
       // CHECK IF TOKEN IS EXPIRED:
-      if(!decodedToken || decodedToken.exp < currentTime) {
+      if (!decodedToken || decodedToken.exp < currentTime) {
          console.log('Access token is expired')
          return;
       }
@@ -122,6 +124,58 @@ export const getAllUsers = createAsyncThunk(
    }
 )
 
+// GET SELECTED USER TO CHAT WITH DATA:
+export const getUserToChatWithData = createAsyncThunk(
+   'auth/getUserToChatWithData',
+   async (selectedUserId, thunkApi) => {
+      try {
+         const token = localStorage.getItem("accessToken");
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/${selectedUserId}`, {
+            method: 'GET',
+            headers: {
+               'Authorization': `Bearer ${token}`,
+               'content-type': 'application/json'
+            }
+         })
+         const data = await response.json();
+         if (!response.ok) {
+            return thunkApi.rejectWithValue(data);
+         }
+         return data;
+      } catch (error) {
+         console.log('Error happened while request for a specific user:', error.message);
+         return thunkApi.rejectWithValue(data);
+      }
+   }
+)
+
+// GET SELECTED GROUP TO CHAT IN DATA:
+export const getSelectedGroupData = createAsyncThunk(
+   'auth/getSelectedGroupData',
+   async (groupId, thunkApi) => {
+      try {
+         console.log(groupId)
+         const token = localStorage.getItem("accessToken");
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/groups/${groupId}`, {
+            method: 'GET',
+            headers: {
+               'Authorization': `Bearer ${token}`,
+               'content-type': 'application/json'
+            }
+         });
+         const data = await response.json();
+         console.log(data);
+         if (!response.ok) {
+            return thunkApi.rejectWithValue(data);
+         }
+         return data;
+      } catch (error) {
+         console.log('Error happened while request for a specific user:', error.message);
+         return thunkApi.rejectWithValue(data);
+      }
+   }
+)
+
 const authSlice = createSlice({
    name: 'register',
    initialState,
@@ -167,6 +221,30 @@ const authSlice = createSlice({
             state.allUsers = action.payload.allUsersExceptCurrent;
          })
          .addCase(getAllUsers.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+         })
+         // AFTER GETTING SELECTED USER TO CHAT WITH DATA:
+         .addCase(getUserToChatWithData.pending, (state) => {
+            state.isLoading = true;
+         })
+         .addCase(getUserToChatWithData.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.selectedUserToChatData = action.payload.chatUserData;
+         })
+         .addCase(getUserToChatWithData.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+         })
+         // AFTER GETTING SELECTED GROUP TO CHAT IN DATA:
+         .addCase(getSelectedGroupData.pending, (state) => {
+            state.isLoading = true;
+         })
+         .addCase(getSelectedGroupData.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.selectedGroupToChatData = action.payload.selectedGroupData;
+         })
+         .addCase(getSelectedGroupData.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.payload;
          })
