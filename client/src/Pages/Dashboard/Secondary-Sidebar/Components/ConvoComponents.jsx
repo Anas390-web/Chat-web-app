@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useOutletContext } from "react-router-dom"
 import { useDispatch } from "react-redux";
@@ -7,6 +7,7 @@ import socket from "../../../../Socket/socket.js";
 import { allGroups } from "../../../../Features/groupListSlice.js";
 import { getPersonalChatId, getGroupId } from "../../../../Features/idsSlice.js";
 import { allGroupMessages } from "../../../../Features/messagesSlice.js";
+import { getSelectedGroupData, getUserToChatWithData } from "../../../../Features/authSlice.js";
 
 
 const BlankImage = '/images/Blank-User-Image.png';
@@ -15,13 +16,22 @@ function Chats({ users }) {
    const dispatch = useDispatch();
    const { contactList } = useSelector((store) => store.contacts);
 
+   // USER CLICKS ON THE CHAT AND IT BECOMES DARKER THAN OTHERS:
+   const [selectedChatId, setSelectedChatId] = useState('');
+
    // WHEN USER CLICKS ON ONE OF LISTED CHATS, DISPATCH THE ACTION TO SAVE THE PERSONAL CHAT ID IN IDS SLICE:
+
    function getUserId(chatUserId) {
-      console.log(chatUserId);
       dispatch(getPersonalChatId(chatUserId));
-      
+
+      // CHANGE SELECTED CHAT COLOR:
+      setSelectedChatId(chatUserId);
+
       // JOIN THE INDIVIDUAL CHAT ROOM:
       socket.emit('join-room', { chatUserId })
+
+      // FOR CHAT HEADER INFO:
+      dispatch(getUserToChatWithData(chatUserId));
    }
 
    useEffect(() => {
@@ -34,7 +44,10 @@ function Chats({ users }) {
          {
             contactList.map((contact) => {
                return (
-                  <div key={contact._id} className={`flex gap-2 m-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}
+                  <div key={contact._id} className={`flex gap-2 m-2 p-2 rounded-md shadow shadow-gray-700
+                     ${mode === 'dark' ? 'border border-gray-600' : ' border-orange-700'}
+                     ${selectedChatId === contact._id ? 'bg-blue-200 text-black' : ''}`}
+
                      onClick={() => getUserId(contact._id)}>
                      <div className='h-10 w-10 border border-gray-600 rounded-full'>
                         <img src={BlankImage} alt="" />
@@ -42,6 +55,7 @@ function Chats({ users }) {
                      <div className="cursor-pointer">
                         <div>
                            <p>{contact.username}</p>
+                           <div></div>
                         </div>
                         <div>
                            <p className='font-light text-sm'>Latest message from chats</p>
@@ -63,10 +77,17 @@ function Groups() {
    // ACCESS ALL THE GROUPS WHICH INVOLVES THE LOGGED-IN USER:
    const { allGroupsList } = useSelector((store) => store.groups);
 
+   // ACCESS GROUP ID FROM STORE:
+   const { groupId } = useSelector((store) => store.ids);
+
    useEffect(() => {
       dispatch(allGroups());
       // EMITTING JOIN-GROUP-ROOM EVENT UPON GROUPS COMPONENT MOUNTING:
       socket.emit('join-group-room')
+      return () => {
+         // LEAVE THE GROUP CHAT ROOM UPON UNMOUNTING:
+         socket.emit('leave-group-chat-room', groupId);
+      }
    }, [dispatch])
 
    // WHEN USER CLICKS ON THE GROUP, DISPATCHING TO SAVE THE GROUP ID IN THE IDS STATE AND TO GET ALL THE MESSAGES OF THAT GROUP ID:
@@ -75,6 +96,8 @@ function Groups() {
       dispatch(getGroupId(groupId))
       // DISPATCH TO GET ALL THE GROUP MESSAGES:
       dispatch(allGroupMessages({ groupId }));
+      // DISPATCH TO GET SELECTED GROUP DATA TO CHAT IN:
+      dispatch(getSelectedGroupData(groupId));
    }
 
    return (
@@ -130,9 +153,10 @@ function Settings() {
          </div>
          <div>
             <div>
-               <p>Settings 1</p>
+               <p>User</p>
             </div>
             <div>
+               <p className='font-light text-sm'>Latest message from user</p>
             </div>
          </div>
       </div>
