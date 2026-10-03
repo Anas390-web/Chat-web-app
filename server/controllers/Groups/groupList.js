@@ -44,7 +44,6 @@ const creatAGroup = async (req, res) => {
             msg: 'INTERNAL_SERVER_ERROR'
          })
       }
-      console.log(group);
       // RESPOND BACK TO THE REQUEST:
       res.status(StatusCodes.CREATED).json({
          msg: 'Group was created successfully'
