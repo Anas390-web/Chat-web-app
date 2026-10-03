@@ -10,7 +10,7 @@ import socketAuth from './middlewares/Auth/socketAuth.js'
 import { joinPersonalRoom, saveMessageInDB } from './sockets/chatSockets.js'
 import messageRouter from './routes/Messages/messages.js'
 import groupsRouter from './routes/Groups/groupList.js'
-import { joinGroupRoom, saveGroupMessageInDB } from './sockets/groupSockets.js'
+import { joinGroupRoom, saveGroupMessageInDB, leaveGroupChatRoom } from './sockets/groupSockets.js'
 import groupMessagesRouter from './routes/Messages/groupMessages.js'
 
 const app = express();
@@ -54,6 +54,8 @@ io.on('connection', (socket) => {
    joinGroupRoom(socket, io);
    // SAVE GROUP MESSAGES IN DB:
    saveGroupMessageInDB(socket, io);
+   // LEAVE GROUP CHAT ROOM:
+   leaveGroupChatRoom(socket, io);
    // UPON USER DISCONNECTING:
    socket.on('disconnect', () => {
       console.log('CLIENT DISCONNECTED', socket.id);
