@@ -69,22 +69,40 @@ function Chat() {
       // ACTION FROM THE MESSAGE SLICE:
       dispatch(addLatestMsg(messageDoc))
    }
+
+   // ON ESCAPE KEY, CHAT DISAPPEARS:
+   function handleEscape(event) {
+      if(event.key === 'Escape'){
+         setConversationData(prev => {
+            return {
+               ...prev, convoId: ''
+            }
+         })
+      }
+   }
+
    
+   // 5.1 RECEIVE MESSAGE EVENT UPON MOUNTING:
    useEffect(() => {
       socket.on("receive-message", handleLatestMsg)
+      // ESCAPE CHAT ON KEYDOWN:
+      window.addEventListener('keydown', handleEscape);
       return () => {
          socket.off("receive-message", handleLatestMsg)
+         // REMOVE LISTENER:
+         window.addEventListener('keydown', handleChange);
       }
    }, [dispatch])
+   
 
    return (
 
       <div className='flex flex-col h-full overflow-hidden'>
-         <ChatHeader />
          <main className="flex-1 min-h-0 flex flex-col">
             {
                conversationData.convoId && conversationData.convoId.length > 0 ?
-                  <div className="flex flex-col h-full">
+               <div className="flex flex-col h-full">
+                     <ChatHeader />
                      <div className={`flex-1 overflow-y-auto ${mode === 'dark' ? "bg-[url(/images/Black-Doodle.jpg)] bg-contain bg-center" : "bg-[url(/images/White-Doodle.jpg)] bg-contain bg-center"}`}>
                         <div>
                            <MsgBubble
