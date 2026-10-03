@@ -1,6 +1,7 @@
 import { BadRequestError, UnauthenticatedError } from '../../errors/customApiErrors.js';
 import { StatusCodes } from 'http-status-codes'
 import User from '../../models/Users/User.js'
+import Conversation from '../../models/Conversations/Conversation.js'
 
 const registerUser = async (req, res) => {
    try {
@@ -109,4 +110,88 @@ const getAllUsers = async (req, res) => {
    }
 }
 
-export { registerUser, loginUser, getAllUsers }
+// SEND BACK THE SELECTED USER TO CHAT WITH DATA:
+const getUserToChatWithData = async (req, res) => {
+   try {
+      // DE-STRUCTURE USER TO CHAT WITH ID FROM THE ROUTE PARAMS:
+      const { userToChatWithId } = req.params;
+      // IF CHAT USER ID NOT GIVEN, SEND BACK BAD REQUEST ERROR:
+      if (!userToChatWithId) {
+         console.log('Error: Chat user id is not given.')
+         return res.status(StatusCodes.BAD_REQUEST).json({
+            msg: 'BAD REQUEST ERROR: Please provide the chat user Id'
+         })
+      }
+      // FIND THE REQUESTED USER DATA:
+      const userToChatWith = await User.findOne(
+         {
+            _id: userToChatWithId
+         }
+      ).select("-password -userAvatarUrl");
+
+      // IF REQUESTED USER DOES NOT EXIST:
+      if (!userToChatWith) {
+         console.log('Requested user does not exist');
+         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            msg: 'THIS USER DOES NOT EXIST'
+         })
+      }
+      // FINAL RESPONSE TO THE CLIENT WITH THE REQUESTED USER WITHOUT PASSWORD:
+      res.status(StatusCodes.OK).json({
+         chatUserData: userToChatWith
+      })
+
+   } catch (error) {
+      console.log('Error occured in server while finding the requested user data:', error.message)
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         msg: 'INTERNAL_SERVER_ERROR'
+      })
+   }
+}
+
+const getSelectedGroupData = async (req, res) => {
+   try {
+      // DE-STRUCTURE SELECTED GROUP TO CHAT IN ID FROM THE ROUTE PARAMS:
+      const { selectedGroupId } = req.params;
+      // IF CHAT USER ID NOT GIVEN, SEND BACK BAD REQUEST ERROR:
+      if (!selectedGroupId) {
+         console.log('Error: Selected group id is not given.')
+         return res.status(StatusCodes.BAD_REQUEST).json({
+            msg: 'BAD REQUEST ERROR: Please provide the selected group id'
+         })
+      }
+      // FIND THE REQUESTED USER DATA:
+      const selectedGroupData = await Conversation.findOne(
+         {
+            _id: selectedGroupId
+         }
+      );
+
+      // IF REQUESTED GROUP DOES NOT EXIST:
+      if (!selectedGroupData) {
+         console.log('Requested group does not exist');
+         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            msg: 'THIS GROUP DOES NOT EXIST'
+         })
+      }
+
+      // POPULATING THE GROUP DATA:
+      await selectedGroupData.populate({
+         path: 'participants admin',
+         select: 'username'
+      })
+
+      // FINAL RESPONSE TO THE CLIENT WITH THE REQUESTED USER WITHOUT PASSWORD:
+      res.status(StatusCodes.OK).json({
+         selectedGroupData
+      })
+
+   } catch (error) {
+      console.log('Error occured in server while finding the requested group data:', error.message)
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         msg: 'INTERNAL_SERVER_ERROR'
+      })
+   }
+}
+
+export { registerUser, loginUser, getAllUsers, getUserToChatWithData, getSelectedGroupData }
