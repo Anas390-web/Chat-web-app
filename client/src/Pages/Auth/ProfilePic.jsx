@@ -1,12 +1,34 @@
 import { useState } from "react"
+import { useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { setAvatarUrl } from '../../Features/authSlice.js'
 
 function ProfilePic() {
-
-  const [url, setUrl] = useState('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // SET IMAGE URL:
+  const [url, setUrl] = useState('images/Blank-User-Image.png');
+  const { token, userAvatar } = useSelector((store) => store.auth);
 
   function setPicture(imgUrl) {
     setUrl(imgUrl);
   }
+
+  // IF TOKEN IS PRESENT DISPATCH SETAVATARURL THUNK:
+  async function saveAvatar() {
+    try {
+      if (!token) {
+        return;
+      }
+      await dispatch(setAvatarUrl(url)).unwrap();
+
+      navigate('/dashboard')
+    } catch (error) {
+      console.log(error.message);
+      return error.message
+    }
+  }
+
   // AVATARS ARRAY:
   const avatars = [
     {
@@ -32,10 +54,6 @@ function ProfilePic() {
     {
       id: 6,
       imgUrl: 'images/short-hair-girl-avatar.jpg'
-    },
-    {
-      id: 7,
-      imgUrl: 'images/Blank-User-Image.png'
     }
   ]
 
@@ -43,7 +61,7 @@ function ProfilePic() {
   return (
     <div className="flex flex-col justify-center items-center gap-4 border border-gray-200 size-full sm:size-100 p-4 shadow">
       <div className="border size-40 rounded-full p-1">
-        <img className="rounded-full" src={url} alt={url.split("/")[2]} />
+        <img className="rounded-full" src={url} alt={url.split("/")[1]} />
       </div>
       <div className="w-full">
         <p className="font-bold">Choose an avatar:</p>
@@ -59,15 +77,17 @@ function ProfilePic() {
                 onClick={() => setPicture(avatar.imgUrl)}>
                 <img
                   className="size-10 rounded-full"
-                  src={avatar.imgUrl}
-                  alt="" />
+                  src={avatar?.imgUrl}
+                  alt={avatar?.imgUrl.split("/")[1]} />
               </div>
             )
           })
         }
       </div>
-      <div className="h-20 flex flex-col justify-center">
-        <button className="bg-orange-400 py-1 px-2 rounded-sm text-white text-[14px] ">Save Avatar</button>
+      <div className="w-full flex justify-center mt-6">
+        <button
+          className="bg-orange-400 py-1 px-2 rounded-sm text-white text-[14px] cursor-pointer"
+          onClick={saveAvatar}>Save Avatar</button>
       </div>
     </div>
   )
