@@ -10,6 +10,7 @@ import Dashboard from './Pages/Dashboard/Dashboard.jsx'
 import Landing from './Pages/Landing/Landing.jsx'
 import store from '../store.js'
 import { Provider } from 'react-redux'
+import ProfilePic from './Pages/Auth/ProfilePic.jsx'
 
 
 const router = createBrowserRouter(
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
         <Route path='' element={<Landing />} />
         <Route path='signup' element={<SignUp />} />
         <Route path='login' element={<Login />} />
+        <Route path='profilePic' element={<ProfilePic />} />
         {/* FALLBACK FOR INVALID URLS */}
         <Route path='*' element={<div>Page not found</div>} />
       </Route>
