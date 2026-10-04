@@ -182,6 +182,10 @@ function Settings() {
          id: 6,
          imgUrl: 'images/short-hair-girl-avatar.jpg'
       },
+      {
+         id: 7,
+         imgUrl: 'images/Blank-User-Image.png'
+      }
    ]
    return (
       <div className={`flex flex-col items-center gap-4 mx-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
