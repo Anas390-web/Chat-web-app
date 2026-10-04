@@ -7,7 +7,7 @@ const initialState = {
    selectedUserToChatData: {},
    selectedGroupToChatData: {},
    username: '',
-   userAvatar: '',
+   userAvatar: {},
    token: localStorage.getItem('accessToken') || '',
    isLoading: '',
    error: ''
@@ -176,6 +176,37 @@ export const getSelectedGroupData = createAsyncThunk(
    }
 )
 
+// SET THE PROFILE AVATAR:
+export const setAvatarUrl = createAsyncThunk(
+   'auth/setAvatarUrl',
+   async (avatarUrl, thunkApi) => {
+      try {
+         const token = localStorage.getItem("accessToken");
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/profile`, {
+            method: 'PUT',
+            headers: {
+               'Authorization': `Bearer ${token}`,
+               'content-type': 'application/json'
+            },
+            body: JSON.stringify(
+               {
+                  avatarUrl: avatarUrl
+               }
+            )
+         })
+         const data = await response.json();
+         console.log(data);
+         if (!response.ok) {
+            return thunkApi.rejectWithValue(data);
+         }
+         return data;
+      } catch (error) {
+         console.log('Error while saving the avatar:', error.message)
+         return thunkApi.rejectWithValue(error.message);
+      }
+   }
+)
+
 const authSlice = createSlice({
    name: 'register',
    initialState,
@@ -194,6 +225,7 @@ const authSlice = createSlice({
          .addCase(registerUser.fulfilled, (state, action) => {
             state.isLoading = false;
             state.username = action.payload.username;
+            state.token = action.payload.token;
          })
          .addCase(registerUser.rejected, (state, action) => {
             state.isLoading = false;
@@ -248,11 +280,23 @@ const authSlice = createSlice({
             state.isLoading = false;
             state.error = action.payload;
          })
+         // AFTER GETTING AVATAR URL:
+         .addCase(setAvatarUrl.pending, (state) => {
+            state.isLoading = true;
+         })
+         .addCase(setAvatarUrl.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.userAvatar = action.payload;
+         })
+         .addCase(setAvatarUrl.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+         })
    }
 })
 
 const authReducer = authSlice.reducer;
 
-export const { signOut } = authSlice.actions;
+export const { signOut, removePrevAvatar } = authSlice.actions;
 
 export { authReducer }
