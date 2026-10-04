@@ -1,11 +1,16 @@
-import { useState } from "react";
-import { useDispatch } from 'react-redux'
-import { NavLink } from "react-router";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux'
+import { NavLink, useNavigate } from "react-router";
 import { EyeIcon, EyeSlashIcon } from '../../Icons/Icons'
 import { registerUser } from "../../Features/authSlice";
 
 function SignUp() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // ACCESSING THE TOKEN FROM THE STORE:
+  const { token } = useSelector((store) => store.auth);
+
   // USER FORM DATA:
   const [formdata, setFormdata] = useState({
     username: '',
@@ -29,8 +34,15 @@ function SignUp() {
       username: '',
       email: '',
       password: ''
-    })
+    });
   }
+
+  // TAKE TO THE PROFILE PIC PAGE WHEN THE USER IS REGISTERED:
+  useEffect(() => {
+    if (token) {
+      navigate('/profilePic')
+    }
+  }, [navigate, token])
 
   // TOGGLE PASSWORD VISIBLE OR INVISIBLE:
   const [passwordVisible, setPasswordVisible] = useState(false);
