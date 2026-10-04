@@ -149,6 +149,7 @@ const getUserToChatWithData = async (req, res) => {
    }
 }
 
+// SEND BACK THE SELECTED GROUP DATA:
 const getSelectedGroupData = async (req, res) => {
    try {
       // DE-STRUCTURE SELECTED GROUP TO CHAT IN ID FROM THE ROUTE PARAMS:
@@ -194,4 +195,44 @@ const getSelectedGroupData = async (req, res) => {
    }
 }
 
-export { registerUser, loginUser, getAllUsers, getUserToChatWithData, getSelectedGroupData }
+const setAvatarUrl = async (req, res) => {
+   try {
+      // DE-STRUCTURE USER ID FROM USER AUTHENTICATION:
+      const { userId } = req.user;
+      if(!userId || userId.length < 1) {
+         console.log('Error: User Id in invalid');
+         return res.status(StatusCodes.UNAUTHORIZED).json({
+            msg: 'UNAUTHORIZED: Provide a valid Id'
+         })
+      }
+      // DE-STRUCTURE AVATAR URL FROM CLIET:
+      const { avatarUrl } = req.body;
+      if (!avatarUrl || avatarUrl.length < 1) {
+         return res.status(StatusCodes.BAD_REQUEST).json({
+            msg: 'BAD_REQUEST ERROR: Please provide avatar url!'
+         })
+      }
+      // FIND THE USER:
+      const userAvatar = await User.findOneAndUpdate(
+         { _id: userId },
+         { $set: { userAvatarUrl: avatarUrl } },
+         { returnDocument: 'after', runValidators: true }
+      ).select("userAvatarUrl")
+      if (!userAvatar || userAvatar.userAvatarUrl === null) {
+         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            msg: 'Problem occurred while updating the user avatar, try again later'
+         })
+      }
+      res.status(StatusCodes.OK).json({
+         msg: 'Avatar updated',
+         userAvatar
+      })
+   } catch (error) {
+      console.log('Error occurred while updating the user Avatar', error.message)
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         msg: 'INTERNAL_SERVER_ERROR'
+      })
+   }
+}
+
+export { registerUser, loginUser, getAllUsers, getUserToChatWithData, getSelectedGroupData, setAvatarUrl }
