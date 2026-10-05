@@ -278,7 +278,6 @@ const updateUsernameAndAvatar = async (req, res) => {
       if (userData.avatarUrl) {
          updateData.userAvatarUrl = userData.avatarUrl;
       }
-      console.log(updateData);
       // UPDATE THE USER DATA:
       const updatedUserData = await User.findOneAndUpdate(
          { _id: userId },
