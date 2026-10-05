@@ -199,13 +199,13 @@ const setAvatarUrl = async (req, res) => {
    try {
       // DE-STRUCTURE USER ID FROM USER AUTHENTICATION:
       const { userId } = req.user;
-      if(!userId || userId.length < 1) {
+      if (!userId || userId.length < 1) {
          console.log('Error: User Id in invalid');
          return res.status(StatusCodes.UNAUTHORIZED).json({
             msg: 'UNAUTHORIZED: Provide a valid Id'
          })
       }
-      // DE-STRUCTURE AVATAR URL FROM CLIET:
+      // DE-STRUCTURE AVATAR URL FROM CLIENT:
       const { avatarUrl } = req.body;
       if (!avatarUrl || avatarUrl.length < 1) {
          return res.status(StatusCodes.BAD_REQUEST).json({
@@ -235,4 +235,79 @@ const setAvatarUrl = async (req, res) => {
    }
 }
 
-export { registerUser, loginUser, getAllUsers, getUserToChatWithData, getSelectedGroupData, setAvatarUrl }
+const getLoggedInUserData = async (req, res) => {
+   try {
+      // DE-STRUCTURE USER ID FROM USER AUTHENTICATION:
+      const { userId } = req.user;
+
+      // FIND THE LOGGED IN USER DATA:
+      const userData = await User.findOne(
+         { _id: userId }
+      ).select("username userAvatarUrl")
+
+      // IF IT DOES NOT EXIST, SEND BACK ERROR:
+      if (!userData) {
+         return res.status(StatusCodes.BAD_REQUEST).json({
+            msg: 'ERROR: USER DOES NOT EXIST'
+         })
+      }
+
+      // FINAL RESPONSE WITH USER DATA:
+      res.status(StatusCodes.OK).json({
+         msg: 'USER FOUND',
+         userData
+      })
+   } catch (error) {
+      console.log('Error while finding the login user:', error.message);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         msg: 'INTERNAL_SERVER_ERROR'
+      })
+   }
+}
+
+const updateUsernameAndAvatar = async (req, res) => {
+   try {
+      // DE-STRUCTURE USER ID FROM USER AUTHENTICATION:
+      const { userId } = req.user;
+      // DATA FROM CLIENT REQUEST BODY:
+      const userData = req.body;
+      const updateData = {};
+      if (userData.name) {
+         updateData.username = userData.name;
+      }
+      if (userData.avatarUrl) {
+         updateData.userAvatarUrl = userData.avatarUrl;
+      }
+      console.log(updateData);
+      // UPDATE THE USER DATA:
+      const updatedUserData = await User.findOneAndUpdate(
+         { _id: userId },
+         {
+            $set: updateData
+         },
+         { returnDocument: 'after', runValidators: true }
+      ).select("username userAvatarUrl");
+
+      console.log(updatedUserData);
+      // IF IT DOES NOT EXIST, SEND BACK ERROR:
+      if (!updatedUserData) {
+         return res.status(StatusCodes.BAD_REQUEST).json({
+            msg: 'ERROR: USER DOES NOT EXIST'
+         })
+      }
+
+      // FINAL RESPONSE WITH USER DATA:
+      res.status(StatusCodes.OK).json({
+         msg: 'USER UPDATED',
+         updatedUserData
+      })
+
+   } catch (error) {
+      console.log('Error while updating the user data:', error.message);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         msg: 'INTERNAL_SERVER_ERROR'
+      })
+   }
+}
+
+export { registerUser, loginUser, getAllUsers, getUserToChatWithData, getSelectedGroupData, setAvatarUrl, getLoggedInUserData, updateUsernameAndAvatar }
