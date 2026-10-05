@@ -254,7 +254,35 @@ export const getLoggedInUserData = createAsyncThunk(
    }
 )
 
-
+// TO CHANGE USERNAME AND USER AVATAR:
+export const updateUsernameAndAvatar = createAsyncThunk(
+   'auth/updateUsernameAndAvatar',
+   async(userData, thunkApi) => {
+      try {
+         console.log(userData);
+         const token = localStorage.getItem("accessToken");
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/settings`, {
+            method: 'PUT',
+            headers: {
+               'Authorization': `Bearer ${token}`,
+               'Content-type': 'application/json'
+            },
+            body: JSON.stringify(
+               userData
+            )
+         })
+         const data = await response.json();
+         console.log(data);
+         if(!response.ok) {
+            return thunkApi.rejectWithValue(data);
+         }
+         return data;
+      } catch (error) {
+         console.log('Error occurred while changing username and avatar:', error.message);
+         return thunkApi.rejectWithValue(error.message)
+      }
+   }
+)
 
 const authSlice = createSlice({
    name: 'register',
@@ -354,7 +382,19 @@ const authSlice = createSlice({
             state.isLoading = false;
             state.error = action.payload;
          })
-         
+         // AFTER GETTING LOGGED IN USER DATA:
+         .addCase(updateUsernameAndAvatar.pending, (state) => {
+            state.isLoading = true;
+         })
+         .addCase(updateUsernameAndAvatar.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.userAvatar = action.payload;
+            state.username = action.payload.username;
+         })
+         .addCase(updateUsernameAndAvatar.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+         })
    }
 })
 
