@@ -229,6 +229,31 @@ export const setAvatarUrl = createAsyncThunk(
    }
 )
 
+// GET LOGGED IN USER PROFILE:
+export const getLoggedInUserData = createAsyncThunk(
+   'auth/getLoggedUserData',
+   async(_, thunkApi) => {
+      try {
+         const token = localStorage.getItem("accessToken");
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/loggedInUserData`, {
+            method: 'GET',
+            headers: {
+               'Authorization': `Bearer ${token}`,
+               'content-type': 'application/json'
+            }
+         })
+         const data = await response.json();
+         if(!response.ok) {
+            return thunkApi.rejectWithValue(data);
+         }
+         return data;
+      } catch (error) {
+         console.log('Error occurred while getting the log in user data:', error.message);
+         return thunkApi.rejectWithValue(error.message)
+      }
+   }
+)
+
 
 
 const authSlice = createSlice({
@@ -313,6 +338,19 @@ const authSlice = createSlice({
             state.userAvatar = action.payload;
          })
          .addCase(setAvatarUrl.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+         })
+         // AFTER GETTING LOGGED IN USER DATA:
+         .addCase(getLoggedInUserData.pending, (state) => {
+            state.isLoading = true;
+         })
+         .addCase(getLoggedInUserData.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.userAvatar = action.payload.userData;
+            state.username = action.payload.userData.username;
+         })
+         .addCase(getLoggedInUserData.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.payload;
          })
