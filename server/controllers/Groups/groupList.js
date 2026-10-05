@@ -74,8 +74,8 @@ const allGroups = async (req, res) => {
       // RESPOND WITH ERROR IF GROUPS WERE NOT FOUND:
       if (groups.length < 1) {
          console.log('Error: Groups were not found');
-         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            msg: 'INTERNAL_SERVER_ERROR'
+         return res.status(StatusCodes.BAD_REQUEST).json({
+            msg: 'ERROR: NO GROUPS FOUND'
          })
       }
       // RESPONSE TO THE REQUEST WITH THE GROUPS ARRAY IN WHICH USE IS INVOLVED:
