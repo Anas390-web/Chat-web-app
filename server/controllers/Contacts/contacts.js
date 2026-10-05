@@ -28,7 +28,7 @@ const addUsers = async (req, res) => {
       }
       const contactsList = await contacts.populate({
          path: 'contacts',
-         select: 'username'
+         select: 'username userAvatarUrl'
       })
 
       res.status(StatusCodes.CREATED).json({
