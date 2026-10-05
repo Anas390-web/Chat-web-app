@@ -4,11 +4,11 @@ import { jwtDecode } from 'jwt-decode';
 const initialState = {
    allUsers: [],
    loggedInUserId: getUserIdFromToken() || '',
-   selectedUserToChatData: {},
-   selectedGroupToChatData: {},
-   username: '',
+   username: getUserNameFromToken() || '',
    userAvatar: {},
    token: localStorage.getItem('accessToken') || '',
+   selectedUserToChatData: {},
+   selectedGroupToChatData: {},
    isLoading: '',
    error: ''
 }
@@ -25,8 +25,9 @@ function getUserIdFromToken() {
       // CURRENT TIME:
       const currentTime = Date.now() / 1000;
       // CHECK IF TOKEN IS EXPIRED:
-      if (!decodedToken || decodedToken.exp < currentTime) {
-         console.log('Access token is expired')
+      if (decodedToken.exp < currentTime) {
+         console.log('Access Token is expired. Clearing Token from storage');
+         localStorage.removeItem("accessToken");
          return;
       }
       // GET THE USER ID FROM DECODED TOKEN:
@@ -38,7 +39,29 @@ function getUserIdFromToken() {
    }
 }
 
-getUserIdFromToken();
+// TO GET USERNAME FROM TOKEN BY DECODING:
+function getUserNameFromToken() {
+   try {
+      // GET TOKEN FROM LOCAL STORAGE:
+      const token = localStorage.getItem("accessToken");
+      // DECODE TOKEN:
+      const decodedToken = jwtDecode(token);
+      // FIND OUT THE CURRENT TIME:
+      const currentTime = Date.now() / 1000;
+      // CHECK IF TOKEN HAS EXPIRED:
+      if (decodedToken.exp < currentTime) {
+         console.log('Access Token is expired. Clearing Token from storage');
+         localStorage.removeItem("accessToken");
+         return;
+      }
+      // DE-STRUCTURE USERNAME FROM DECODED TOKEN:
+      const { username } = decodedToken;
+      return username;
+   } catch (error) {
+      console.log('Error while decoding token:' ,error.message)
+   }
+}
+
 
 // TO REGISTER USER IN THE DB:
 export const registerUser = createAsyncThunk(
@@ -195,7 +218,6 @@ export const setAvatarUrl = createAsyncThunk(
             )
          })
          const data = await response.json();
-         console.log(data);
          if (!response.ok) {
             return thunkApi.rejectWithValue(data);
          }
@@ -206,6 +228,8 @@ export const setAvatarUrl = createAsyncThunk(
       }
    }
 )
+
+
 
 const authSlice = createSlice({
    name: 'register',
@@ -292,6 +316,7 @@ const authSlice = createSlice({
             state.isLoading = false;
             state.error = action.payload;
          })
+         
    }
 })
 
