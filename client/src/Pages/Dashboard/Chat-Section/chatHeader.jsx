@@ -5,7 +5,7 @@ const settings = '/images/settings.png'
 function ChatHeader() {
   // GET SELECTED USER TO CHAT WITH DATA FROM STORE:
   const { selectedUserToChatData } = useSelector((store) => store.auth);
-  console.log(selectedUserToChatData);
+  
   return (
     <header className="bg-[#FF9B51] flex items-center py-4 px-4 shrink-0 w-full border border-gray-600 relative">
       <div className='flex gap-2'>
