@@ -7,7 +7,7 @@ import socket from "../../../../Socket/socket.js";
 import { allGroups } from "../../../../Features/groupListSlice.js";
 import { getPersonalChatId, getGroupId } from "../../../../Features/idsSlice.js";
 import { allGroupMessages } from "../../../../Features/messagesSlice.js";
-import { getSelectedGroupData, getUserToChatWithData } from "../../../../Features/authSlice.js";
+import { getSelectedGroupData, getUserToChatWithData, getLoggedInUserData, updateUsernameAndAvatar } from "../../../../Features/authSlice.js";
 
 
 const BlankImage = '/images/Blank-User-Image.png';
@@ -50,7 +50,9 @@ function Chats({ users }) {
 
                      onClick={() => getUserId(contact._id)}>
                      <div className='h-10 w-10 border border-gray-600 rounded-full'>
-                        <img src={BlankImage} alt="" />
+                        <img
+                           className="rounded-full p-0.5"
+                           src={contact.userAvatarUrl} alt="" />
                      </div>
                      <div className="cursor-pointer">
                         <div>
@@ -146,6 +148,13 @@ function Archives() {
 
 function Settings() {
    const { mode } = useOutletContext();
+   const dispatch = useDispatch();
+
+   // ACCESSING THE AVATAR AND USERNAME FROM STORE:
+   const { username, loggedInUserId, userAvatar } = useSelector((store) => store.auth);
+
+   // ACCESSING THE TOKEN FROM LOCAL STORAGE:
+   const token = localStorage.getItem("accessToken");
 
    // SHOW EDITING OPTIONS:
    const [showEditing, setShowEditing] = useState(false);
@@ -154,6 +163,39 @@ function Settings() {
    }
    function hideEditingOptions() {
       setShowEditing(false);
+      setAvatarUrl('');
+   }
+
+   // UPON SETTINGS COMPONENT MOUNTING GET LOGGED IN USER DETAILS:
+   useEffect(() => {
+      if (!token) {
+         return;
+      }
+      dispatch(getLoggedInUserData());
+   }, [dispatch])
+
+   // CHANGE USERNAME:
+   const [name, setName] = useState('');
+   function handleChange(e) {
+      setName(e.target.value);
+   }
+
+   // CHANGE THE AVATAR STATE:
+   const [avatarUrl, setAvatarUrl] = useState('');
+   function changeAvatar(url) {
+      setAvatarUrl(url);
+   }
+
+   async function handleUsernameAndAvatarChange(e) {
+      e.preventDefault();
+      try {
+         if (!name && !avatarUrl) return;
+         await dispatch(updateUsernameAndAvatar({ name, avatarUrl })).unwrap();
+         setName('');
+      } catch (error) {
+         console.log('Error while updating the profile:', error.message);
+         return error;
+      }
    }
 
    // AVATARS ARRAY:
@@ -190,11 +232,18 @@ function Settings() {
    return (
       <div className={`flex flex-col items-center gap-4 mx-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
          <div className="flex flex-col w-full p-2 items-center gap-4 border border-gray-200 shadow">
-            <div className='size-15 sm:size-20 border border-gray-600 rounded-full'>
-               <img src={BlankImage} alt="" />
+            <div className='size-15 sm:size-20 border border-gray-600 p-1 rounded-full'>
+               <img
+                  className="rounded-full"
+                  src={
+                     avatarUrl ?
+                        avatarUrl
+                        :
+                        userAvatar.userAvatarUrl
+                  } alt="" />
             </div>
             <div>
-               Name
+               { username }
             </div>
             <div className="bg-amber-600 text-white rounded-sm">
                <button
@@ -205,11 +254,13 @@ function Settings() {
          {
             showEditing &&
             <div className="w-full">
-               <form className="flex flex-col gap-4">
+               <form onSubmit={handleUsernameAndAvatarChange} className="flex flex-col gap-4">
                   <label>
                      <p>Change name:</p>
                      <input
                         className="w-full bg-gray-300 p-2 mt-2 rounded-sm text-[14px]"
+                        value={name}
+                        onChange={handleChange}
                         type="text"
                         placeholder="edit name" />
                   </label>
@@ -220,7 +271,10 @@ function Settings() {
                            avatars &&
                            avatars.map((avatar) => {
                               return (
-                                 <div key={avatar.id} className="size-10 bg-gray-400 rounded-full">
+                                 <div
+                                    key={avatar.id}
+                                    className="size-10 bg-gray-400 rounded-full"
+                                    onClick={() => changeAvatar(avatar.imgUrl)}>
                                     <img
                                        className="rounded-full cursor-pointer"
                                        src={avatar.imgUrl} alt="" />
