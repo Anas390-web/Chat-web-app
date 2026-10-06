@@ -26,12 +26,12 @@ function Group() {
    // 2.1: TO SAVE KEYSTROKES IN GROUP MESSAGE STATE:
    function handleGroupMessage(e) {
       setGroupMessage(e.target.value);
-      
+
       // 6.1: EMIT THE START TYPING EVENT IF ISTYPING FALSE:
       // CLEAR ANY EXISTING TIMER IDS:
       clearTimeout(timerIdRef.current);
-      
-      if(!isTypingRef.current){
+
+      if (!isTypingRef.current) {
          socket.emit("sender-typing-in-group", groupId);
 
          // SET ISTYPING TO TRUE:
@@ -45,7 +45,26 @@ function Group() {
          isTypingRef.current = false;
       }, 2000)
    }
-   
+
+   // SHOW GROUP USER IS TYPING TO EVERYONE EXCEPT SENDER:
+   const [isGroupUserTyping, setIsGroupUserTyping] = useState(false);
+   function handleGroupUserTyping() {
+      setIsGroupUserTyping(true);
+   }
+   function handleGroupUserStoppedTyping() {
+      setIsGroupUserTyping(false);
+   }
+
+   useEffect(() => {
+      socket.on("user-typing-in-group", handleGroupUserTyping)
+      socket.on("user-stopped-typing-in-group", handleGroupUserStoppedTyping)
+
+      return () => {
+         socket.off("user-typing-in-group", handleGroupUserTyping);
+         socket.off("user-stopped-typing-in-group", handleGroupUserStoppedTyping);
+      }
+   }, [])
+
    // EMIT SEND-GROUP-MESSAGE EVENT UPON USER CLICKING SEND ICON:
    function handleGroupMessageSubmit(e) {
       e.preventDefault();
@@ -85,10 +104,6 @@ function Group() {
       }
    }, [dispatch])
 
-   
-
-   
-
    return (
 
       <div className='flex flex-col h-full overflow-hidden'>
@@ -96,13 +111,26 @@ function Group() {
             <main className="flex-1 min-h-0 flex flex-col">
                {
                   groupId && groupId.length > 0 ?
-                  <div className="flex flex-col h-full">
+                     <div className="flex flex-col h-full">
                         <GroupHeader />
                         <div className={`flex-1 overflow-y-auto ${mode === 'dark' ? "bg-[url(/images/Black-Doodle.jpg)] bg-contain bg-center" : "bg-[url(/images/White-Doodle.jpg)] bg-contain bg-center"}`}>
                            <div>
                               <GroupMsgBubble />
                            </div>
                         </div>
+                        {
+                           isGroupUserTyping &&
+                           <div
+                              className={`px-4 transition-all duration-200 ease-in ${isGroupUserTyping
+                                 ? 'opacity-100 max-h-10 py-1'
+                                 : 'opacity-30 max-h-0 py-0 overflow-hidden pointer-events-none'
+                                 }`}
+                           >
+                              <div className="w-fit bg-orange-400 text-white text-xs font-semibold px-3 py-1.5 rounded-2xl shadow-sm border border-orange-600 animate-pulse">
+                                 Typing...
+                              </div>
+                           </div>
+                        }
                         <form onSubmit={handleGroupMessageSubmit} className="min-h-16 flex items-center px-3 py-2 w-full box-border border border-gray-600 gap-2">
                            <input
                               className="h-10 flex-1 min-w-0 px-3 outline-none rounded border border-gray-600"
@@ -114,7 +142,6 @@ function Group() {
                            <div className='h-10 flex justify-center items-center'>
                               <button><SendIcon /></button>
                            </div>
-
                         </form>
                      </div>
                      :
