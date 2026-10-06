@@ -10,7 +10,7 @@ import socketAuth from './middlewares/Auth/socketAuth.js'
 import { joinPersonalRoom, saveMessageInDB, IsUserTyping } from './sockets/chatSockets.js'
 import messageRouter from './routes/Messages/messages.js'
 import groupsRouter from './routes/Groups/groupList.js'
-import { joinGroupRoom, saveGroupMessageInDB, leaveGroupChatRoom } from './sockets/groupSockets.js'
+import { joinGroupRoom, saveGroupMessageInDB, leaveGroupChatRoom, isUserTypingInGroup } from './sockets/groupSockets.js'
 import groupMessagesRouter from './routes/Messages/groupMessages.js'
 
 const app = express();
@@ -56,6 +56,8 @@ io.on('connection', (socket) => {
    saveGroupMessageInDB(socket, io);
    // IF USER IS TYPING:
    IsUserTyping(socket, io);
+   // IF USER IN GROUP IS TYPING:
+   isUserTypingInGroup(socket);
    // LEAVE GROUP CHAT ROOM:
    leaveGroupChatRoom(socket, io);
    // UPON USER DISCONNECTING:
