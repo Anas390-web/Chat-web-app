@@ -73,7 +73,19 @@ const saveMessageInDB = (socket, io) => {
    })
 }
 
+// SOCKET BROADCASTING TO USERS OTHER THAN SENDER/SOCKET ITSELF THAT SENDER HAS STARTED AND STOPPED TYPING:
+const IsUserTyping = (socket, io) => {
+   // ON START-TYPING EVENT:
+   socket.on("start-typing", (conversationData) => {
+      const conversationId = conversationData.convoId;
+      socket.to(conversationData.convoId).emit("user-starts-typing", conversationId);
+   })
 
+   // ON STOP-TYPING EVENT:
+   socket.on("stop-typing", (conversationData) => {
+      const conversationId = conversationData.convoId;
+      socket.to(conversationData.convoId).emit("user-stopped-typing", conversationId);
+   })
+}
 
-export { joinPersonalRoom, saveMessageInDB }
-
+export { joinPersonalRoom, saveMessageInDB, IsUserTyping }
