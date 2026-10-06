@@ -10,6 +10,9 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // ACCESS ERROR STATE FROM AUTH STORE:
+  const { error } = useSelector((store) => store.auth);
+
   // IF TOKEN IS PRESENT, NAVIGATE TO DASHBOARD:
   const store = useSelector((store) => store.auth)
   const { token } = store;
@@ -56,6 +59,13 @@ function Login() {
               onChange={handleChange}
               placeholder="Enter testing email" />
           </div>
+          {/* SHOW EMAIL IS INCORRECT IF THERE IS AN ERROR: */}
+          {
+            error.status === 400 &&
+            <div>
+              <p className="text-red-700 text-[12px]">Email is incorrect</p>
+            </div>
+          }
         </label>
         <label className="flex flex-col gap-1.5 font-medium">
           Password:
@@ -68,6 +78,13 @@ function Login() {
               onChange={handleChange}
               placeholder="Enter testing password" />
           </div>
+          {/* SHOW PASSWORD IS INCORRECT IF THERE IS AN ERROR: */}
+          {
+            error.status === 401 &&
+            <div>
+              <p className="text-red-700 text-[12px]">Password is incorrect</p>
+            </div>
+          }
         </label>
         <button className="text-white bg-amber-900 p-1.5 rounded-sm cursor-pointer mt-2">LOGIN</button>
       </form>
