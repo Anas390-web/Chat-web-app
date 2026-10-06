@@ -73,4 +73,21 @@ function leaveGroupChatRoom(socket, io) {
    })
 }
 
-export { joinGroupRoom, saveGroupMessageInDB, leaveGroupChatRoom }
+function isUserTypingInGroup(socket) {
+   // ON LISTERNING SENDER-TYPING-IN-GROUP EVENT:
+   socket.on("sender-typing-in-group", (groupId) => {
+      console.log('group id:' ,groupId)
+      // BROADCAST TO EVERYONE EXCEPT SENDER:
+      socket.to(groupId).emit("user-typing-in-group");
+   })
+
+   // ON LISTENING SENDER-STOPPED-TYPING-IN-GROUP EVENT:
+   socket.on("sender-stopped-typing-in-group", (groupId) => {
+      console.log('User stopped typing:',groupId)
+      // BROADCAST TO EVERYONE EXCEPT SENDER:
+      socket.to(groupId).emit("user-stopped-typing-in-group");
+   })
+
+}
+
+export { joinGroupRoom, saveGroupMessageInDB, leaveGroupChatRoom, isUserTypingInGroup }
