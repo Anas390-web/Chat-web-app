@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux'
 import { SendIcon } from '../../../Icons/Icons.jsx'
 import { useOutletContext } from 'react-router-dom';
 import socket from '../../../Socket/socket.js';
@@ -31,6 +31,7 @@ function Chat() {
       // GET ALL MESSAGES:
       dispatch(allMessages({ conversationId, chatUserId }))
    }
+
    // 3.2 GET THE CONVERSATION ID FROM THE SERVER:
    useEffect(() => {
       socket.on('get-conversationData', handleConversationData)
@@ -39,10 +40,37 @@ function Chat() {
       }
    }, [])
 
+   // 7. USER TYPING:
+   // SAVING IS TYPING VALUE PERSISTANT ACROSS RENDERS:
+   let isTypingRef = useRef(false);
+   // SAVING TIMER IDS PERSISTANT ACROSS RENDERS:
+   let timerIdRef = useRef(null);
+
    // 2.1: EVENT HANDLER: HANDLE CHANGE TO SAVE MESSAGE INPUT:
    function handleChange(e) {
+      // USER PRESSES A KEY, ADD IT IN MESSAGE STATE:
       setMessage(e.target.value);
+
+      // 7.1:
+      // CLEARS UP PREVIOUS TIMERS IF ANY:
+      clearTimeout(timerIdRef.current);
+
+      // START-TYPING EVENT FIRES IF IS-TYPING IS FALSE: IT REMAINS THIS WAY WHEN THE USER HAS NOT PAUSED FOR 2 SECONDS OR MORE:
+      if (!isTypingRef.current) {
+         socket.emit('start-typing', conversationData);
+         // SET IS-TYPING TO TRUE:
+         isTypingRef.current = true;
+      }
+
+      // IF USER HAS STOPPED TYPING FOR TWO SECONDS, SET TYPING TO FALSE AND EMIT THE STOP-TYPING EVENT:
+      timerIdRef.current = setTimeout(() => {
+         socket.emit("stop-typing", conversationData);
+         isTypingRef.current = false;
+         console.log('stop typing!')
+      }, 2000)
    }
+
+   
 
    // 3.3: EVENT HANDLER: HANDLE SUBMIT EMITTING 'SEND-MESSAGE EVENT:
    function handleMsgSubmit(e) {
@@ -70,9 +98,9 @@ function Chat() {
       dispatch(addLatestMsg(messageDoc))
    }
 
-   // ON ESCAPE KEY, CHAT DISAPPEARS:
+   // 6. ON ESCAPE KEY, CHAT DISAPPEARS:
    function handleEscape(event) {
-      if(event.key === 'Escape'){
+      if (event.key === 'Escape') {
          setConversationData(prev => {
             return {
                ...prev, convoId: ''
@@ -81,19 +109,19 @@ function Chat() {
       }
    }
 
-   
+
    // 5.1 RECEIVE MESSAGE EVENT UPON MOUNTING:
    useEffect(() => {
       socket.on("receive-message", handleLatestMsg)
       // ESCAPE CHAT ON KEYDOWN:
       window.addEventListener('keydown', handleEscape);
       return () => {
-         socket.off("receive-message", handleLatestMsg)
+         socket.off("receive-message", handleLatestMsg);
          // REMOVE LISTENER:
-         window.addEventListener('keydown', handleChange);
+         window.removeEventListener('keydown', handleEscape);
       }
    }, [dispatch])
-   
+
 
    return (
 
@@ -101,7 +129,7 @@ function Chat() {
          <main className="flex-1 min-h-0 flex flex-col">
             {
                conversationData.convoId && conversationData.convoId.length > 0 ?
-               <div className="flex flex-col h-full">
+                  <div className="flex flex-col h-full">
                      <ChatHeader />
                      <div className={`flex-1 overflow-y-auto ${mode === 'dark' ? "bg-[url(/images/Black-Doodle.jpg)] bg-contain bg-center" : "bg-[url(/images/White-Doodle.jpg)] bg-contain bg-center"}`}>
                         <div>
@@ -110,6 +138,7 @@ function Chat() {
                            />
                         </div>
                      </div>
+                     
                      <form onSubmit={handleMsgSubmit} className="min-h-16 flex items-center px-3 py-2 w-full box-border border border-gray-600 gap-2">
                         <input
                            className="h-10 flex-1 min-w-0 px-3 outline-none rounded border border-gray-600"
