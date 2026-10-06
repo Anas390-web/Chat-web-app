@@ -112,7 +112,10 @@ export const loginUser = createAsyncThunk(
          })
          const data = await response.json();
          if (!response.ok) {
-            return thunkApi.rejectWithValue(data)
+            return thunkApi.rejectWithValue({
+               status: response.status,
+               message: data.msg
+            })
          }
          // SAVE TOKEN TO LOCAL STORAGE:
          const token = data.token;
