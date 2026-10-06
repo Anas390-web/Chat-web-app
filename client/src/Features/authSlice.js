@@ -177,7 +177,6 @@ export const getSelectedGroupData = createAsyncThunk(
    'auth/getSelectedGroupData',
    async (groupId, thunkApi) => {
       try {
-         console.log(groupId)
          const token = localStorage.getItem("accessToken");
          const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/groups/${groupId}`, {
             method: 'GET',
@@ -187,7 +186,6 @@ export const getSelectedGroupData = createAsyncThunk(
             }
          });
          const data = await response.json();
-         console.log(data);
          if (!response.ok) {
             return thunkApi.rejectWithValue(data);
          }
