@@ -70,7 +70,26 @@ function Chat() {
       }, 2000)
    }
 
-   
+   // 7.2 ON USER STARTS AND STOP TYPING EVENTS CHANGE THE STATE:
+   const [isUserTyping, setIsUserTyping] = useState(false);
+
+   function handleUserStartsTyping(conversationId) {
+      setIsUserTyping(true)
+   }
+   function handleUserStoppedTyping(conversationId) {
+      setIsUserTyping(false)
+   }
+
+   // UPON USER TYPING STATE CHANGE:
+   useEffect(() => {
+      socket.on("user-starts-typing", handleUserStartsTyping)
+      socket.on("user-stopped-typing", handleUserStoppedTyping)
+      return () => {
+         socket.off("user-starts-typing", handleUserStartsTyping);
+         socket.off("user-stopped-typing", handleUserStoppedTyping);
+      }
+
+   }, [])
 
    // 3.3: EVENT HANDLER: HANDLE SUBMIT EMITTING 'SEND-MESSAGE EVENT:
    function handleMsgSubmit(e) {
@@ -138,7 +157,18 @@ function Chat() {
                            />
                         </div>
                      </div>
-                     
+                     {
+                        <div
+                           className={`px-4 transition-all duration-200 ease-in ${isUserTyping
+                                 ? 'opacity-100 max-h-10 py-1'
+                                 : 'opacity-30 max-h-0 py-0 overflow-hidden pointer-events-none'
+                              }`}
+                        >
+                           <div className="w-fit bg-orange-400 text-white text-xs font-semibold px-3 py-1.5 rounded-2xl shadow-sm border border-orange-600 animate-pulse">
+                              Typing...
+                           </div>
+                        </div>
+                     }
                      <form onSubmit={handleMsgSubmit} className="min-h-16 flex items-center px-3 py-2 w-full box-border border border-gray-600 gap-2">
                         <input
                            className="h-10 flex-1 min-w-0 px-3 outline-none rounded border border-gray-600"
