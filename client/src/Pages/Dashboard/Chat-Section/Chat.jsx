@@ -164,7 +164,7 @@ function Chat() {
                                  : 'opacity-30 max-h-0 py-0 overflow-hidden pointer-events-none'
                               }`}
                         >
-                           <div className="w-fit bg-orange-400 text-white text-xs font-semibold px-3 py-1.5 rounded-2xl shadow-sm border border-orange-600 animate-pulse">
+                           <div className="w-fit bg-cyan-400 text-white text-xs font-semibold px-3 py-1.5 rounded-2xl shadow-sm border border-cyan-600 animate-pulse">
                               Typing...
                            </div>
                         </div>
@@ -189,7 +189,7 @@ function Chat() {
                         <img src="/images/Owl.png" alt="Squared face owl drawing" />
                      </div>
                      <div>
-                        <p className='text-3xl text-white bg-amber-800 px-6 py-2 rounded-md'>START A CHAT</p>
+                        <p className='text-3xl text-white bg-cyan-800 px-6 py-2 rounded-md'>START A CHAT</p>
                      </div>
                   </div>
             }
