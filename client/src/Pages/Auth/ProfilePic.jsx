@@ -8,7 +8,7 @@ function ProfilePic() {
   const navigate = useNavigate();
   // SET IMAGE URL:
   const [url, setUrl] = useState('images/Blank-User-Image.png');
-  const { token, userAvatar } = useSelector((store) => store.auth);
+  const { token } = useSelector((store) => store.auth);
 
   function setPicture(imgUrl) {
     setUrl(imgUrl);
@@ -86,7 +86,7 @@ function ProfilePic() {
       </div>
       <div className="w-full flex justify-center mt-6">
         <button
-          className="bg-orange-400 py-1 px-2 rounded-sm text-white text-[14px] cursor-pointer"
+          className="bg-cyan-600 py-1 px-2 rounded-sm text-white text-[14px] cursor-pointer"
           onClick={saveAvatar}>Save Avatar</button>
       </div>
     </div>
