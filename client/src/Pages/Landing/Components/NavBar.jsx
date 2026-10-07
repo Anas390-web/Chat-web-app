@@ -10,12 +10,17 @@ function NavBar() {
    }
    return (
       <header className="h-20 flex items-center justify-between px-8 sm:px-16">
-         <h1 className='text-amber-600 text-[min(10vw,30px)] font-extrabold tracking-normal uppercase'>Chatty</h1>
+         <div className="flex items-center gap-1">
+            <div className="h-10 w-10">
+               <img className="rounded-full size-10" src="images/Sermo-logo-picture.jpg" alt="Sermo logo picture" />
+            </div>
+            <h1 className='text-cyan-700 text-[min(10vw,30px)] font-extrabold tracking-normal uppercase'>SERMO</h1>
+         </div>
          <div className="flex gap-3">
-            <button className="bg-white px-4 py-1 border text-amber-700 border-amber-700 rounded-2xl hover:text-white hover:bg-amber-700 transition ease-in duration-200 cursor-pointer" onClick={navigateToLoginPage}>
+            <button className="bg-white px-4 py-1 border text-cyan-700 border-cyan-700 rounded-2xl hover:text-white hover:bg-cyan-700 transition ease-in duration-200 cursor-pointer" onClick={navigateToLoginPage}>
                LOGIN
             </button>
-            <button className="bg-amber-700 text-white px-4 py-1 rounded-sm cursor-pointer" onClick={navigateToSignUpPage}>
+            <button className="bg-cyan-700 text-white px-4 py-1 rounded-sm cursor-pointer" onClick={navigateToSignUpPage}>
                SIGN UP
             </button>
          </div>
