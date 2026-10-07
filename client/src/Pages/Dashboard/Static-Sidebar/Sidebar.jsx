@@ -37,7 +37,7 @@ function Sidebar({ mode, handleLightMode, handleDarkMode, handleSwapComponent })
   ]
 
   return (
-    <aside className='bg-[#FF9B51]  h-screen w-24 shrink-0 flex flex-col justify-between items-center px-2 py-1 font-semibold'>
+    <aside className='bg-electric-cyan h-screen w-24 shrink-0 flex flex-col justify-between items-center px-2 py-1 font-semibold'>
       <div className='flex flex-col gap-4'>
         {/* DASHBOARD ICON */}
         <div className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'}>
