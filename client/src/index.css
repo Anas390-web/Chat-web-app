@@ -1,4 +1,24 @@
+/* FONTS */
+
+@import url('https://fonts.googleapis.com/css2?family=Chewy&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
+
+/* IMPORT TAILWIND */
+
 @import "tailwindcss";
+
+
+@theme {
+   /* FONTS */
+   --font-chewy: "Chewy", sans-serif;
+   --font-inter: "Inter", sans-serif;
+
+   /* COLORS */
+   --color-electric-cyan: #48BFE3;
+   /* INITIAL THEME */
+   --color-orange-shade: #FF9B51;
+}
 
 @layer base {
    h1 {
@@ -14,10 +34,10 @@
 
 @layer components {
    .sidebar-icons {
-      @apply h-16 w-16 flex flex-col justify-center items-center rounded-md hover:bg-amber-600 transition ease-in duration-200 cursor-pointer
+      @apply h-16 w-16 flex flex-col justify-center items-center rounded-md hover:bg-cyan-600 transition ease-in duration-200 cursor-pointer
    }
    .dark-sidebar-icons {
-      @apply h-16 w-16 flex flex-col justify-center items-center rounded-md hover:bg-amber-600 transition ease-in duration-200 cursor-pointer
+      @apply h-16 w-16 flex flex-col justify-center items-center rounded-md hover:bg-cyan-600 transition ease-in duration-200 cursor-pointer
    }
 }
 
