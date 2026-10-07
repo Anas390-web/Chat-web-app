@@ -3,6 +3,7 @@ import { addUsers } from "../../../../Features/contactsSlice.js";
 import { ClosePageIcon, CrossIcon } from "../../../../Icons/Icons.jsx";
 import { creatAGroup } from "../../../../Features/groupListSlice.js";
 import { useState } from "react";
+import { deleteLoginUser } from "../../../../Features/authSlice.js";
 
 // ALL USERS LIST AS DROP DOWN:
 function AllUsersList({ users, handleUserChange, handleRemoveUser }) {
@@ -60,7 +61,7 @@ function AddUsersButton({ users }) {
    return (
       <div className='flex w-full px-2 mb-1'>
          <button
-            className='bg-[#FF9B51] border border-amber-900 flex-1 p-1 rounded-md text-white shadow-2xl shadow-gray-400 cursor-pointer'
+            className='bg-cyan-700 border border-amber-900 flex-1 p-1 rounded-md text-white shadow-2xl shadow-gray-400 cursor-pointer'
             onClick={() => handleAddUsers(users)}>Add User</button>
       </div>
    )
@@ -71,7 +72,7 @@ function AddToGroupBtn({ openDetailsBox, users }) {
    return (
       <div className='flex w-full px-2 mb-1'>
          <button
-            className='bg-[#FF9B51] border border-amber-900 flex-1 p-1 rounded-md text-white shadow-2xl shadow-gray-400 cursor-pointer'
+            className='bg-cyan-700 border border-amber-900 flex-1 p-1 rounded-md text-white shadow-2xl shadow-gray-400 cursor-pointer'
             onClick={() => openDetailsBox()}
             disabled={users.length < 1}
          >Add users to Group</button>
@@ -89,9 +90,9 @@ function AddGroupDetails({ closeDetailsBox, users }) {
    const selectedUsers = allUsers.filter((regUser) => {
       return (users.includes(regUser._id))
    });
-   
+
    // SAVING THE GROUP DETAILS:
-   const [groupDetails, setGroupDetails]= useState({
+   const [groupDetails, setGroupDetails] = useState({
       groupName: '',
       selectedUsers: []
    });
@@ -102,7 +103,7 @@ function AddGroupDetails({ closeDetailsBox, users }) {
          }
       });
    }
-   function handleSubmit(e){
+   function handleSubmit(e) {
       e.preventDefault();
       dispatch(creatAGroup(groupDetails));
       closeDetailsBox();
@@ -141,7 +142,7 @@ function AddGroupDetails({ closeDetailsBox, users }) {
                      placeholder="add a name" />
                </label>
                <div>
-                  <p>Participants: 
+                  <p>Participants:
                      {
                         selectedUsers.map((user) => {
                            return <span key={user._id} className="mx-1 text-amber-800">{user.username}</span>
@@ -151,7 +152,7 @@ function AddGroupDetails({ closeDetailsBox, users }) {
                </div>
                <div className="flex justify-center p-2">
                   <button
-                     className="bg-orange-400 text-white w-full font-light p-1.5 rounded-md">Create a Group</button>
+                     className="bg-cyan-400 text-white w-full font-light p-1.5 rounded-md">Create a Group</button>
                </div>
             </form>
          </div>
@@ -159,4 +160,34 @@ function AddGroupDetails({ closeDetailsBox, users }) {
    )
 }
 
-export { AllUsersList, AddUsersButton, AddToGroupBtn, AddGroupDetails }
+function ConfirmDeleteAccount({ closeDeleteBox }) {
+   const dispatch = useDispatch();
+
+   // DISPATCH DELETE LOGIN USER ACCOUNT:
+   function deleteMyAccount() {
+      dispatch(deleteLoginUser());
+      closeDeleteBox();
+   }
+   return (
+      <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex justify-center items-center font-inter">
+         <div className="flex flex-col items-center sm:h-50 w-full sm:w-100 bg-white rounded-md">
+            <div className="w-full h-[50%] flex flex-col justify-center items-center bg-red-300">
+               <p className="text-2xl text-red-800">Are you sure</p>
+               <p className="text-lg text-red-800">you want to delete your account?</p>
+            </div>
+            <div className="h-[50%] flex justify-center items-center gap-2">
+               <button
+                  className="bg-green-500 text-white px-4 rounded-sm cursor-pointer"
+                  onClick={deleteMyAccount} >
+                     Yes
+                  </button>
+               <button
+                  className="bg-red-400 text-white px-4 rounded-sm cursor-pointer"
+                  onClick={closeDeleteBox}>Cancel</button>
+            </div>
+         </div>
+      </div>
+   )
+}
+
+export { AllUsersList, AddUsersButton, AddToGroupBtn, AddGroupDetails, ConfirmDeleteAccount }
