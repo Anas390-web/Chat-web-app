@@ -46,10 +46,10 @@ function Login() {
 
   return (
     <div className="h-auto w-full sm:w-120 p-8 flex-col-start justify-between gap-2 shadow-2xl  bg-slate-50">
-      <h1 className="text-amber-600">Login</h1>
+      <h1 className="text-cyan-600">Login</h1>
       <form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit}>
-        <label className="flex flex-col gap-1.5 font-medium">
-          Email:
+        <label className="flex flex-col text-cyan-900 gap-1.5 font-medium">
+          <p>Email:</p>
           <div className="bg-[#F1F1F1] border-b w-full">
             <input
               className="w-full p-1.5 rounded-sm outline-none font-light"
@@ -67,8 +67,8 @@ function Login() {
             </div>
           }
         </label>
-        <label className="flex flex-col gap-1.5 font-medium">
-          Password:
+        <label className="flex flex-col text-cyan-900 gap-1.5 font-medium">
+          <p>Password:</p>
           <div className="bg-[#F1F1F1] border-b w-full">
             <input
               className="w-full p-1.5 rounded-sm outline-none font-light"
@@ -86,7 +86,7 @@ function Login() {
             </div>
           }
         </label>
-        <button className="text-white bg-amber-900 p-1.5 rounded-sm cursor-pointer mt-2">LOGIN</button>
+        <button className="text-white bg-cyan-900 p-1.5 rounded-sm cursor-pointer mt-2">LOGIN</button>
       </form>
       <div className="flex gap-0.5">
         <p>No account?</p>
