@@ -168,21 +168,37 @@ function ConfirmDeleteAccount({ closeDeleteBox }) {
       dispatch(deleteLoginUser());
       closeDeleteBox();
    }
+
    return (
       <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex justify-center items-center font-inter">
-         <div className="flex flex-col items-center sm:h-50 w-full sm:w-100 bg-white rounded-md">
-            <div className="w-full h-[50%] flex flex-col justify-center items-center bg-red-300">
-               <p className="text-2xl text-red-800">Are you sure</p>
-               <p className="text-lg text-red-800">you want to delete your account?</p>
+         
+         <div className="flex flex-col items-center z-50 p-3 h-100 sm:h-100 w-full sm:w-100 bg-white rounded-md">
+            
+            <div className="w-full flex flex-col justify-center items-center">
+               <div className="w-full flex justify-center">
+                  <p className="text-2xl text-red-800">Are you sure?</p>
+               </div>
+               <div className="w-full">
+                  <p className="text-blue-600">Notice:</p>
+               </div>
+
+               <div className="m-2 p-3 h-40 border border-gray-500 shadow-inner shadow-gray-400 rounded-md">
+                  <ul className="text-[12px] font-light list-disc">
+                  <li className="">Deleting your account will remove your username, email, password & avatar.</li>
+                  <li className="">Your messages to other users will remain!</li>
+               </ul>
+               </div>
+
             </div>
-            <div className="h-[50%] flex justify-center items-center gap-2">
+
+            <div className=" flex justify-center items-center gap-10 flex-1">
                <button
-                  className="bg-green-500 text-white px-4 rounded-sm cursor-pointer"
+                  className="bg-red-700 text-white w-20 py-1 rounded-sm cursor-pointer"
                   onClick={deleteMyAccount} >
-                     Yes
-                  </button>
+                  Yes
+               </button>
                <button
-                  className="bg-red-400 text-white px-4 rounded-sm cursor-pointer"
+                  className="bg-green-700 text-white w-20 py-1 rounded-sm cursor-pointer"
                   onClick={closeDeleteBox}>Cancel</button>
             </div>
          </div>
