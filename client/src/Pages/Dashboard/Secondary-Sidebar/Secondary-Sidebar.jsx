@@ -4,7 +4,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom'
 import { KebabMenuIcon } from '../../../Icons/Icons.jsx';
 import { signOut } from '../../../Features/authSlice.js';
 import { Chats, Groups, Archives, Settings } from './Components/ConvoComponents.jsx';
-import { AddUsersButton, AllUsersList, AddToGroupBtn, AddGroupDetails } from './Components/OtherComponents.jsx';
+import { AddUsersButton, AllUsersList, AddToGroupBtn, AddGroupDetails, ConfirmDeleteAccount } from './Components/OtherComponents.jsx';
 import socket from '../../../Socket/socket.js';
 
 // FROM DASHBOARD
@@ -84,18 +84,37 @@ function SecondarySideBar() {
     setOpenDetails(false);
   }
 
+  const [isDeleteBoxOpen, setIisDeleteBoxOpen] = useState(false);
+
+  function openDeleteBox() {
+    setIisDeleteBoxOpen(true);
+  }
+  function closeDeleteBox() {
+    setIisDeleteBoxOpen(false);
+  }
+
   return (
-    <aside className="h-screen w-full sm:w-70 lg:w-100 flex flex-col justify-start font-semibold border border-gray-600">
-      <div className="flex flex-col gap-2">
-        <div className="bg-[#FF9B51] border-b border-gray-600 h-20 flex items-center justify-between px-4 shrink-0 relative">
-          <h1 className='text-white tracking-wide uppercase'>chatty</h1>
+    <aside className="h-screen w-full overflow-hidden sm:w-70 lg:w-100 flex flex-col justify-start font-semibold border border-gray-600 shadow">
+
+        <div className="bg-electric-cyan border-b border-gray-600 h-20 flex items-center justify-between px-4 shrink-0 relative">
+
+          <div className='flex gap-1.5 items-center'>
+            <div className='w-12 h-12'>
+              <img className='size-12 rounded-full' src="images/Sermo-logo-picture.jpg" alt="Sermo app logo" />
+            </div>
+
+            <h1 className='text-white tracking-wide text-[40px] font-cherry-bomb-one'>Sermo</h1>
+          </div>
+
 
           <div className='cursor-pointer relative' onClick={toggleMenu}>
             <KebabMenuIcon />
             {
               isMenuOpen &&
               <div className='flex flex-col bg-white w-40 mt-2 absolute right-0'>
-                <button className='text-left text-red-500 flex-1 min-w-0 p-2 mx-1 border-b hover:bg-gray-100 cursor-pointer'>Delete user</button>
+                <button
+                  className='text-left text-red-500 flex-1 min-w-0 p-2 mx-1 border-b hover:bg-gray-100 cursor-pointer'
+                  onClick={openDeleteBox}>Delete account</button>
                 <button
                   onClick={handleSignOut}
                   className='text-left flex-1 min-w-0 p-2 mx-1 border-b hover:bg-gray-100 cursor-pointer'
@@ -106,7 +125,7 @@ function SecondarySideBar() {
         </div>
 
         <div className="h-10 flex items-center mb-1 px-2">
-          <h2 className={mode === 'dark' ? 'text-white' : 'text-black'}>Messages (25)</h2>
+          <h2 className={mode === 'dark' ? 'text-white' : 'text-black'}>Messages</h2>
         </div>
         <AllUsersList
           users={users}
@@ -133,16 +152,23 @@ function SecondarySideBar() {
             closeDetailsBox={closeDetailsBox} />
         }
         {
+          isDeleteBoxOpen &&
+          <ConfirmDeleteAccount
+            closeDeleteBox={closeDeleteBox} />
+        }
+        {
           components.map((barComponent) => {
 
             return barComponent.id === componentId && (
-              <div key={barComponent.id}>
+              <div
+                key={barComponent.id}
+                className='h-full flex flex-col min-h-0 overflow-hidden' >
                 {barComponent.component}
               </div>
             )
           })
         }
-      </div>
+
     </aside>
   )
 }
