@@ -82,7 +82,10 @@ export const registerUser = createAsyncThunk(
 
          // IF THERE IS NO RESPONSE, EXPLICITLY STOPS THE EXECUTION AS CATCH BLOCK DOES NOT CATCH THE HTTP STATUS CODES
          if (!response.ok) {
-            return thunkApi.rejectWithValue(data);
+            return thunkApi.rejectWithValue({
+               status : response?.status,
+               message: data?.msg
+            });
          }
 
          // SETTING THE ACCESS TOKEN TO THE LOCALSTORAGE
@@ -285,6 +288,33 @@ export const updateUsernameAndAvatar = createAsyncThunk(
    }
 )
 
+// DELETE USER FROM THE DB:
+export const deleteLoginUser = createAsyncThunk(
+   'auth/deleteUser',
+   async(_, thunkApi) => {
+      try {
+         const token = localStorage.getItem("accessToken");
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth`, {
+            method: 'DELETE',
+            headers: {
+               'Authorization': `Bearer ${token}`,
+               'Content-type': 'application/json'
+            }
+         });
+         const data = await response.json();
+         if(!response.ok) {
+            return thunkApi.rejectWithValue({
+               status: response.status,
+               message: data.msg
+            })
+         }
+         return data;
+      } catch (error) {
+         console.log('Error while requesting to delete the user:', error.message);
+         return thunkApi.rejectWithValue(error.message);
+      }
+   }
+)
 const authSlice = createSlice({
    name: 'register',
    initialState,
