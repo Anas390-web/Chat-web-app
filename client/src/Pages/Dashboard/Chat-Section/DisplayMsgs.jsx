@@ -52,7 +52,7 @@ function MsgBubble({ userIdToChatWith }) {
 
                return messageDoc.senderId._id !== userIdToChatWith ? (
                   <div key={messageDoc._id} className="flex flex-col items-end">
-                     <div className="flex flex-col w-fit p-2 my-1.5 mr-6 rounded-md bg-orange-200">
+                     <div className="flex flex-col w-fit p-2 my-1.5 mr-6 rounded-md bg-cyan-100 text-black">
                         <div>
                            <p className="font-bold">You</p>
                            <p>{messageDoc.messageContent}</p>
@@ -73,7 +73,7 @@ function MsgBubble({ userIdToChatWith }) {
                               <p className={`${color} font-bold`}>{messageDoc?.senderId?.username}</p>
                               <p>{messageDoc.messageContent}</p>
                            </div>
-                           <div className="flex justify-between gap-2">
+                           <div className="flex justify-between gap-2 text-black">
                               <button className="text-[12px] cursor-pointer">Edit</button>
                               <div className="text-[12px]">{formatTime(messageDoc.createdAt)}</div>
                            </div>
@@ -146,7 +146,7 @@ function GroupMsgBubble() {
                return isSenderId ? (
 
                   <div key={groupMsgDoc._id} className="flex flex-col items-end">
-                     <div className="flex flex-col w-fit p-2 my-1.5 mr-6 rounded-md bg-orange-200">
+                     <div className="flex flex-col w-fit p-2 my-1.5 mr-6 rounded-md bg-cyan-100">
                         <div className="text-black">
                            <p className="font-bold">You</p>
                            <p>{groupMsgDoc.messageContent}</p>
@@ -168,10 +168,10 @@ function GroupMsgBubble() {
                               <p className={`${color} font-bold`}>{username}</p>
                               <p>{groupMsgDoc.messageContent}</p>
                            </div>
-                           <div className="flex justify-between gap-2">
+                           <div className="flex justify-between gap-2 text-black">
                               <button className="text-[12px] cursor-pointer">Edit</button>
                               <div className="text-[12px]">
-                                 <p>{formatTime(groupMsgDoc?.createdAt)}</p>
+                                 <p className="text-black">{formatTime(groupMsgDoc?.createdAt)}</p>
                               </div>
                            </div>
                         </div>
