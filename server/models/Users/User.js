@@ -28,6 +28,10 @@ const UserSchema = new mongoose.Schema({
    userAvatarUrl: {
       type: String,
       default: null
+   },
+   accountStatus: {
+      type: String,
+      default: 'activeUser'
    }
 })
 
