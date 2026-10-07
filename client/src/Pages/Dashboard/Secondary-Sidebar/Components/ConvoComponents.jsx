@@ -40,19 +40,23 @@ function Chats({ users }) {
 
    const { mode } = useOutletContext();
    return (
-      <>
+      <div className="flex-1 overflow-y-auto min-h-0">
          {
             contactList.map((contact) => {
                return (
                   <div key={contact._id} className={`flex gap-2 m-2 p-2 rounded-md shadow shadow-gray-700
-                     ${mode === 'dark' ? 'border border-gray-600' : ' border-orange-700'}
+                     ${mode === 'dark' ? 'border border-gray-600' : ' bg-white'}
                      ${selectedChatId === contact._id ? 'bg-blue-200 text-black' : ''}`}
 
                      onClick={() => getUserId(contact._id)}>
                      <div className='h-10 w-10 border border-gray-600 rounded-full'>
                         <img
                            className="rounded-full p-0.5"
-                           src={contact.userAvatarUrl} alt="" />
+                           src={
+                              contact.userAvatarUrl ?
+                                 contact.userAvatarUrl
+                                 : BlankImage
+                           } alt="" />
                      </div>
                      <div className="cursor-pointer">
                         <div>
@@ -67,7 +71,7 @@ function Chats({ users }) {
                )
             })
          }
-      </>
+      </div>
    )
 }
 
@@ -103,11 +107,11 @@ function Groups() {
    }
 
    return (
-      <>
+      <div className="flex-1 overflow-y-auto min-h-0">
          {
             allGroupsList.map((group) => {
                return (
-                  <div key={group._id} className={`flex gap-2 mx-2 my-2 p-2 rounded-md cursor-pointer ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
+                  <div key={group._id} className={`flex gap-2 mx-2 my-2 p-2 rounded-md shadow shadow-gray-700 cursor-pointer ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
                      <div className='h-10 w-10 border border-gray-600 rounded-full'>
                         <img src={BlankImage} alt="" />
                      </div>
@@ -123,7 +127,7 @@ function Groups() {
                )
             })
          }
-      </>
+      </div>
    )
 }
 
@@ -151,7 +155,7 @@ function Settings() {
    const dispatch = useDispatch();
 
    // ACCESSING THE AVATAR AND USERNAME FROM STORE:
-   const { username, loggedInUserId, userAvatar } = useSelector((store) => store.auth);
+   const { username, userAvatar } = useSelector((store) => store.auth);
 
    // ACCESSING THE TOKEN FROM LOCAL STORAGE:
    const token = localStorage.getItem("accessToken");
@@ -243,9 +247,9 @@ function Settings() {
                   } alt="" />
             </div>
             <div>
-               { username }
+               {username}
             </div>
-            <div className="bg-amber-600 text-white rounded-sm">
+            <div className="bg-cyan-600 text-white rounded-sm">
                <button
                   className="px-2 py-0.5 font-light cursor-pointer text-[13px] shadow"
                   onClick={showEditingOptions}>Edit Profile</button>
@@ -285,7 +289,7 @@ function Settings() {
                      </div>
                   </label>
                   <button
-                     className="bg-amber-600 text-white text-[14px] font-light py-1 rounded-sm shadow cursor-pointer mb-2">Confirm Changes</button>
+                     className="bg-cyan-600 text-white text-[14px] font-light py-1 rounded-sm shadow cursor-pointer mb-2">Confirm Changes</button>
                </form>
                <div className="w-full">
                   <button
