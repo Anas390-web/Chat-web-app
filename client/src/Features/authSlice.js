@@ -133,8 +133,9 @@ export const loginUser = createAsyncThunk(
 // GET ALL THE USERS:
 export const getAllUsers = createAsyncThunk(
    'auth/getAllUsers',
-   async (token, thunkApi) => {
+   async (_, thunkApi) => {
       try {
+         const token = localStorage.getItem("accessToken");
          const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth`, {
             method: 'GET',
             headers: {
@@ -290,11 +291,11 @@ export const updateUsernameAndAvatar = createAsyncThunk(
 
 // DELETE USER FROM THE DB:
 export const deleteLoginUser = createAsyncThunk(
-   'auth/deleteUser',
+   'auth/deleteLoginUser',
    async(_, thunkApi) => {
       try {
          const token = localStorage.getItem("accessToken");
-         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth`, {
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/deleteMe`, {
             method: 'DELETE',
             headers: {
                'Authorization': `Bearer ${token}`,
@@ -308,6 +309,7 @@ export const deleteLoginUser = createAsyncThunk(
                message: data.msg
             })
          }
+         localStorage.removeItem("accessToken");
          return data;
       } catch (error) {
          console.log('Error while requesting to delete the user:', error.message);
@@ -423,6 +425,21 @@ const authSlice = createSlice({
             state.username = action.payload.username;
          })
          .addCase(updateUsernameAndAvatar.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+         })
+         // AFTER GETTING LOGGED IN USER DATA:
+         .addCase(deleteLoginUser.pending, (state) => {
+            state.isLoading = true;
+         })
+         .addCase(deleteLoginUser.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.token = null;
+            state.userAvatar= null;
+            state.username = null;
+            state.loggedInUserId = null;
+         })
+         .addCase(deleteLoginUser.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.payload;
          })
