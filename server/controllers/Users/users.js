@@ -12,6 +12,31 @@ const registerUser = async (req, res) => {
             msg: 'Please provide username, email and password'
          })
       }
+      // FIND USER IF IT ALREADY EXISTS:
+      const existingUser = await User.findOne(
+         {
+            $or: [
+               { username: username },
+               { email: email }
+            ]
+         }
+      )
+      // IF USERNAME IS ALREADY TAKEN, SEND BACK ERROR:
+      if (existingUser) {
+         if (existingUser.username === username) {
+            return res.status(StatusCodes.CONFLICT).json({
+               msg: 'USERNAME ALREADY EXISTS'
+            })
+         }
+      }
+      // IF EMAIL IS ALREADY TAKEN, SEND BACK ERROR:
+      if (existingUser) {
+         if (existingUser.email === email) {
+            return res.status(StatusCodes.CONFLICT).json({
+               msg: 'EMAIL ALREADY EXISTS'
+            })
+         }
+      }
       // SAVE USER DATA TO DB:
       const user = await User.create({
          username,
@@ -47,18 +72,27 @@ const loginUser = async (req, res) => {
          })
       }
       // FIND THE USER FROM DB
-      const user = await User.findOne({ email })
-      if (!user) {
+      const user = await User.findOne({ email });
+
+      // CHECK IF USER DOES NOT EXIST OR DELETED:
+      if (!user || user.accountStatus === 'deletedUser' || user.isDeleted === true) {
          console.log('User does not exist');
-         return res.status(StatusCodes.BAD_REQUEST).json({
-            msg: 'Invalid credentials'
+         return res.status(StatusCodes.UNAUTHORIZED).json({
+            msg: 'INVALID CREDENTIALS'
+         })
+      };
+
+      // CHECK IF USER IN NOT DELETED:
+      if(!user.password) {
+         res.status(StatusCodes.UNAUTHORIZED).json({
+            msg: 'INVALID CREDENTIALS'
          })
       }
       // VERIFY PASSWORD:
       const isPasswordCorrect = await user.comparePassword(password);
       if (!isPasswordCorrect) {
          return res.status(StatusCodes.UNAUTHORIZED).json({
-            msg: 'Invalid credentials'
+            msg: 'INVALID CREDENTIALS'
          })
       }
       // CREATION OF TOKEN:
@@ -95,7 +129,8 @@ const getAllUsers = async (req, res) => {
       }
       // SEND BACK THE ALL THE USERS EXCEPT YOURSELF:
       const allUsersExceptCurrent = allUsers.filter((user) => {
-         return String(user._id) !== userId;
+         const isUserDeleted = user.username.split("_")[0] !== 'deleted'
+         return String(user._id) !== userId && isUserDeleted;
       })
 
       res.status(StatusCodes.OK).json({
@@ -127,7 +162,7 @@ const getUserToChatWithData = async (req, res) => {
          {
             _id: userToChatWithId
          }
-      ).select("-password -userAvatarUrl");
+      ).select("-password -userAvatarUrl -accountStatus");
 
       // IF REQUESTED USER DOES NOT EXIST:
       if (!userToChatWith) {
