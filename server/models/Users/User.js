@@ -32,6 +32,10 @@ const UserSchema = new mongoose.Schema({
    accountStatus: {
       type: String,
       default: 'activeUser'
+   },
+   isDeleted: {
+      type: Boolean,
+      default: false
    }
 })
 
