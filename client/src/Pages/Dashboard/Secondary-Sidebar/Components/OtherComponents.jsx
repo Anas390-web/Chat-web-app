@@ -4,6 +4,7 @@ import { ClosePageIcon, CrossIcon } from "../../../../Icons/Icons.jsx";
 import { creatAGroup } from "../../../../Features/groupListSlice.js";
 import { useState } from "react";
 import { deleteLoginUser } from "../../../../Features/authSlice.js";
+import { useNavigate } from "react-router-dom";
 
 // ALL USERS LIST AS DROP DOWN:
 function AllUsersList({ users, handleUserChange, handleRemoveUser }) {
@@ -22,8 +23,18 @@ function AllUsersList({ users, handleUserChange, handleRemoveUser }) {
                {
                   allUsers.length > 0 &&
                   allUsers.map((user) => {
+                     const deletedUser = String(user.username.split("_")[0])
+                     const isUserDeleted = deletedUser === 'deleted'
                      return (
-                        <option className='text-black' key={user._id} value={user._id}>{user.username}</option>
+                        <option
+                           className='text-black'
+                           key={user._id}
+                           value={user._id}>{
+                           isUserDeleted ?
+                           'Deleted user'
+                           :
+                           user.username
+                        }</option>
                      )
                   })
                }
