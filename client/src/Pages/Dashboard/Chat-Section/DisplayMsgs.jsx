@@ -49,7 +49,7 @@ function MsgBubble({ userIdToChatWith }) {
          {
             allMessagesDocs && allMessagesDocs.length > 0 &&
             allMessagesDocs.map((messageDoc) => {
-
+               const isUserDeleted = messageDoc?.senderId?.username.split("_")[0] === "deleted";
                return messageDoc.senderId._id !== userIdToChatWith ? (
                   <div key={messageDoc._id} className="flex flex-col items-end">
                      <div className="flex flex-col w-fit p-2 my-1.5 mr-6 rounded-md bg-cyan-100 text-black">
@@ -70,7 +70,15 @@ function MsgBubble({ userIdToChatWith }) {
                      <div key={messageDoc._id} className="flex flex-col items-start">
                         <div className="flex flex-col w-fit p-2 my-1.5 ml-6 rounded-md bg-white">
                            <div className="text-black">
-                              <p className={`${color} font-bold`}>{messageDoc?.senderId?.username}</p>
+                              <p className={`${color} font-bold`}>
+                                 {
+                                    messageDoc &&
+                                       isUserDeleted ?
+                                       'Deleted_user'
+                                       :
+                                       messageDoc?.senderId?.username
+                                 }
+                              </p>
                               <p>{messageDoc.messageContent}</p>
                            </div>
                            <div className="flex justify-between gap-2 text-black">
