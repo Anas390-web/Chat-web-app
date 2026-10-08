@@ -37,7 +37,7 @@ function Sidebar({ mode, handleLightMode, handleDarkMode, handleSwapComponent })
   ]
 
   return (
-    <aside className='bg-electric-cyan h-screen w-24 shrink-0 flex flex-col justify-between items-center px-2 py-1 font-semibold'>
+    <aside className='bg-electric-cyan h-screen w-16 sm:w-24 shrink-0 flex flex-col justify-between items-center px-2 py-1 font-semibold'>
       <div className='flex flex-col gap-4'>
         {/* DASHBOARD ICON */}
         <div className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'}>
@@ -48,9 +48,9 @@ function Sidebar({ mode, handleLightMode, handleDarkMode, handleSwapComponent })
         {
           barIcons.map((barIcon) => {
             return (
-              <div key={barIcon.id} onClick={() => handleSwapComponent(barIcon.id)} className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'}>
-                <img className='size-7' src={barIcon.src} alt="Chats Icon" />
-                <p>{barIcon.title}</p>
+              <div key={barIcon?.id} onClick={() => handleSwapComponent(barIcon?.id)} className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'}>
+                <img className='size-7' src={barIcon?.src} alt={barIcon?.title} />
+                <p className='hidden sm:block'>{barIcon?.title}</p>
               </div>
             )
           })
