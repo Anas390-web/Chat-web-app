@@ -11,6 +11,7 @@ import Landing from './Pages/Landing/Landing.jsx'
 import store from '../store.js'
 import { Provider } from 'react-redux'
 import ProfilePic from './Pages/Auth/ProfilePic.jsx'
+import PageNotFound from './Pages/Page-Not-Found/PageNotFound.jsx'
 
 
 const router = createBrowserRouter(
@@ -18,6 +19,7 @@ const router = createBrowserRouter(
     <>
       <Route path='/dashboard/' element={<DashboardLayout />}>
         <Route path='' element={<Dashboard />} />
+        <Route path='pageNotFound' element={<PageNotFound />} />
       </Route>
       <Route path='/' element={<AuthLayout />}>
         {/* MAKING ROOT ELEMENT SIGNUP */}
