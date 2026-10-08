@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux'
 import { SendIcon } from '../../../Icons/Icons.jsx'
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import socket from '../../../Socket/socket.js';
 import { MsgBubble } from './DisplayMsgs.jsx';
 import { addLatestMsg, allMessages } from '../../../Features/messagesSlice.js';
@@ -9,6 +9,7 @@ import ChatHeader from './chatHeader.jsx';
 
 function Chat() {
    const dispatch = useDispatch();
+   const navigate = useNavigate();
    // 1. DE-STRUCTURING MODE FROM THE LAYOUT OUTLET CONTEXT:
    const { mode } = useOutletContext();
 
@@ -124,10 +125,9 @@ function Chat() {
             return {
                ...prev, convoId: ''
             }
-         })
+         });
       }
    }
-
 
    // 5.1 RECEIVE MESSAGE EVENT UPON MOUNTING:
    useEffect(() => {
@@ -140,6 +140,10 @@ function Chat() {
          window.removeEventListener('keydown', handleEscape);
       }
    }, [dispatch])
+
+   // MOBILE SCREENS VIEWPORT SIZE:
+   const viewPortWidth = window.innerWidth;
+   const isMobileScreen = viewPortWidth <= 639;
 
 
    return (
@@ -160,8 +164,8 @@ function Chat() {
                      {
                         <div
                            className={`px-4 transition-all duration-200 ease-in ${isUserTyping
-                                 ? 'opacity-100 max-h-10 py-1'
-                                 : 'opacity-30 max-h-0 py-0 overflow-hidden pointer-events-none'
+                              ? 'opacity-100 max-h-10 py-1'
+                              : 'opacity-30 max-h-0 py-0 overflow-hidden pointer-events-none'
                               }`}
                         >
                            <div className="w-fit bg-cyan-400 text-white text-xs font-semibold px-3 py-1.5 rounded-2xl shadow-sm border border-cyan-600 animate-pulse">
