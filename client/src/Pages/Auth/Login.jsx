@@ -63,7 +63,14 @@ function Login() {
           {
             error.status === 400 &&
             <div>
-              <p className="text-red-700 text-[12px]">Email is incorrect</p>
+              <p className="text-red-700 text-[12px]">
+                {
+                  error ?
+                  error?.message
+                  :
+                  'Email is incorrect'
+                }
+              </p>
             </div>
           }
         </label>
@@ -82,7 +89,15 @@ function Login() {
           {
             error.status === 401 &&
             <div>
-              <p className="text-red-700 text-[12px]">Password is incorrect</p>
+              <p className="text-red-700 text-[12px]">
+                {
+                  error ?
+                  error?.message
+                  :
+                  'Password is incorrect'
+                  
+                }
+              </p>
             </div>
           }
         </label>
