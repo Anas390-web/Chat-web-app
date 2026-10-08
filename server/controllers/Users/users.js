@@ -83,7 +83,7 @@ const loginUser = async (req, res) => {
       };
 
       // CHECK IF USER IN NOT DELETED:
-      if(!user.password) {
+      if (!user.password) {
          res.status(StatusCodes.UNAUTHORIZED).json({
             msg: 'INVALID CREDENTIALS'
          })
@@ -344,4 +344,48 @@ const updateUsernameAndAvatar = async (req, res) => {
    }
 }
 
-export { registerUser, loginUser, getAllUsers, getUserToChatWithData, getSelectedGroupData, setAvatarUrl, getLoggedInUserData, updateUsernameAndAvatar }
+const deleteLoginUser = async (req, res) => {
+   try {
+      // DE-STRUCTURE USER ID FROM USER AUTHENTICATION:
+      const { userId } = req.user;
+      console.log(userId);
+      // UPDATE THE LOGIN USER ACCOUNT FIELD WITH DELETED OR NULL VALUES:
+      const deletedAccount = await User.findOneAndUpdate(
+         {
+            _id: userId
+         },
+         {
+            $set: {
+               username: `deleted_user_${userId}`,
+               email: `deleted_user_${userId}@deleted.com`,
+               password: null,
+               userAvatarUrl: null,
+               accountStatus: 'deletedUser',
+               isDeleted: true
+            }
+         },
+         {
+            returnDocument: 'after', runValidators: false
+         }
+      )
+
+      // LOG AN ERROR IF ACCOUNT WAS NOT DELETED:
+      if (!deletedAccount) {
+         console.log('COULD NOT DELETE LOGGED-IN USER ACCOUNT');
+         return;
+      }
+
+      // SEND BACK THE FINAL RESPONSE WITH MSG OF THE REMOVAL OF USER:
+      res.status(StatusCodes.OK).json({
+         msg: 'USER HAS BEEN REMOVED'
+      })
+
+   } catch (error) {
+      console.log('ERROR OCCURED DURING THE REMOVAL OF USER ACCOUNT INFORMATION:', error.message);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         msg: 'INTERNAL_SERVER_ERROR'
+      })
+   }
+}
+
+export { registerUser, loginUser, getAllUsers, getUserToChatWithData, getSelectedGroupData, setAvatarUrl, getLoggedInUserData, updateUsernameAndAvatar, deleteLoginUser }
