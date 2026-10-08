@@ -12,7 +12,7 @@ import { getSelectedGroupData, getUserToChatWithData, getLoggedInUserData, updat
 
 const BlankImage = '/images/Blank-User-Image.png';
 
-function Chats({ users }) {
+function Chats({ users, getContactUserId }) {
    const dispatch = useDispatch();
    const { contactList } = useSelector((store) => store.contacts);
 
@@ -43,24 +43,36 @@ function Chats({ users }) {
       <div className="flex-1 overflow-y-auto min-h-0">
          {
             contactList.map((contact) => {
+               const deletedContact = contact?.username.split("_")[0];
+               const isDeletedContact = deletedContact === 'deleted';
                return (
-                  <div key={contact._id} className={`flex gap-2 m-2 p-2 rounded-md shadow shadow-gray-700
+                  <div key={contact?._id} className={`flex gap-2 m-2 p-2 rounded-md shadow shadow-gray-700
                      ${mode === 'dark' ? 'border border-gray-600' : ' bg-white'}
-                     ${selectedChatId === contact._id ? 'bg-blue-200 text-black' : ''}`}
+                     ${selectedChatId === contact?._id ? 'bg-blue-200 text-black' : ''}`}
 
-                     onClick={() => getUserId(contact._id)}>
+                     onClick={() => {
+                        getUserId(contact?._id)
+                        getContactUserId(contact?._id)
+                     }}>
                      <div className='h-10 w-10 border border-gray-600 rounded-full'>
                         <img
                            className="rounded-full p-0.5"
                            src={
-                              contact.userAvatarUrl ?
-                                 contact.userAvatarUrl
+                              contact?.userAvatarUrl ?
+                                 contact?.userAvatarUrl
                                  : BlankImage
                            } alt="" />
                      </div>
                      <div className="cursor-pointer">
                         <div>
-                           <p>{contact.username}</p>
+                           <p>
+                              {
+                                 isDeletedContact ?
+                                 'Deleted_user'
+                                 :
+                                 contact?.username
+                              }
+                           </p>
                            <div></div>
                         </div>
                         <div>
