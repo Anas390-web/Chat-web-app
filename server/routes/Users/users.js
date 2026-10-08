@@ -1,5 +1,5 @@
 import express from 'express'
-import { registerUser, loginUser, getAllUsers, getUserToChatWithData, getSelectedGroupData, setAvatarUrl, getLoggedInUserData, updateUsernameAndAvatar } from '../../controllers/Users/users.js';
+import { registerUser, loginUser, getAllUsers, getUserToChatWithData, getSelectedGroupData, setAvatarUrl, getLoggedInUserData, updateUsernameAndAvatar, deleteLoginUser } from '../../controllers/Users/users.js';
 import userAuthentication from '../../middlewares/Auth/auth.js';
 
 const authRouter = express.Router();
@@ -12,6 +12,7 @@ authRouter.route('/loggedInUserData').get(userAuthentication, getLoggedInUserDat
 authRouter.route('/:userToChatWithId').get(userAuthentication, getUserToChatWithData);
 authRouter.route('/groups/:selectedGroupId').get(userAuthentication, getSelectedGroupData);
 authRouter.route('/settings').put(userAuthentication, updateUsernameAndAvatar);
+authRouter.route('/deleteMe').delete(userAuthentication, deleteLoginUser);
 
 
 export default authRouter
