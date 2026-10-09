@@ -34,7 +34,6 @@ function MsgBubble({ userIdToChatWith }) {
    function randomColorName() {
       const randomNum = Math.floor(Math.random() * 8)
       const randomColor = colors[randomNum];
-      console.log(randomColor);
       return randomColor;
    }
 
