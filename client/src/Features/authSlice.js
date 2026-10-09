@@ -324,6 +324,12 @@ const authSlice = createSlice({
       signOut: (state) => {
          localStorage.removeItem("accessToken");
          state.token = ''
+      },
+      removeSelectedUserData : (state) => {
+         state.selectedUserToChatData = {};
+      },
+      removeSelectedGroupData : (state) => {
+         state.selectedGroupToChatData = {};
       }
    },
    extraReducers: (builder) => {
@@ -448,6 +454,6 @@ const authSlice = createSlice({
 
 const authReducer = authSlice.reducer;
 
-export const { signOut, removePrevAvatar } = authSlice.actions;
+export const { signOut, removePrevAvatar, removeSelectedUserData, removeSelectedGroupData } = authSlice.actions;
 
 export { authReducer }
