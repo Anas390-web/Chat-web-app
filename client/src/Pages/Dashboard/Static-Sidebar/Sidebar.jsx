@@ -4,12 +4,10 @@ const Dashboard = '/images/Dashboard.png';
 const Chats = '/images/chats.png';
 const Groups = '/images/groups.png';
 const Settings = '/images/settings.png';
-const Archives = '/images/Archives.png';
 
 const WhiteDashboard = '/images/White-dashboard.png'
 const WhiteChats = '/images/White-chats.png'
 const WhiteGroups = '/images/White-groups.png'
-const WhiteArchives = '/images/White-archives.png'
 const WhiteSettings = '/images/White-settings.png'
 
 function Sidebar({ mode, handleLightMode, handleDarkMode, handleSwapComponent }) {
