@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom'
 import Sidebar from '../Pages/Dashboard/Static-Sidebar/Sidebar.jsx'
-import { getAllUsers } from '../Features/authSlice.js';
+import { getAllUsers, removeSelectedGroupData, removeSelectedUserData } from '../Features/authSlice.js';
 import { useDispatch, useSelector } from 'react-redux'
-import { NavLink } from 'react-router-dom';
 import socket from '../Socket/socket.js'
 import PageNotFound from '../Pages/Page-Not-Found/PageNotFound.jsx';
 
@@ -42,6 +41,10 @@ function DashboardLayout() {
    const [componentId, setComponentId] = useState(null);
    function handleSwapComponent(getCompId) {
       setComponentId(getCompId);
+      // REMOVE THE SELECTED USER DATA:
+      // CHAT MOBILE RESPONSIVENESS:
+      dispatch(removeSelectedUserData());
+      dispatch(removeSelectedGroupData());
    }
    // const { token } = useSelector((store) => store.auth);
    // DARK/LIGHT MODE:
