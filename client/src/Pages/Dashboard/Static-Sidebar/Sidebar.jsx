@@ -25,11 +25,6 @@ function Sidebar({ mode, handleLightMode, handleDarkMode, handleSwapComponent })
       src: mode === 'dark' ? WhiteGroups : Groups,
     },
     {
-      id: 3,
-      title: 'Archives',
-      src: mode === 'dark' ? WhiteArchives : Archives,
-    },
-    {
       id: 4,
       title: 'Settings',
       src: mode === 'dark' ? WhiteSettings : Settings,
