@@ -4,6 +4,7 @@ import { contactListReducer } from "./src/Features/contactsSlice.js";
 import messagesReducer from "./src/Features/messagesSlice.js";
 import { groupListReducer } from "./src/Features/groupListSlice.js";
 import { idsReducer } from "./src/Features/idsSlice.js";
+import screenReducer from "./src/Features/screenSlice.js";
 
 const store = configureStore({
    reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
       contacts: contactListReducer,
       messages: messagesReducer,
       groups: groupListReducer,
-      ids: idsReducer
+      ids: idsReducer,
+      screen: screenReducer
    }
 })
 
