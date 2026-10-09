@@ -9,12 +9,13 @@ import { getPersonalChatId, getGroupId } from "../../../../Features/idsSlice.js"
 import { allGroupMessages } from "../../../../Features/messagesSlice.js";
 import { getSelectedGroupData, getUserToChatWithData, getLoggedInUserData, updateUsernameAndAvatar } from "../../../../Features/authSlice.js";
 
-
 const BlankImage = '/images/Blank-User-Image.png';
 
-function Chats({ users, getContactUserId }) {
+// CHATS/CONTACTS LIST DISPLAYED ON THE SECONDARY SIDEBAR WHEN USER CLICKS ON CHATS ON THE STATIC SIDEBAR:
+function Chats({ users }) {
    const dispatch = useDispatch();
    const { contactList } = useSelector((store) => store.contacts);
+   const { mode } = useOutletContext();
 
    // USER CLICKS ON THE CHAT AND IT BECOMES DARKER THAN OTHERS:
    const [selectedChatId, setSelectedChatId] = useState('');
@@ -38,9 +39,8 @@ function Chats({ users, getContactUserId }) {
       dispatch(addUsers(users));
    }, [dispatch])
 
-   const { mode } = useOutletContext();
    return (
-      <div className="flex-1 overflow-y-auto min-h-0">
+      <div className='flex-1 overflow-y-auto min-h-0'>
          {
             contactList.map((contact) => {
                const deletedContact = contact?.username.split("_")[0];
@@ -50,10 +50,7 @@ function Chats({ users, getContactUserId }) {
                      ${mode === 'dark' ? 'border border-gray-600' : ' bg-white'}
                      ${selectedChatId === contact?._id ? 'bg-blue-200 text-black' : ''}`}
 
-                     onClick={() => {
-                        getUserId(contact?._id)
-                        getContactUserId(contact?._id)
-                     }}>
+                     onClick={() => getUserId(contact?._id)}>
                      <div className='h-10 w-10 border border-gray-600 rounded-full'>
                         <img
                            className="rounded-full p-0.5"
@@ -68,9 +65,9 @@ function Chats({ users, getContactUserId }) {
                            <p>
                               {
                                  isDeletedContact ?
-                                 'Deleted_user'
-                                 :
-                                 contact?.username
+                                    'Deleted_user'
+                                    :
+                                    contact?.username
                               }
                            </p>
                            <div></div>
@@ -86,6 +83,8 @@ function Chats({ users, getContactUserId }) {
       </div>
    )
 }
+
+// GROUP LIST DISPLAYED ON THE SECONDARY SIDEBAR WHEN USER CLICKS ON GROUPS ON THE STATIC SIDEBAR:
 
 function Groups() {
    const dispatch = useDispatch();
@@ -143,24 +142,7 @@ function Groups() {
    )
 }
 
-function Archives() {
-   const { mode } = useOutletContext();
-   return (
-      <div className={`flex gap-2 mx-2 p-2 rounded-md ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
-         <div className='h-10 w-10 border border-gray-600 rounded-full'>
-            <img src={BlankImage} alt="" />
-         </div>
-         <div>
-            <div>
-               <p>User</p>
-            </div>
-            <div>
-               <p className='font-light text-sm'>Latest message from user</p>
-            </div>
-         </div>
-      </div>
-   )
-}
+// EDIT PROFILE SETTINGS THAT GETS DISPLAYED WHEN USER CLICKS ON SETTINGS ON THE STATIC SIDEBAR:
 
 function Settings() {
    const { mode } = useOutletContext();
@@ -314,4 +296,4 @@ function Settings() {
    )
 }
 
-export { Chats, Groups, Archives, Settings }
+export { Chats, Groups, Settings }
