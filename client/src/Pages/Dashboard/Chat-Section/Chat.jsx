@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { SendIcon } from '../../../Icons/Icons.jsx'
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import socket from '../../../Socket/socket.js';
 import { MsgBubble } from './DisplayMsgs.jsx';
 import { addLatestMsg, allMessages } from '../../../Features/messagesSlice.js';
 import ChatHeader from './chatHeader.jsx';
+import { handleScreen } from '../../../Features/screenSlice.js';
+import { removeSelectedUserData } from '../../../Features/authSlice.js';
 
 function Chat() {
    const dispatch = useDispatch();
@@ -119,6 +121,7 @@ function Chat() {
    }
 
    // 6. ON ESCAPE KEY, CHAT DISAPPEARS:
+   const { selectedUserToChatData } = useSelector((store) => store.auth);
    function handleEscape(event) {
       if (event.key === 'Escape') {
          setConversationData(prev => {
@@ -126,7 +129,11 @@ function Chat() {
                ...prev, convoId: ''
             }
          });
+         if (selectedUserToChatData) {
+            dispatch(removeSelectedUserData());
+         }
       }
+
    }
 
    // 5.1 RECEIVE MESSAGE EVENT UPON MOUNTING:
@@ -140,11 +147,6 @@ function Chat() {
          window.removeEventListener('keydown', handleEscape);
       }
    }, [dispatch])
-
-   // MOBILE SCREENS VIEWPORT SIZE:
-   const viewPortWidth = window.innerWidth;
-   const isMobileScreen = viewPortWidth <= 639;
-
 
    return (
 
