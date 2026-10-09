@@ -7,6 +7,7 @@ import { GroupMsgBubble } from './DisplayMsgs.jsx';
 import GroupHeader from './GroupHeader.jsx';
 import { addLatestGroupMsg } from '../../../Features/messagesSlice.js';
 import { removeGroupId } from '../../../Features/idsSlice.js'
+import { removeSelectedGroupData, removeSelectedUserData } from '../../../Features/authSlice.js';
 
 function Group() {
    const dispatch = useDispatch();
@@ -91,9 +92,16 @@ function Group() {
    }, [dispatch, groupId, socket])
 
    // 5. HANDLER FUNCTION TO GET OUT OF GROUP CHATS ON KEYDOWN:
+   const { selectedGroupToChatData } = useSelector((store) => store.auth);
+
    function handleEscape(event) {
       if (event.key === 'Escape') {
          dispatch(removeGroupId());
+
+         // FOR GROUP CHAT MOBILE RESPONSIVENESS:
+         if(selectedGroupToChatData) {
+            dispatch(removeSelectedGroupData());
+         }
       }
    }
 
