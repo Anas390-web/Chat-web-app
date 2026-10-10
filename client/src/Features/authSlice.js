@@ -7,6 +7,7 @@ const initialState = {
    username: getUserNameFromToken() || '',
    userAvatar: {},
    token: localStorage.getItem('accessToken') || '',
+   onlineUsers: [],
    selectedUserToChatData: {},
    selectedGroupToChatData: {},
    isLoading: '',
@@ -330,6 +331,9 @@ const authSlice = createSlice({
       },
       removeSelectedGroupData : (state) => {
          state.selectedGroupToChatData = {};
+      },
+      addOnlineUsers: (state, action) => {
+         state.onlineUsers = action.payload;
       }
    },
    extraReducers: (builder) => {
@@ -454,6 +458,6 @@ const authSlice = createSlice({
 
 const authReducer = authSlice.reducer;
 
-export const { signOut, removePrevAvatar, removeSelectedUserData, removeSelectedGroupData } = authSlice.actions;
+export const { signOut, removePrevAvatar, removeSelectedUserData, removeSelectedGroupData, addOnlineUsers } = authSlice.actions;
 
 export { authReducer }
