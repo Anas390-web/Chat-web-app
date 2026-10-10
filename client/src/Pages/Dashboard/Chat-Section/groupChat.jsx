@@ -7,7 +7,7 @@ import { GroupMsgBubble } from './DisplayMsgs.jsx';
 import GroupHeader from './GroupHeader.jsx';
 import { addLatestGroupMsg } from '../../../Features/messagesSlice.js';
 import { removeGroupId } from '../../../Features/idsSlice.js'
-import { removeSelectedGroupData, removeSelectedUserData } from '../../../Features/authSlice.js';
+import { removeSelectedGroupData } from '../../../Features/authSlice.js';
 
 function Group() {
    const dispatch = useDispatch();
