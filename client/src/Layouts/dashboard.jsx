@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom'
 import Sidebar from '../Pages/Dashboard/Static-Sidebar/Sidebar.jsx'
-import { getAllUsers, removeSelectedGroupData, removeSelectedUserData } from '../Features/authSlice.js';
+import { addOnlineUsers, getAllUsers, removeSelectedGroupData, removeSelectedUserData } from '../Features/authSlice.js';
 import { useDispatch, useSelector } from 'react-redux'
 import socket from '../Socket/socket.js'
 import PageNotFound from '../Pages/Page-Not-Found/PageNotFound.jsx';
+import { removeGroupId } from '../Features/idsSlice.js';
 
 function DashboardLayout() {
    const dispatch = useDispatch();
@@ -41,6 +42,9 @@ function DashboardLayout() {
    const [componentId, setComponentId] = useState(null);
    function handleSwapComponent(getCompId) {
       setComponentId(getCompId);
+
+      // TO REMOVE GROUP CHAT WHEN COMPONENT SWAPS:
+      dispatch(removeGroupId());
       // REMOVE THE SELECTED USER DATA:
       // CHAT MOBILE RESPONSIVENESS:
       dispatch(removeSelectedUserData());
@@ -72,6 +76,18 @@ function DashboardLayout() {
          dispatch(getAllUsers(token))
       }
    }, [dispatch, token])
+
+   // GET THE ONLINE USERS FROM SERVER:
+   useEffect(() => {
+      function handleOnlineUsers(onlineUsers) {
+         dispatch(addOnlineUsers(onlineUsers));
+      }
+      socket.on("online-users", handleOnlineUsers)
+      return () => {
+         socket.off("online-users", handleOnlineUsers)
+
+      }
+   }, [dispatch, componentId])
    return (
       <>
          {
