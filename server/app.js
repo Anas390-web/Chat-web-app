@@ -42,10 +42,31 @@ io.use((socket, next) => {
    socketAuth(socket, next)
 })
 
-// CONNECTION WITH CLIENT:
+// CREATE A MAP TO SEND BACK THE ONLINE USERS:
+let onlineUsersMap = new Map();
 
+// CONNECTION WITH CLIENT:
 io.on('connection', (socket) => {
    console.log('CONNECTED WITH CLIENT', socket.id)
+
+   // DE-STRUCTURE FROM SOCKET USER AUTHENTICATION:
+   const { userId } = socket.user;
+   
+   // IF THE USER ID DOES NOT EXIST AS KEY THEN GIVE THE USERID KEY A SET AS IT VALUE;
+   if(!onlineUsersMap.has(userId)) {
+      onlineUsersMap.set(userId, new Set());
+   }
+   // NOW GET THE SAVED USER ID:
+   const socketsSet = onlineUsersMap.get(userId);
+   
+   // ADD THE SOCKET.ID TO ITS SET: (.add is Set method)
+   socketsSet.add(socket.id);
+
+   // CONVERTING THE MAP KEYS(USERIDs) INTO THE ARRAY AS CLIENT JSON DOES NOT SERIELIZE THE MAP:
+   const onlineUsers = Array.from(onlineUsersMap.keys());
+   // EMITTING THE ONLINE USERS TO THE CLIENT:
+   socket.emit("online-users", onlineUsers);
+
    // JOIN-ROOM LISTENER:
    joinPersonalRoom(socket, io);
    // SAVE MESSAGES IN THE DB:
@@ -63,6 +84,19 @@ io.on('connection', (socket) => {
    // UPON USER DISCONNECTING:
    socket.on('disconnect', () => {
       console.log('CLIENT DISCONNECTED', socket.id);
+
+      // GETTING SOCKETS SET FROM INSIDE THE MAP:
+      const usersSocketsSet = onlineUsersMap.get(userId);
+      // IF SET OF USERS SOCKETS EXIST, DELETE THE SOCKET CONNECTION WHEN SOCKET IS DISCONNECTED:
+      if(usersSocketsSet) {
+         usersSocketsSet.delete(socket.id)
+      }
+
+      // IF ALL USER SOCKETS ARE DISCONNECTED, REMOVE THE USERID FROM THE ONLINE USERS MAP:
+      if(usersSocketsSet.size === 0) {
+         onlineUsersMap.delete(userId);
+      }
+
    })
 })
 
@@ -80,3 +114,4 @@ const start = async () => {
 }
 
 start();
+
