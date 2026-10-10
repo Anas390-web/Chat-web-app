@@ -103,7 +103,7 @@ function Groups() {
       socket.emit('join-group-room')
       return () => {
          // LEAVE THE GROUP CHAT ROOM UPON UNMOUNTING:
-         socket.emit('leave-group-chat-room', groupId);
+         socket.emit('leave-group-chat-room');
       }
    }, [dispatch])
 
