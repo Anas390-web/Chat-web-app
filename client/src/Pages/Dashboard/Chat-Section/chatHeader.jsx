@@ -36,7 +36,7 @@ function ChatHeader() {
           </p>
           <div>
             {
-              onlineUsers && selectedUserToChatData &&
+              !isUserDeleted && onlineUsers && selectedUserToChatData &&
               <p
                 className={`transition-all duration-1000 ease-in ${onlineUsers.includes(selectedUserToChatData?._id) ?
                     'opacity-100 max-h-6' : 'opacity-100 max-h-6 overflow-hidden'
