@@ -162,7 +162,7 @@ const getUserToChatWithData = async (req, res) => {
          {
             _id: userToChatWithId
          }
-      ).select("-password -userAvatarUrl -accountStatus");
+      ).select("-password -accountStatus");
 
       // IF REQUESTED USER DOES NOT EXIST:
       if (!userToChatWith) {
