@@ -6,14 +6,13 @@ import socket from '../../../Socket/socket.js';
 import { MsgBubble } from './DisplayMsgs.jsx';
 import { addLatestMsg, allMessages } from '../../../Features/messagesSlice.js';
 import ChatHeader from './chatHeader.jsx';
-import { handleScreen } from '../../../Features/screenSlice.js';
 import { removeSelectedUserData } from '../../../Features/authSlice.js';
 
 function Chat() {
    const dispatch = useDispatch();
    const navigate = useNavigate();
    // 1. DE-STRUCTURING MODE FROM THE LAYOUT OUTLET CONTEXT:
-   const { mode } = useOutletContext();
+   const { mode, componentId } = useOutletContext();
 
    // 2. STATE FOR THE MESSAGES:
    const [message, setMessage] = useState('');
@@ -147,6 +146,18 @@ function Chat() {
          window.removeEventListener('keydown', handleEscape);
       }
    }, [dispatch])
+
+   // IF COMPONENT ID CHANGES MEANS COMPONENT SWAP HAPPENS, REMOVE THE CHAT:
+   const { isMobileScreen } = useSelector((store) => store.screen);
+   useEffect(() => {
+      if (!isMobileScreen) {
+         setConversationData((prev) => {
+            return {
+               ...prev, convoId: ''
+            }
+         })
+      }
+   }, [componentId])
 
    return (
 
