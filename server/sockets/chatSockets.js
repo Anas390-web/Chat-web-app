@@ -3,6 +3,7 @@ import Message from '../models/Messages/Message.js'
 
 // JOINING THE IDENTICAL ID PERSONAL ROOM FOR BOTH USERS:
 const joinPersonalRoom = (socket, io) => {
+
    socket.on('join-room', async ({ chatUserId }) => {
       try {
          // FROM PAYLOAD IN SOCKET AUTHENTICATION FUNCTION:
@@ -28,10 +29,18 @@ const joinPersonalRoom = (socket, io) => {
          }
          // CONVERTING OBJECTID TO STRING:
          const conversationId = conversation._id.toString();
+
+         // LEAVING PREVIOUS ROOMS: (IF ANY)
+         for(const room of socket.rooms) { // ARRAY OF ROOMS
+            if(room !== socket.id){
+               socket.leave(room);
+            }
+         }
          // JOINING THE ROOM:
          socket.join(conversationId);
          // SENDING CONVERSATION ROOM ID:
          socket.emit('get-conversationData', { conversationId, chatUserId });
+
       } catch (error) {
          console.log(error.message);
          return error.message;
