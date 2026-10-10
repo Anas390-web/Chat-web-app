@@ -31,6 +31,8 @@ const joinGroupRoom = (socket) => {
 }
 
 function saveGroupMessageInDB(socket, io) {
+   // LISTEN TO THE SEND GROUP MESSAGE EVENT:
+   
    socket.on('send-group-message', async ({ groupMessage, groupId }) => {
       try {
          // USER ID FROM TOKEN AUTHENTICAITON FROM SOCKET AUTH:
@@ -62,12 +64,26 @@ function saveGroupMessageInDB(socket, io) {
 }
 
 function leaveGroupChatRoom(socket, io) {
-   socket.on('leave-group-chat-room', async (groupId) => {
+   socket.on('leave-group-chat-room', async () => {
       try {
-         // LEAVING THE ROOM UPON UNMOUNTING:
-         socket.leave(groupId);
+         const { userId } = socket.user;
+         // FIND ALL THE GROUPS WHERE LOGGED-IN USER IS A MEMBER:
+         const groups = await Conversation.find({
+            isGroup: true,
+            participants: userId
+         }).select("_id").lean() //NO MORE DOCUMENT DATA/FUNCTIONS ATTACHED, ONLY IDS;
+         
+         if(!groups || groups.length < 1) {
+            console.log('NO GROUPS FOUND DURING SOCKETS QUERY:', userId);
+            return;
+         }
+         
+         // LEAVING EACH GROUP ROOM UPON UNMOUNTING:
+         groups.forEach((group) => {
+            socket.leave((group._id).toString())
+         })
       } catch (error) {
-         console.log(error.message);
+         console.log('ERROR OCCURED DURING FINDING THE GROUPS IN SOCKETS QUERY' ,error.message);
          return;
       }
    })
