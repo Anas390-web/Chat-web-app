@@ -296,7 +296,6 @@ export const searchUsers = createAsyncThunk(
    'auth/searchUsers',
    async(username, thunkApi) => {
       try {
-         console.log(username)
          const token = localStorage.getItem("accessToken");
          const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/searchUsers?username=${username}`, {
             method: 'GET',
@@ -312,7 +311,7 @@ export const searchUsers = createAsyncThunk(
                message: data.msg
             })
          }
-         console.log(data);
+         
          return data;
       } catch (error) {
          console.log('ERROR OCCURRED DURING REQUESTING FOR SEARCHED USERS:', error.message);
@@ -340,7 +339,7 @@ export const searchGroups = createAsyncThunk(
                message: data.msg
             })
          }
-         console.log(data);
+
          return data;
       } catch (error) {
          console.log('ERROR OCCURRED DURING REQUESTING FOR SEARCHED GROUPS:', error.message);
@@ -499,6 +498,30 @@ const authSlice = createSlice({
             state.isLoading = false;
             state.error = action.payload;
          })
+         // AFTER GETTING SEARCHED USERS ARRAY:
+         .addCase(searchUsers.pending, (state) => {
+            state.isLoading = true;
+         })
+         .addCase(searchUsers.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.searchedUsers = action.payload.searchedUsers;
+         })
+         .addCase(searchUsers.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+         })
+         // AFTER GETTING SEARCHED GROUPS ARRAY:
+         .addCase(searchGroups.pending, (state) => {
+            state.isLoading = true;
+         })
+         .addCase(searchGroups.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.searchedGroups = action.payload.searchedGroups;
+         })
+         .addCase(searchGroups.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+         })
          // AFTER GETTING LOGGED IN USER DATA:
          .addCase(deleteLoginUser.pending, (state) => {
             state.isLoading = true;
@@ -519,6 +542,6 @@ const authSlice = createSlice({
 
 const authReducer = authSlice.reducer;
 
-export const { signOut, removePrevAvatar, removeSelectedUserData, removeSelectedGroupData, addOnlineUsers } = authSlice.actions;
+export const { signOut, removePrevAvatar, removeSelectedUserData, removeSelectedGroupData, addOnlineUsers, removeSearchedUsers, removeSearchedGroups } = authSlice.actions;
 
 export { authReducer }
