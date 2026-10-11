@@ -344,6 +344,35 @@ const updateUsernameAndAvatar = async (req, res) => {
    }
 }
 
+const searchUsers = async (req, res) => {
+   try {
+      // DE-STRUCTURE USERNAME FROM QUERY PARAMETERS:
+      const username = req.query.username;
+      console.log(username);
+      // FIND ALL THE USERS THAT HAVE THE NAME AND ITS LETTERS:
+      const searchedUsers = await User.find(
+         { username: { $regex: username, $options: 'i' } }
+      ).select("-password -email -accountStatus");
+      console.log(searchedUsers);
+      // IF NO USERS FOUND:
+      if(searchedUsers.length < 0) {
+         return res.status(StatusCodes.NOT_FOUND).json({
+            msg: 'NO USERS FOUND'
+         })
+      }
+      // RESPOND WITH THE SEARCHED USERS:
+      res.status(StatusCodes.OK).json({
+         msg: 'USERS FOUND',
+         searchedUsers
+      })
+   } catch (error) {
+      console.log('ERROR OCCURED WHILE FINDING SEARCHED USERS')
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         msg: 'INTERNAL_SERVER_ERROR'
+      })
+   }
+}
+
 const deleteLoginUser = async (req, res) => {
    try {
       // DE-STRUCTURE USER ID FROM USER AUTHENTICATION:
@@ -388,4 +417,4 @@ const deleteLoginUser = async (req, res) => {
    }
 }
 
-export { registerUser, loginUser, getAllUsers, getUserToChatWithData, getSelectedGroupData, setAvatarUrl, getLoggedInUserData, updateUsernameAndAvatar, deleteLoginUser }
+export { registerUser, loginUser, getAllUsers, getUserToChatWithData, getSelectedGroupData, setAvatarUrl, getLoggedInUserData, updateUsernameAndAvatar, searchUsers, searchGroups, deleteLoginUser }
