@@ -2,9 +2,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUsers } from "../../../../Features/contactsSlice.js";
 import { ClosePageIcon, CrossIcon } from "../../../../Icons/Icons.jsx";
 import { creatAGroup } from "../../../../Features/groupListSlice.js";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { deleteLoginUser } from "../../../../Features/authSlice.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { SearchIcon } from "../../../../Icons/Icons.jsx";
+import { searchUsers, searchGroups } from "../../../../Features/authSlice.js";
 
 // ALL USERS LIST AS DROP DOWN:
 function AllUsersList({ users, handleUserChange, handleRemoveUser }) {
@@ -30,11 +32,11 @@ function AllUsersList({ users, handleUserChange, handleRemoveUser }) {
                            className='text-black'
                            key={user._id}
                            value={user._id}>{
-                           isUserDeleted ?
-                           'Deleted user'
-                           :
-                           user.username
-                        }</option>
+                              isUserDeleted ?
+                                 'Deleted user'
+                                 :
+                                 user.username
+                           }</option>
                      )
                   })
                }
@@ -182,9 +184,9 @@ function ConfirmDeleteAccount({ closeDeleteBox }) {
 
    return (
       <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex justify-center items-center font-inter">
-         
+
          <div className="flex flex-col items-center z-50 p-3 h-100 sm:h-100 w-full sm:w-100 bg-white rounded-md">
-            
+
             <div className="w-full flex flex-col justify-center items-center">
                <div className="w-full flex justify-center">
                   <p className="text-2xl text-red-800">Are you sure?</p>
@@ -195,9 +197,9 @@ function ConfirmDeleteAccount({ closeDeleteBox }) {
 
                <div className="m-2 p-3 h-40 border border-gray-500 shadow-inner shadow-gray-400 rounded-md">
                   <ul className="text-[12px] font-light list-disc">
-                  <li className="">Deleting your account will remove your username, email, password & avatar.</li>
-                  <li className="">Your messages to other users will remain!</li>
-               </ul>
+                     <li className="">Deleting your account will remove your username, email, password & avatar.</li>
+                     <li className="">Your messages to other users will remain!</li>
+                  </ul>
                </div>
 
             </div>
@@ -217,4 +219,106 @@ function ConfirmDeleteAccount({ closeDeleteBox }) {
    )
 }
 
-export { AllUsersList, AddUsersButton, AddToGroupBtn, AddGroupDetails, ConfirmDeleteAccount }
+function SearchUser() {
+   const dispatch = useDispatch();
+   // SEARCH PARAMS:
+   const [searchParams, setSearchParams] = useSearchParams();
+
+   // TIMER ID:
+   const timerIdRef = useRef(null);
+   // USER SEARCHING:
+   const isUserSearchingRef = useRef(false);
+
+   // HANDLER FUNCTION TO GET THE SEARCHED VALUE:
+   function handleSearchChange(e) {
+      const username = e.target.value;
+
+      clearTimeout(timerIdRef.current);
+      isUserSearchingRef.current = true;
+
+      setSearchParams(prev => {
+         // IF SOMETHING IS TYPED:
+         if (username) {
+            // SET 'username' as QUERY PARAMETER WITH WHATEVER IS SEARCHED AS VALUE:
+            prev.set('username', username);
+            return prev;
+         } else {
+            // IF NO USERNAME IS TYPED, CLEAR THE QUERY PARAMETER:
+            prev.delete('username')
+         }
+      })
+
+      // DISPATCH SEARCH USERS REQUEST WITH 1.5 SECONDS:
+      timerIdRef.current = setTimeout(() => {
+         if (username) {
+            dispatch(searchUsers(username))
+            isUserSearchingRef.current = false;
+         }
+      }, 800)
+   }
+
+   function handleSearchSubmit(e) {
+      e.preventDefault();
+   }
+   // GET THE SEARCH PARAMETER NAME:
+   const currentUsername = searchParams.get('username') || '';
+
+   return (
+      <form onSubmit={handleSearchSubmit} className=" h-10 w-full flex mb-1 px-2">
+         <input
+            className="h-10 text-black bg-gray-300 w-full p-2 rounded-lg"
+            value={currentUsername}
+            onChange={handleSearchChange}
+            type="text"
+            placeholder="Search" />
+         <div className="bg-cyan-200 w-12 flex items-center justify-center ml-1 border rounded-md">
+            <button className="text-black cursor-pointer">
+               <SearchIcon />
+            </button>
+         </div>
+      </form>
+   )
+}
+
+function SearchGroup() {
+   // SEARCH PARAMS:
+   const [searchParams, setSearchParams] = useSearchParams();
+
+   // HANDLER FUNCTION TO GET THE SEARCHED VALUE:
+   function handleSearchChange(e) {
+      const groupName = e.target.value;
+
+      setSearchParams(prev => {
+         // IF SOMETHING IS TYPED:
+         if (groupName) {
+            // SET 'groupName' as QUERY PARAMETER WITH WHATEVER IS SEARCHED AS VALUE:
+            prev.set('groupName', groupName);
+            return prev;
+         }
+      })
+   }
+
+   function handleSearchSubmit(e) {
+      e.preventDefault();
+   }
+   // GET THE SEARCH PARAMETER VALUE:
+   const currentGroupName = searchParams.get('groupName') || '';
+
+   return (
+      <form onSubmit={handleSearchSubmit} className=" h-10 w-full flex mb-1 px-2">
+         <input
+            className="h-10 text-black bg-gray-300 w-full p-2 rounded-lg"
+            value={currentGroupName}
+            onChange={handleSearchChange}
+            type="text"
+            placeholder="Search" />
+         <div className="bg-cyan-200 w-12 flex items-center justify-center ml-1 border rounded-md">
+            <button className="text-black cursor-pointer">
+               <SearchIcon />
+            </button>
+         </div>
+      </form>
+   )
+}
+
+export { AllUsersList, AddUsersButton, AddToGroupBtn, AddGroupDetails, SearchUser, SearchGroup, ConfirmDeleteAccount }
