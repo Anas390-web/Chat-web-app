@@ -254,7 +254,7 @@ function SearchUser() {
             dispatch(searchUsers(username))
             isUserSearchingRef.current = false;
          }
-      }, 800)
+      }, 400)
    }
 
    function handleSearchSubmit(e) {
@@ -264,15 +264,15 @@ function SearchUser() {
    const currentUsername = searchParams.get('username') || '';
 
    return (
-      <form onSubmit={handleSearchSubmit} className=" h-10 w-full flex mb-1 px-2">
+      <form onSubmit={handleSearchSubmit} className=" h-10 w-full flex my-1 px-2">
          <input
             className="h-10 text-black bg-gray-300 w-full p-2 rounded-lg"
             value={currentUsername}
             onChange={handleSearchChange}
             type="text"
             placeholder="Search" />
-         <div className="bg-cyan-200 w-12 flex items-center justify-center ml-1 border rounded-md">
-            <button className="text-black cursor-pointer">
+         <div className="bg-cyan-600 w-12 flex items-center justify-center ml-1 border border-white rounded-md">
+            <button className="text-white cursor-pointer">
                <SearchIcon />
             </button>
          </div>
@@ -281,39 +281,63 @@ function SearchUser() {
 }
 
 function SearchGroup() {
-   // SEARCH PARAMS:
+   const dispatch = useDispatch();
+   //1. SEARCH PARAMS:
    const [searchParams, setSearchParams] = useSearchParams();
+   // 1.1. GET THE SEARCH PARAMETER VALUE:
+   const currentGroupName = searchParams.get('groupName') || '';
 
-   // HANDLER FUNCTION TO GET THE SEARCHED VALUE:
+   // 2. DISPATCH THE SEARCH GROUPS AFTER THE USER HAS STOPPED TYPING:
+   const timerIdRef = useRef(null);
+   const isUserSearchingRef = useRef(false);
+
+   // 1.2. HANDLER TO GET SEARCHED GROUP NAME:
    function handleSearchChange(e) {
       const groupName = e.target.value;
 
-      setSearchParams(prev => {
-         // IF SOMETHING IS TYPED:
+      // 2.1. CLEAR ALL THE PREVIOUS TIMER IDS:
+      clearTimeout(timerIdRef.current);
+      // 2.2. SET USER SEARCHING TO TRUE:
+      isUserSearchingRef.current = true;
+
+      // 1.3. SET THE "groupName" AS QUERY SEARCH PARAMETER AND STORE THE SEARCHED VALUE:
+      setSearchParams((prev) => {
          if (groupName) {
-            // SET 'groupName' as QUERY PARAMETER WITH WHATEVER IS SEARCHED AS VALUE:
-            prev.set('groupName', groupName);
+            prev.set('groupName', groupName)
             return prev;
+         } else {
+            // DELETE THE "groupName" QUERY PARAM WHEN SEARCH BAR IS EMPTY:
+            prev.delete('groupName')
+            return prev;
+
          }
       })
+
+      // 2.3. DISPATCH THE SEARCH GROUPS AFTER USER HAS STOPPED TYPING:
+      timerIdRef.current = setTimeout(() => {
+         if (groupName) {
+            dispatch(searchGroups(groupName));
+
+            // 2.4. SET TO IS USER SEARCHING FALSE WHEN USER HAS STOPPED TYPING:
+            isUserSearchingRef.current = false;
+         }
+      }, 400)
    }
 
+   // 1.4. HANDLER TO SUBMIT THE FORM:
    function handleSearchSubmit(e) {
       e.preventDefault();
    }
-   // GET THE SEARCH PARAMETER VALUE:
-   const currentGroupName = searchParams.get('groupName') || '';
-
    return (
-      <form onSubmit={handleSearchSubmit} className=" h-10 w-full flex mb-1 px-2">
+      <form onSubmit={handleSearchSubmit} className=" h-10 w-full flex my-1 px-2">
          <input
             className="h-10 text-black bg-gray-300 w-full p-2 rounded-lg"
             value={currentGroupName}
             onChange={handleSearchChange}
             type="text"
             placeholder="Search" />
-         <div className="bg-cyan-200 w-12 flex items-center justify-center ml-1 border rounded-md">
-            <button className="text-black cursor-pointer">
+         <div className="bg-cyan-600 w-12 flex items-center justify-center ml-1 border border-white rounded-md">
+            <button className="text-white cursor-pointer">
                <SearchIcon />
             </button>
          </div>
