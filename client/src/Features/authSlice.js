@@ -10,6 +10,8 @@ const initialState = {
    onlineUsers: [],
    selectedUserToChatData: {},
    selectedGroupToChatData: {},
+   searchedUsers: [],
+   searchedGroups: [],
    isLoading: '',
    error: ''
 }
@@ -289,6 +291,65 @@ export const updateUsernameAndAvatar = createAsyncThunk(
       }
    }
 )
+
+export const searchUsers = createAsyncThunk(
+   'auth/searchUsers',
+   async(username, thunkApi) => {
+      try {
+         console.log(username)
+         const token = localStorage.getItem("accessToken");
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/searchUsers?username=${username}`, {
+            method: 'GET',
+            headers: {
+               'Authorization': `Bearer ${token}`,
+               'Content-type': 'application/json'
+            }
+         });
+         const data = await response.json();
+         if(!response.ok) {
+            return thunkApi.rejectWithValue({
+               status: response.status,
+               message: data.msg
+            })
+         }
+         console.log(data);
+         return data;
+      } catch (error) {
+         console.log('ERROR OCCURRED DURING REQUESTING FOR SEARCHED USERS:', error.message);
+         return thunkApi.rejectWithValue(error.message);
+      }
+   }
+)
+
+export const searchGroups = createAsyncThunk(
+   'auth/searchGroups',
+   async(groupName, thunkApi) => {
+      try {
+         const token = localStorage.getItem("accessToken");
+         const response = await fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/auth/searchGroups?groupName=${groupName}`, {
+            method: 'GET',
+            headers: {
+               'Authorization': `Bearer ${token}`,
+               'Content-type': 'application/json'
+            }
+         });
+         const data = await response.json();
+         if(!response.ok) {
+            return thunkApi.rejectWithValue({
+               status: response.status,
+               message: data.msg
+            })
+         }
+         console.log(data);
+         return data;
+      } catch (error) {
+         console.log('ERROR OCCURRED DURING REQUESTING FOR SEARCHED GROUPS:', error.message);
+         return thunkApi.rejectWithValue(error.message);
+      }
+   }
+)
+
+
 
 // DELETE USER FROM THE DB:
 export const deleteLoginUser = createAsyncThunk(
