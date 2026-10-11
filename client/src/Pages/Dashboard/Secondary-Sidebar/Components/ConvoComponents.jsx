@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useOutletContext } from "react-router-dom"
+import { useOutletContext, useSearchParams } from "react-router-dom"
 import { useDispatch } from "react-redux";
 import { addUsers } from "../../../../Features/contactsSlice.js";
 import socket from "../../../../Socket/socket.js";
@@ -15,8 +15,17 @@ const BlankImage = '/images/Blank-User-Image.png';
 // CHATS/CONTACTS LIST DISPLAYED ON THE SECONDARY SIDEBAR WHEN USER CLICKS ON CHATS ON THE STATIC SIDEBAR:
 function Chats({ users }) {
    const dispatch = useDispatch();
+
+   const [searchParams, setSearchParams] = useSearchParams();
+
+   const currentUsername = searchParams.get("username");
+
+   // ACCESSING THE CONTACT LIST FROM THE CONTACTS STORE:
    const { contactList } = useSelector((store) => store.contacts);
    const { mode } = useOutletContext();
+
+   // ACCESSING THE SEARCHED USERS LIST FROM AUTH STORE:
+   const { searchedUsers } = useSelector((store) => store.auth);
 
    // USER CLICKS ON THE CHAT AND IT BECOMES DARKER THAN OTHERS:
    const [selectedChatId, setSelectedChatId] = useState('');
@@ -43,44 +52,93 @@ function Chats({ users }) {
    return (
       <div className='flex-1 overflow-y-auto min-h-0'>
          <SearchUser />
-         {
-            contactList.map((contact) => {
-               const deletedContact = contact?.username.split("_")[0];
-               const isDeletedContact = deletedContact === 'deleted';
-               return (
-                  <div key={contact?._id} className={`flex gap-2 m-2 p-2 rounded-md shadow shadow-gray-700
+         {currentUsername && currentUsername.length > 0 ?
+            <>
+               {
+                  searchedUsers.map((user) => {
+                     const deletedContact = user?.username.split("_")[0];
+                     const isDeletedContact = deletedContact === 'deleted';
+                     return (
+
+                        <div
+                           key={user?._id} className={`flex gap-2 m-2 p-2 rounded-md shadow shadow-gray-700
+                              ${mode === 'dark' ? 'border border-gray-600' : ' bg-white'}
+                              ${selectedChatId === user?._id ? 'bg-blue-200 text-black' : ''}`}
+
+                           onClick={() => getUserId(user?._id)}>
+                           <div className='h-10 w-10 border border-gray-600 rounded-full'>
+                              <img
+                                 className="rounded-full p-0.5"
+                                 src={
+                                    user?.userAvatarUrl ?
+                                       user?.userAvatarUrl
+                                       : BlankImage
+                                 } alt="" />
+                           </div>
+                           <div className="cursor-pointer">
+                              <div>
+                                 <p>
+                                    {
+                                       isDeletedContact ?
+                                          'Deleted_user'
+                                          :
+                                          user?.username
+                                    }
+                                 </p>
+                                 <div></div>
+                              </div>
+                              <div>
+                                 <p className='font-light text-sm'>Latest message from chats</p>
+                              </div>
+                           </div>
+                        </div>
+                     )
+
+                  })
+               }
+            </>
+            :
+            <>
+               {
+                  contactList.map((contact) => {
+                     const deletedContact = contact?.username.split("_")[0];
+                     const isDeletedContact = deletedContact === 'deleted';
+                     return (
+                        <div key={contact?._id} className={`flex gap-2 m-2 p-2 rounded-md shadow shadow-gray-700
                      ${mode === 'dark' ? 'border border-gray-600' : ' bg-white'}
                      ${selectedChatId === contact?._id ? 'bg-blue-200 text-black' : ''}`}
 
-                     onClick={() => getUserId(contact?._id)}>
-                     <div className='h-10 w-10 border border-gray-600 rounded-full'>
-                        <img
-                           className="rounded-full p-0.5"
-                           src={
-                              contact?.userAvatarUrl ?
-                                 contact?.userAvatarUrl
-                                 : BlankImage
-                           } alt="" />
-                     </div>
-                     <div className="cursor-pointer">
-                        <div>
-                           <p>
-                              {
-                                 isDeletedContact ?
-                                    'Deleted_user'
-                                    :
-                                    contact?.username
-                              }
-                           </p>
-                           <div></div>
+                           onClick={() => getUserId(contact?._id)}>
+                           <div className='h-10 w-10 border border-gray-600 rounded-full'>
+                              <img
+                                 className="rounded-full p-0.5"
+                                 src={
+                                    contact?.userAvatarUrl ?
+                                       contact?.userAvatarUrl
+                                       : BlankImage
+                                 } alt="" />
+                           </div>
+                           <div className="cursor-pointer">
+                              <div>
+                                 <p>
+                                    {
+                                       isDeletedContact ?
+                                          'Deleted_user'
+                                          :
+                                          contact?.username
+                                    }
+                                 </p>
+                                 <div></div>
+                              </div>
+                              <div>
+                                 <p className='font-light text-sm'>Latest message from chats</p>
+                              </div>
+                           </div>
                         </div>
-                        <div>
-                           <p className='font-light text-sm'>Latest message from chats</p>
-                        </div>
-                     </div>
-                  </div>
-               )
-            })
+                     )
+                  })
+               }
+            </>
          }
       </div>
    )
@@ -96,8 +154,13 @@ function Groups() {
    // ACCESS ALL THE GROUPS WHICH INVOLVES THE LOGGED-IN USER:
    const { allGroupsList } = useSelector((store) => store.groups);
 
-   // ACCESS GROUP ID FROM STORE:
-   const { groupId } = useSelector((store) => store.ids);
+   // GET GROUP NAME FROM SEARCH PARAMS:
+   const [searchParams, setSearchParams] = useSearchParams();
+
+   const currentGroupName = searchParams.get("groupName");
+
+   // ACCESS SEARCHED GROUPS FROM THE AUTH STORE:
+   const { searchedGroups } = useSelector((store) => store.auth);
 
    useEffect(() => {
       dispatch(allGroups());
@@ -123,23 +186,50 @@ function Groups() {
       <div className="flex-1 overflow-y-auto min-h-0">
          <SearchGroup />
          {
-            allGroupsList.map((group) => {
-               return (
-                  <div key={group._id} className={`flex gap-2 mx-2 my-2 p-2 rounded-md shadow shadow-gray-700 cursor-pointer ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
-                     <div className='h-10 w-10 border border-gray-600 rounded-full'>
-                        <img src={BlankImage} alt="" />
-                     </div>
-                     <div onClick={() => handleGroup(group._id)}>
-                        <div>
-                           <p>{group.groupName}</p>
+            currentGroupName && currentGroupName.length > 0 ?
+            <>
+               {
+                  searchedGroups.map((group) => {
+                     return (
+                        <div key={group._id} className={`flex gap-2 mx-2 my-2 p-2 rounded-md shadow shadow-gray-700 cursor-pointer ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
+                           <div className='h-10 w-10 border border-gray-600 rounded-full'>
+                              <img src={BlankImage} alt="" />
+                           </div>
+                           <div onClick={() => handleGroup(group._id)}>
+                              <div>
+                                 <p>{group.groupName}</p>
+                              </div>
+                              <div>
+                                 <p className='font-light text-sm'>Latest message from group chat</p>
+                              </div>
+                           </div>
                         </div>
-                        <div>
-                           <p className='font-light text-sm'>Latest message from group chat</p>
+                     )
+                  })
+               }
+            </>
+            :
+            <>
+               {
+                  allGroupsList.map((group) => {
+                     return (
+                        <div key={group._id} className={`flex gap-2 mx-2 my-2 p-2 rounded-md shadow shadow-gray-700 cursor-pointer ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
+                           <div className='h-10 w-10 border border-gray-600 rounded-full'>
+                              <img src={BlankImage} alt="" />
+                           </div>
+                           <div onClick={() => handleGroup(group._id)}>
+                              <div>
+                                 <p>{group.groupName}</p>
+                              </div>
+                              <div>
+                                 <p className='font-light text-sm'>Latest message from group chat</p>
+                              </div>
+                           </div>
                         </div>
-                     </div>
-                  </div>
-               )
-            })
+                     )
+                  })
+               }
+            </>
          }
       </div>
    )
