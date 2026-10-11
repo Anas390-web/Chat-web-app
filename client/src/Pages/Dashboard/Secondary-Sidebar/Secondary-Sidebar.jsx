@@ -157,12 +157,6 @@ function SecondarySideBar() {
                      users={users}
                      openDetailsBox={openDetailsBox} />
             }
-            <div className=" h-10 w-full flex mb-1 px-2">
-               <input
-                  className="h-10 text-black bg-gray-300 w-full p-2 rounded-lg"
-                  type="text"
-                  placeholder="Search" />
-            </div>
             {
                openDetails && users.length > 1 &&
                <AddGroupDetails
