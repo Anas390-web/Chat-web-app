@@ -19,9 +19,13 @@ function GroupHeader() {
           <div className="flex gap-1">
             {
               selectedGroupToChatData && participants &&
-              participants.map((groupData) => {
+              participants.map((participantData) => {
+                const isUserDeleted = participantData?.username?.split("_")[0].startsWith('deleted');
+
                 return (
-                  <p key={groupData?._id} className="text-[12px]">{groupData?.username},</p>
+                  <p key={participantData?._id} className="text-[12px]">{
+                    isUserDeleted ? 'Deleted_user' : participantData?.username
+                  },</p>
                 )
               })
             }
