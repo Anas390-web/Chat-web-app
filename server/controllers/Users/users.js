@@ -346,16 +346,22 @@ const updateUsernameAndAvatar = async (req, res) => {
 
 const searchUsers = async (req, res) => {
    try {
-      // DE-STRUCTURE USERNAME FROM QUERY PARAMETERS:
+      // GET USERNAME FROM QUERY PARAMETERS:
       const username = req.query.username;
-      console.log(username);
+
+      // IF SEARCHED GROUP NAME IS EMPTY:
+      if (!username || !username.trim()) {
+         return res.status(StatusCodes.BAD_REQUEST).json({
+            msg: 'BAD_REQUEST ERROR: PLEASE WRITE SOMETHING IN THE SEARCH BAR'
+         })
+      }
       // FIND ALL THE USERS THAT HAVE THE NAME AND ITS LETTERS:
       const searchedUsers = await User.find(
          { username: { $regex: username, $options: 'i' } }
       ).select("-password -email -accountStatus");
-      console.log(searchedUsers);
+
       // IF NO USERS FOUND:
-      if(searchedUsers.length < 0) {
+      if (searchedUsers.length < 1) {
          return res.status(StatusCodes.NOT_FOUND).json({
             msg: 'NO USERS FOUND'
          })
@@ -366,7 +372,42 @@ const searchUsers = async (req, res) => {
          searchedUsers
       })
    } catch (error) {
-      console.log('ERROR OCCURED WHILE FINDING SEARCHED USERS')
+      console.log('ERROR OCCURED WHILE FINDING SEARCHED USERS', error.message);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         msg: 'INTERNAL_SERVER_ERROR'
+      })
+   }
+}
+
+const searchGroups = async (req, res) => {
+   try {
+      // GET USERNAME FROM QUERY PARAMETERS:
+      const searchedGroupname = req.query.groupName;
+
+      // IF SEARCHED GROUP NAME IS EMPTY:
+      if (!searchedGroupname || !searchedGroupname.trim()) {
+         return res.status(StatusCodes.BAD_REQUEST).json({
+            msg: 'BAD_REQUEST ERROR: PLEASE WRITE SOMETHING IN THE SEARCH BAR'
+         })
+      }
+      // FIND THE SEARCHED GROUPS:
+      const searchedGroups = await Conversation.find(
+         { groupName: { $regex: searchedGroupname, $options: 'i' } }
+      ).select("groupName");
+
+      // IF GROUPS ARE NOT FOUND:
+      if (searchedGroups.length < 1) {
+         return res.status(StatusCodes.BAD_REQUEST).json({
+            msg: 'NO GROUPS FOUND'
+         })
+      }
+      // RESPOND WITH THE SEARCHED GROUPS IF FOUND:
+      res.status(StatusCodes.OK).json({
+         msg: 'GROUPS FOUND',
+         searchedGroups
+      })
+   } catch (error) {
+      console.log('ERROR OCCURED WHILE FINDING SEARCHED GROUPS', error.message);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
          msg: 'INTERNAL_SERVER_ERROR'
       })
