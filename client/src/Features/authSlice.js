@@ -394,7 +394,13 @@ const authSlice = createSlice({
       },
       addOnlineUsers: (state, action) => {
          state.onlineUsers = action.payload;
-      }
+      },
+      removeSearchedUsers: (state) => {
+         state.searchedUsers = [];
+      },
+      removeSearchedGroups: (state) => {
+         state.searchedGroups = [];
+      },
    },
    extraReducers: (builder) => {
       builder
