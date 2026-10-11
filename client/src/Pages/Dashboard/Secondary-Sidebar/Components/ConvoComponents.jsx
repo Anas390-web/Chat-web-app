@@ -8,6 +8,7 @@ import { allGroups } from "../../../../Features/groupListSlice.js";
 import { getPersonalChatId, getGroupId } from "../../../../Features/idsSlice.js";
 import { allGroupMessages } from "../../../../Features/messagesSlice.js";
 import { getSelectedGroupData, getUserToChatWithData, getLoggedInUserData, updateUsernameAndAvatar } from "../../../../Features/authSlice.js";
+import { SearchUser, SearchGroup } from "./OtherComponents.jsx";
 
 const BlankImage = '/images/Blank-User-Image.png';
 
@@ -41,6 +42,7 @@ function Chats({ users }) {
 
    return (
       <div className='flex-1 overflow-y-auto min-h-0'>
+         <SearchUser />
          {
             contactList.map((contact) => {
                const deletedContact = contact?.username.split("_")[0];
@@ -119,6 +121,7 @@ function Groups() {
 
    return (
       <div className="flex-1 overflow-y-auto min-h-0">
+         <SearchGroup />
          {
             allGroupsList.map((group) => {
                return (
