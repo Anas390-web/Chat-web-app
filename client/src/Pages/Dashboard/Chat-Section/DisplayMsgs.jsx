@@ -21,10 +21,13 @@ function MsgBubble({ userIdToChatWith }) {
 
    // FORMAT TIME:
    function formatTime(isoString) {
-      const time = new Date(isoString).toLocaleTimeString([], {
+      const time = new Date(isoString).toLocaleTimeString('en-US', {
          hour: '2-digit',
          minute: '2-digit',
-         hour12: true
+         hour12: true,
+         day: '2-digit',
+         month: 'short',
+         year: 'numeric'
       })
       return time;
    }
@@ -57,7 +60,8 @@ function MsgBubble({ userIdToChatWith }) {
                            <p>{messageDoc.messageContent}</p>
                         </div>
                         <div className="flex justify-between gap-2">
-                           <button className="text-[12px] cursor-pointer">Edit</button>
+                           {/* THIS WAS AN EDIT BUTTON */}
+                           {/* <button className="text-[12px] cursor-pointer">Edit</button> */}
                            <div className="text-[12px]">{formatTime(messageDoc.createdAt
                            )}</div>
                         </div>
@@ -81,7 +85,8 @@ function MsgBubble({ userIdToChatWith }) {
                               <p>{messageDoc.messageContent}</p>
                            </div>
                            <div className="flex justify-between gap-2 text-black">
-                              <button className="text-[12px] cursor-pointer">Edit</button>
+                              {/* THIS WAS AN EDIT BUTTON */}
+                              {/* <button className="text-[12px] cursor-pointer">Edit</button> */}
                               <div className="text-[12px]">{formatTime(messageDoc.createdAt)}</div>
                            </div>
                         </div>
@@ -118,7 +123,10 @@ function GroupMsgBubble() {
       const time = new Date(isoString).toLocaleTimeString([], {
          hour: '2-digit',
          minute: '2-digit',
-         hour12: true
+         hour12: true,
+         day: '2-digit',
+         month: 'short',
+         year: 'numeric'
       })
       return time;
    }
@@ -141,7 +149,7 @@ function GroupMsgBubble() {
          {
             allGroupMessagesDocs && allGroupMessagesDocs.length > 0 &&
             allGroupMessagesDocs.map((groupMsgDoc) => {
-
+               const isUserDeleted = groupMsgDoc?.senderId?.username?.split("_")[0].startsWith("deleted");
                // CONVERTING USERNAME TO STRING FOR A SAFER SIDE:
                const username = String(groupMsgDoc?.senderId?.username);
                // CONVERTING MESSAGE SENDER IF TO STRING:
@@ -159,7 +167,8 @@ function GroupMsgBubble() {
                            <p>{groupMsgDoc.messageContent}</p>
                         </div>
                         <div className="flex justify-between gap-2">
-                           <button className="text-[12px] cursor-pointer">Edit</button>
+                           {/* THIS WAS EDIT BUTTON */}
+                           {/* <button className="text-[12px] cursor-pointer">Edit</button> */}
                            <div className="text-[12px]">
                               <p>{formatTime(groupMsgDoc?.createdAt)}</p>
                            </div>
@@ -172,11 +181,17 @@ function GroupMsgBubble() {
                      <div key={groupMsgDoc._id} className="flex flex-col items-start">
                         <div className="flex flex-col w-fit p-2 my-1.5 ml-6 rounded-md bg-white">
                            <div className="text-black">
-                              <p className={`${color} font-bold`}>{username}</p>
+                              <p className={`${color} font-bold`}>{
+                                 isUserDeleted ?
+                                    'Deleted_user'
+                                    :
+                                    username
+                              }</p>
                               <p>{groupMsgDoc.messageContent}</p>
                            </div>
                            <div className="flex justify-between gap-2 text-black">
-                              <button className="text-[12px] cursor-pointer">Edit</button>
+                              {/* THIS WAS EDIT BUTTON */}
+                              {/* <button className="text-[12px] cursor-pointer">Edit</button> */}
                               <div className="text-[12px]">
                                  <p className="text-black">{formatTime(groupMsgDoc?.createdAt)}</p>
                               </div>
