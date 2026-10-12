@@ -9,6 +9,7 @@ const WhiteDashboard = '/images/White-dashboard.png'
 const WhiteChats = '/images/White-chats.png'
 const WhiteGroups = '/images/White-groups.png'
 const WhiteSettings = '/images/White-settings.png'
+const Sowl = '/images/Owl-face.png'
 
 function Sidebar({ mode, handleLightMode, handleDarkMode, handleSwapComponent }) {
   const barIcons = [
@@ -26,6 +27,11 @@ function Sidebar({ mode, handleLightMode, handleDarkMode, handleSwapComponent })
       id: 4,
       title: 'Settings',
       src: mode === 'dark' ? WhiteSettings : Settings,
+    },
+    {
+      id: 5,
+      title: 'Sowl',
+      src: Sowl,
     }
   ]
 
@@ -41,8 +47,15 @@ function Sidebar({ mode, handleLightMode, handleDarkMode, handleSwapComponent })
         {
           barIcons.map((barIcon) => {
             return (
-              <div key={barIcon?.id} onClick={() => handleSwapComponent(barIcon?.id)} className={mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'}>
-                <img className='size-7' src={barIcon?.src} alt={barIcon?.title} />
+              <div key={barIcon?.id} onClick={() => handleSwapComponent(barIcon?.id)} className={
+                mode === 'dark' ? 'dark-sidebar-icons' : 'sidebar-icons'
+              }>
+                <img
+                  className={` ${barIcon?.src === Sowl ? 'size-20' : 'size-7'}`}
+                  src={
+                    barIcon?.src
+                  }
+                  alt={barIcon?.title} />
                 <p className='hidden sm:block'>{barIcon?.title}</p>
               </div>
             )
