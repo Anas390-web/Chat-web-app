@@ -205,8 +205,8 @@ function Chat() {
                      <div className='size-1/2 sm:w-3xl'>
                         <img src="/images/Owl.png" alt="Squared face owl drawing" />
                      </div>
-                     <div>
-                        <p className='text-3xl text-white bg-cyan-800 px-6 py-2 rounded-md'>START A CHAT</p>
+                     <div className='text-[min(4vw,36px)] bg-cyan-800 px-6 rounded-md'>
+                        <p className='text-white '>START A CHAT</p>
                      </div>
                   </div>
             }
