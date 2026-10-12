@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { KebabMenuIcon } from '../../../Icons/Icons.jsx';
 import { signOut } from '../../../Features/authSlice.js';
-import { Chats, Groups, Settings } from './Components/ConvoComponents.jsx';
+import { Chats, Groups, Settings, SowlBotChatCard } from './Components/ConvoComponents.jsx';
 import { AddUsersButton, AllUsersList, AddToGroupBtn, AddGroupDetails, ConfirmDeleteAccount } from './Components/OtherComponents.jsx';
 import socket from '../../../Socket/socket.js';
 import { handleScreen } from '../../../Features/screenSlice.js'
@@ -61,6 +61,10 @@ function SecondarySideBar() {
          id: 4,
          component: <Settings />
       },
+      {
+         id: 5,
+         component: <SowlBotChatCard />
+      },
    ]
 
    // SIGN OUT THE USER:
@@ -111,7 +115,7 @@ function SecondarySideBar() {
    const { isMobileScreen } = useSelector((store) => store.screen);
 
    return (
-      <aside className={`h-screen overflow-hidden sm:w-70 lg:w-100 flex flex-col justify-start font-semibold border border-gray-600 shadow ${isMobileScreen && selectedUserToChatData._id || selectedGroupToChatData?._id ? 'w-0' : 'w-full'}`}>
+      <aside className={`h-screen overflow-hidden sm:w-70 lg:w-100 flex flex-col justify-start font-semibold border border-gray-600 shadow ${isMobileScreen && (selectedUserToChatData?._id || selectedGroupToChatData?._id) ? 'w-0' : 'w-full'}`}>
 
          <>
             <div className="bg-electric-cyan border-b border-gray-600 h-20 flex items-center justify-between px-4 shrink-0 relative">
