@@ -27,7 +27,7 @@ function Hero() {
 
       <div className="flex justify-center items-center mt-8 md:mt-0">
         <img
-          src='images/landing-picture.jpg'
+          src='images/hero-Landing-Image.png'
           alt="Mobile Chat Application Illustration"
           className="w-full max-w-md md:max-w-lg object-contain rounded-[50px]"
         />
