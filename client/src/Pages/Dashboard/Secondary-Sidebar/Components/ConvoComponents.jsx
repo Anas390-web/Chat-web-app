@@ -187,49 +187,49 @@ function Groups() {
          <SearchGroup />
          {
             currentGroupName && currentGroupName.length > 0 ?
-            <>
-               {
-                  searchedGroups.map((group) => {
-                     return (
-                        <div key={group._id} className={`flex gap-2 mx-2 my-2 p-2 rounded-md shadow shadow-gray-700 cursor-pointer ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
-                           <div className='h-10 w-10 border border-gray-600 rounded-full'>
-                              <img src={BlankImage} alt="" />
-                           </div>
-                           <div onClick={() => handleGroup(group._id)}>
-                              <div>
-                                 <p>{group.groupName}</p>
+               <>
+                  {
+                     searchedGroups.map((group) => {
+                        return (
+                           <div key={group._id} className={`flex gap-2 mx-2 my-2 p-2 rounded-md shadow shadow-gray-700 cursor-pointer ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
+                              <div className='h-10 w-10 border border-gray-600 rounded-full'>
+                                 <img src={BlankImage} alt="" />
                               </div>
-                              <div>
-                                 <p className='font-light text-sm'>Latest message from group chat</p>
-                              </div>
-                           </div>
-                        </div>
-                     )
-                  })
-               }
-            </>
-            :
-            <>
-               {
-                  allGroupsList.map((group) => {
-                     return (
-                        <div key={group._id} className={`flex gap-2 mx-2 my-2 p-2 rounded-md shadow shadow-gray-700 cursor-pointer ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
-                           <div className='h-10 w-10 border border-gray-600 rounded-full'>
-                              <img src={BlankImage} alt="" />
-                           </div>
-                           <div onClick={() => handleGroup(group._id)}>
-                              <div>
-                                 <p>{group.groupName}</p>
-                              </div>
-                              <div>
-                                 <p className='font-light text-sm'>Latest message from group chat</p>
+                              <div onClick={() => handleGroup(group._id)}>
+                                 <div>
+                                    <p>{group.groupName}</p>
+                                 </div>
+                                 <div>
+                                    <p className='font-light text-sm'>Latest message from group chat</p>
+                                 </div>
                               </div>
                            </div>
-                        </div>
-                     )
-                  })
-               }
-            </>
+                        )
+                     })
+                  }
+               </>
+               :
+               <>
+                  {
+                     allGroupsList.map((group) => {
+                        return (
+                           <div key={group._id} className={`flex gap-2 mx-2 my-2 p-2 rounded-md shadow shadow-gray-700 cursor-pointer ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
+                              <div className='h-10 w-10 border border-gray-600 rounded-full'>
+                                 <img src={BlankImage} alt="" />
+                              </div>
+                              <div onClick={() => handleGroup(group._id)}>
+                                 <div>
+                                    <p>{group.groupName}</p>
+                                 </div>
+                                 <div>
+                                    <p className='font-light text-sm'>Latest message from group chat</p>
+                                 </div>
+                              </div>
+                           </div>
+                        )
+                     })
+                  }
+               </>
          }
       </div>
    )
@@ -389,4 +389,27 @@ function Settings() {
    )
 }
 
-export { Chats, Groups, Settings }
+function SowlBotChatCard() {
+   const { mode } = useOutletContext();
+
+   return (
+      <div
+         className={`flex gap-2 mx-2 my-2 p-2 rounded-md shadow shadow-gray-700 cursor-pointer ${mode === 'dark' ? 'border border-gray-600' : 'bg-white'}`}>
+         <div
+            className='h-10 w-10 border border-gray-600 rounded-full'>
+            <img
+            className="h-10 w-10 rounded-full" src='/images/Sowl-bot-circle.png' alt="Circular Owl cartoonish cyan shaded owl picture" />
+         </div>
+         <div>
+            <div>
+               <p>Ask Sowl</p>
+            </div>
+            <div>
+               <p className='font-light text-sm'>Latest message from chat</p>
+            </div>
+         </div>
+      </div>
+   )
+}
+
+export { Chats, Groups, Settings, SowlBotChatCard }
