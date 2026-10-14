@@ -2,7 +2,7 @@
 
 
 
-function Notice() {
+function Notice({closeNotice}) {
    return (
       <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex justify-center items-center font-inter">
 
@@ -31,9 +31,10 @@ function Notice() {
 
             <div className=" flex justify-center items-center gap-10">
                <button
+                  onClick={closeNotice}
                   className="border border-blue-600 text-blue-600 w-20 py-1 rounded-sm cursor-pointer"
                >
-                  Okay
+                  Accept
                </button>
             </div>
          </div>
