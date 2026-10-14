@@ -61,9 +61,19 @@ function SignUp() {
   function handleChangeConfirmPassword(e) {
     setConfirmPassword(e.target.value)
   }
+  
+  // HANDLE NOTICE BEFORE REGISTERATION:
+  const [acceptNotice, setAcceptNotice] = useState(false);
+
+  function closeNotice() {
+    setAcceptNotice(true);
+  }
   return (
     <div className="h-auto w-full sm:w-120 p-8 flex-col-start justify-between gap-2 shadow-2xl  bg-slate-50">
-      <Notice />
+      {
+        !acceptNotice &&
+        <Notice closeNotice={closeNotice} />
+      }
       <h1 className="text-cyan-600">SignUp</h1>
       <form
         onSubmit={handleSubmit} // SEND DATA TO AUTHSLICE
