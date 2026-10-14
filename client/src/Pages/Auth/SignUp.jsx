@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { NavLink, useNavigate } from "react-router";
 import { EyeIcon, EyeSlashIcon } from '../../Icons/Icons'
 import { registerUser } from "../../Features/authSlice";
+import Notice from "./Notice.jsx";
 
 function SignUp() {
   const dispatch = useDispatch();
@@ -62,6 +63,7 @@ function SignUp() {
   }
   return (
     <div className="h-auto w-full sm:w-120 p-8 flex-col-start justify-between gap-2 shadow-2xl  bg-slate-50">
+      <Notice />
       <h1 className="text-cyan-600">SignUp</h1>
       <form
         onSubmit={handleSubmit} // SEND DATA TO AUTHSLICE
