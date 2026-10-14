@@ -32,7 +32,7 @@ function Notice({closeNotice}) {
             <div className=" flex justify-center items-center gap-10">
                <button
                   onClick={closeNotice}
-                  className="border border-blue-600 text-blue-600 w-20 py-1 rounded-sm cursor-pointer"
+                  className="text-[14px] border border-cyan-600 hover:bg-cyan-800 text-cyan-800 hover:text-white w-20 py-1 rounded-sm cursor-pointer"
                >
                   Accept
                </button>
