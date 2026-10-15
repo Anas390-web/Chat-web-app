@@ -31,7 +31,6 @@ function SowlBotChat() {
                         <div className='h-10 flex justify-center items-center'>
                            <button><SendIcon /></button>
                         </div>
-
                      </form>
                   </div>
                   :
