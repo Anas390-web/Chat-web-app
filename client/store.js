@@ -5,6 +5,7 @@ import messagesReducer from "./src/Features/messagesSlice.js";
 import { groupListReducer } from "./src/Features/groupListSlice.js";
 import { idsReducer } from "./src/Features/idsSlice.js";
 import screenReducer from "./src/Features/screenSlice.js";
+import aiBotReducer from "./src/Features/aiBotSlice.js";
 
 const store = configureStore({
    reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
       messages: messagesReducer,
       groups: groupListReducer,
       ids: idsReducer,
-      screen: screenReducer
+      screen: screenReducer,
+      aiBot: aiBotReducer
    }
 })
 
