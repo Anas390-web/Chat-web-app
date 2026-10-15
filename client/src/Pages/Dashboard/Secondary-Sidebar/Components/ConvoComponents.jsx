@@ -9,6 +9,7 @@ import { getPersonalChatId, getGroupId } from "../../../../Features/idsSlice.js"
 import { allGroupMessages } from "../../../../Features/messagesSlice.js";
 import { getSelectedGroupData, getUserToChatWithData, getLoggedInUserData, updateUsernameAndAvatar } from "../../../../Features/authSlice.js";
 import { SearchUser, SearchGroup } from "./OtherComponents.jsx";
+import { setAiChatLoggedInUserId } from "../../../../Features/aiBotSlice.js";
 
 const BlankImage = '/images/Blank-User-Image.png';
 
@@ -390,7 +391,13 @@ function Settings() {
 }
 
 function SowlBotChatCard() {
+   const dispatch = useDispatch();
    const { mode } = useOutletContext();
+
+   // WHEN USER CLICKS ON THE AI BOT CARD IN SECONDARY SIDEBAR, IT SENDS AN EVENT TO THE SERVER AND WE GET THE LOGGED-IN ID BACK AND IF WE HAVE THE ID, WE SHOW THE AI CHAT:
+   function showAiChat() {
+      socket.emit("show-ai-chat");
+   }
 
    return (
       <div
@@ -398,9 +405,11 @@ function SowlBotChatCard() {
          <div
             className='h-10 w-10 border border-gray-600 rounded-full'>
             <img
-            className="h-10 w-10 rounded-full" src='/images/Sowl-bot-circle.png' alt="Circular Owl cartoonish cyan shaded owl picture" />
+               className="h-10 w-10 rounded-full" src='/images/Sowl-bot-circle.png' alt="Circular Owl cartoonish cyan shaded owl picture" />
          </div>
-         <div>
+         <div
+            onClick={showAiChat}
+            className="cursor-pointer">
             <div>
                <p>Ask Sowl</p>
             </div>
