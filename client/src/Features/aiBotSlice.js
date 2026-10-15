@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 const initialState = {
-   isAiChatOpen: false
+   isAiChatOpen: false,
+   aiChatLoggedInUserId: ''
 }
 
 
@@ -15,6 +16,12 @@ const aiBotSlice = createSlice({
       },
       closeAiChat: (state) => {
          state.isAiChatOpen = false;
+      },
+      setAiChatLoggedInUserId: (state, action) => {
+         state.aiChatLoggedInUserId = action.payload;
+      },
+      removeAiChatLoggedInUserId: (state) => {
+         state.aiChatLoggedInUserId = '';
       }
    }
 })
@@ -22,6 +29,6 @@ const aiBotSlice = createSlice({
 
 const aiBotReducer = aiBotSlice.reducer;
 
-export const {openAiChat, closeAiChat} = aiBotSlice.actions;
+export const {openAiChat, closeAiChat, setAiChatLoggedInUserId, removeAiChatLoggedInUserId} = aiBotSlice.actions;
 
 export default aiBotReducer;
