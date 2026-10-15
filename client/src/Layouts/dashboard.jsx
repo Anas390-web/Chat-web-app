@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import socket from '../Socket/socket.js'
 import PageNotFound from '../Pages/Page-Not-Found/PageNotFound.jsx';
 import { removeGroupId } from '../Features/idsSlice.js';
+import { removeAiChatLoggedInUserId } from '../Features/aiBotSlice.js';
 
 function DashboardLayout() {
    const dispatch = useDispatch();
@@ -49,6 +50,9 @@ function DashboardLayout() {
       // CHAT MOBILE RESPONSIVENESS:
       dispatch(removeSelectedUserData());
       dispatch(removeSelectedGroupData());
+
+      // REMOVE THE AI CHAT LOGGED IN USER ID WHEN COMPONENT SWAPS:
+      dispatch(removeAiChatLoggedInUserId());
    }
    // const { token } = useSelector((store) => store.auth);
    // DARK/LIGHT MODE:
