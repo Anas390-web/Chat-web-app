@@ -1,21 +1,24 @@
 import { useOutletContext } from "react-router";
+import ChatHeader from "./chatHeader.jsx";
+import { AiMsgBubble, MsgBubble } from "./DisplayMsgs.jsx";
+import { SendIcon } from "../../../Icons/Icons.jsx";
+import { useSelector } from "react-redux";
 
 
 function SowlBotChat() {
    const { mode } = useOutletContext();
-   let a = true;
+   const { aiChatLoggedInUserId } = useSelector((store) => store.aiBot);
    return (
       <div className='flex flex-col h-full overflow-hidden'>
          <main className="flex-1 min-h-0 flex flex-col">
+
             {
-               a ?
+               aiChatLoggedInUserId && aiChatLoggedInUserId.length > 0 ?
                   <div className="flex flex-col h-full">
                      <ChatHeader />
                      <div className={`flex-1 overflow-y-auto ${mode === 'dark' ? "bg-[url(/images/Black-Doodle.jpg)] bg-contain bg-center" : "bg-[url(/images/White-Doodle.jpg)] bg-contain bg-center"}`}>
                         <div>
-                           <MsgBubble
-
-                           />
+                           <AiMsgBubble />
                         </div>
                      </div>
 
@@ -41,6 +44,7 @@ function SowlBotChat() {
                      </div>
                   </div>
             }
+
          </main>
       </div>
    )
