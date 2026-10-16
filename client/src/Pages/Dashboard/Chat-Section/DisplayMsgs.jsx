@@ -239,13 +239,11 @@ function AiMsgBubble() {
             </div>
          </div>
 
-
-
          <div className="flex flex-col items-start">
             <div className="flex flex-col w-fit p-2 my-1.5 ml-6 rounded-md bg-white">
                <div className="text-black">
                   <p className={`${color} font-bold`}>
-                     username
+                     Sowl bot
                   </p>
                   <p></p>
                </div>
