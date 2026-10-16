@@ -12,7 +12,7 @@ import messageRouter from './routes/Messages/messages.js'
 import groupsRouter from './routes/Groups/groupList.js'
 import { joinGroupRoom, saveGroupMessageInDB, leaveGroupChatRoom, isUserTypingInGroup } from './sockets/groupSockets.js'
 import groupMessagesRouter from './routes/Messages/groupMessages.js'
-import { showAiChat } from './sockets/aiChatSockets.js'
+import { saveAiChatUserMsg_And_JoinAiRoom, showAiChat } from './sockets/aiChatSockets.js'
 
 const app = express();
 const httpServer = createServer(app);
@@ -78,6 +78,8 @@ io.on('connection', (socket) => {
    saveGroupMessageInDB(socket, io);
    // SHOW AI CHAT:
    showAiChat(socket, io);
+   // SAVE THE AI CHAT MESSAGE AND JOIN ROOM ON FIRST USER TO AI MESSAGE:
+   saveAiChatUserMsg_And_JoinAiRoom(socket, io)
    // IF USER IS TYPING:
    IsUserTyping(socket, io);
    // IF USER IN GROUP IS TYPING:
