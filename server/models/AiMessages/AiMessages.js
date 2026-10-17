@@ -10,7 +10,6 @@ const aiMessageSchema = new mongoose.Schema({
    senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'Logged in user id is required']
    },
    messageContent: {
       type: String,
