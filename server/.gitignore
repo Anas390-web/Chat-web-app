@@ -13,3 +13,10 @@ build/
 # Logs & OS files
 *.log
 .DS_Store
+
+# Folders
+config
+
+# files
+appOverview.md
+u.text
