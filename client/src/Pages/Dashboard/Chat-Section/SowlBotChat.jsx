@@ -5,7 +5,7 @@ import { SendIcon } from "../../../Icons/Icons.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import socket from '../../../Socket/socket.js'
-import { addLatestAiChatMessage, getAllAiChatMessages } from "../../../Features/aiBotSlice.js";
+import { addLatestAiChatMessage, getAllAiChatMessages, removeAiChatLoggedInUserId } from "../../../Features/aiBotSlice.js";
 
 
 function SowlBotChat() {
@@ -40,11 +40,25 @@ function SowlBotChat() {
 
       // DISPATCH GET ALL AI CHAT MESSAGES SO MESSAGES CAN BE MOUNTED UPON COMPONENT MOUNTING:
       dispatch(getAllAiChatMessages());
-      
+
       return (() => {
          socket.off("receive-latest-msg", handleReceiveLatestMsg);
       })
    }, [dispatch])
+
+   // HANDLE AI CHAT ESCAPE UPON USER CLICKS ON "ESCAPE" KEY:
+   function handleEscapeAiChat(event) {
+      if (event.key === 'Escape') {
+         dispatch(removeAiChatLoggedInUserId());
+      }
+   }
+
+   useEffect(() => {
+      window.addEventListener("keydown", handleEscapeAiChat);
+      return () => {
+         window.removeEventListener("keydown", handleEscapeAiChat);
+      }
+   }, [])
 
    return (
       <div className='flex flex-col h-full overflow-hidden'>
