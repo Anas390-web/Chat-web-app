@@ -2,12 +2,15 @@ import { useOutletContext } from "react-router";
 import AiChatHeader from "./AiChatHeader.jsx";
 import { AiMsgBubble } from "./DisplayMsgs.jsx";
 import { SendIcon } from "../../../Icons/Icons.jsx";
-import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import socket from '../../../Socket/socket.js'
+import { addLatestAiChatMessage, getAllAiChatMessages } from "../../../Features/aiBotSlice.js";
 
 
 function SowlBotChat() {
+   const dispatch = useDispatch();
+
    const { mode } = useOutletContext();
    // ACCESS THE LOGGED IN USER ID FROM AI BOT STORE:
    const { aiChatLoggedInUserId } = useSelector((store) => store.aiBot);
@@ -24,7 +27,25 @@ function SowlBotChat() {
       // EMPTY THE INPUT:
       setAiChatMessage('');
    }
-   
+
+   // UPON AI CHAT MOUNTING SHOW MESSAGES:
+   useEffect(() => {
+
+      // ADD THE LATEST MESSAGE TO THE ALL AI CHAT MESSAGES ARRAY:
+      function handleReceiveLatestMsg(aiMessage) {
+         dispatch(addLatestAiChatMessage(aiMessage))
+      }
+
+      socket.on("receive-latest-msg", handleReceiveLatestMsg);
+
+      // DISPATCH GET ALL AI CHAT MESSAGES SO MESSAGES CAN BE MOUNTED UPON COMPONENT MOUNTING:
+      dispatch(getAllAiChatMessages());
+      
+      return (() => {
+         socket.off("receive-latest-msg", handleReceiveLatestMsg);
+      })
+   }, [dispatch])
+
    return (
       <div className='flex flex-col h-full overflow-hidden'>
          <main className="flex-1 min-h-0 flex flex-col">
