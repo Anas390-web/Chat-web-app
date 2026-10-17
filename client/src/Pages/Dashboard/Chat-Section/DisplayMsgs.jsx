@@ -210,6 +210,8 @@ function GroupMsgBubble() {
 
 function AiMsgBubble() {
 
+   const { aiChatLoggedInUserId, allAiChatMessages } = useSelector((store) => store.aiBot);
+
    // COLORED NAME:
    const colors = ["text-red-400", "text-blue-400", "text-green-400", "text-orange-400", "text-violet-400", "text-indigo-400", "text-yellow-400", "text-pink-400"]
    function randomColorName() {
@@ -223,39 +225,72 @@ function AiMsgBubble() {
       setColor(randomColorName());
    }, [])
 
+   // FORMAT THE TIME:
+   function formatTime(isoString) {
+      const time = new Date(isoString).toLocaleTimeString([], {
+         year: 'numeric',
+         month: 'numeric',
+         hour12: true,
+         hour: '2-digit',
+         minute: '2-digit'
+      });
+      return time;
+   }
+
    return (
       <>
-         <div className="flex flex-col items-end">
-            <div className="flex flex-col w-fit p-2 my-1.5 mr-6 rounded-md bg-cyan-100 text-black">
-               <div>
-                  <p className="font-bold">You</p>
-                  <p></p>
-               </div>
-               <div className="flex justify-between gap-2">
-                  {/* THIS WAS AN EDIT BUTTON */}
-                  {/* <button className="text-[12px] cursor-pointer">Edit</button> */}
-                  <div className="text-[12px]">Timestamps</div>
-               </div>
-            </div>
-         </div>
+         {
+            allAiChatMessages && allAiChatMessages.length > 0 &&
 
-         <div className="flex flex-col items-start">
-            <div className="flex flex-col w-fit p-2 my-1.5 ml-6 rounded-md bg-white">
-               <div className="text-black">
-                  <p className={`${color} font-bold`}>
-                     Sowl bot
-                  </p>
-                  <p></p>
-               </div>
-               <div className="flex justify-between gap-2 text-black">
-                  {/* THIS WAS AN EDIT BUTTON */}
-                  {/* <button className="text-[12px] cursor-pointer">Edit</button> */}
-                  <div className="text-[12px]">Timestamps</div>
-               </div>
-            </div>
-         </div>
+            allAiChatMessages.map((aiChatMessageDoc) => {
+
+               const senderId = String(aiChatMessageDoc.senderId)
+
+               return senderId === aiChatLoggedInUserId ?
+                  (
+                     <div
+                        key={aiChatMessageDoc._id}
+                        className="flex flex-col items-end">
+
+                        <div className="flex flex-col w-fit p-2 my-1.5 mr-6 rounded-md bg-cyan-100 text-black">
+                           <div>
+                              <p className="font-bold">You</p>
+                              <p>{aiChatMessageDoc.messageContent}</p>
+                           </div>
+                           <div className="flex justify-between gap-2">
+                              {/* THIS WAS AN EDIT BUTTON */}
+                              {/* <button className="text-[12px] cursor-pointer">Edit</button> */}
+                              <div className="text-[12px]">{formatTime(aiChatMessageDoc.createdAt)}</div>
+                           </div>
+                        </div>
+                     </div>
+                  )
+                  :
+                  (
+                     <div
+                        key={aiChatMessageDoc._id}
+                        className="flex flex-col items-start">
+
+                        <div className="flex flex-col w-fit p-2 my-1.5 ml-6 rounded-md bg-white">
+                           <div className="text-black">
+                              <p className={`${color} font-bold`}>
+                                 Sowl bot
+                              </p>
+                              <p></p>
+                           </div>
+                           <div className="flex justify-between gap-2 text-black">
+                              {/* THIS WAS AN EDIT BUTTON */}
+                              {/* <button className="text-[12px] cursor-pointer">Edit</button> */}
+                              <div className="text-[12px]">Timestamps</div>
+                           </div>
+                        </div>
+                     </div>
+                  )
+            })
+         }
       </>
    )
+
 
 }
 
