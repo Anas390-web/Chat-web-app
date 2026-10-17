@@ -237,6 +237,16 @@ function AiMsgBubble() {
       return time;
    }
 
+   // SCROLL TO THE LATEST MESSAGE:
+   const scrollRef = useRef();
+   function handleScroll() {
+      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+   }
+
+   useEffect(() => {
+      handleScroll();
+   }, [allAiChatMessages])
+
    return (
       <>
          {
@@ -276,18 +286,19 @@ function AiMsgBubble() {
                               <p className={`${color} font-bold`}>
                                  Sowl bot
                               </p>
-                              <p></p>
+                              <p>{aiChatMessageDoc.messageContent}</p>
                            </div>
                            <div className="flex justify-between gap-2 text-black">
                               {/* THIS WAS AN EDIT BUTTON */}
                               {/* <button className="text-[12px] cursor-pointer">Edit</button> */}
-                              <div className="text-[12px]">Timestamps</div>
+                              <div className="text-[12px]">{formatTime(aiChatMessageDoc.createdAt)}</div>
                            </div>
                         </div>
                      </div>
                   )
             })
          }
+         <div ref={scrollRef}></div>
       </>
    )
 
