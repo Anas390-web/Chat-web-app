@@ -9,7 +9,6 @@ import { getPersonalChatId, getGroupId } from "../../../../Features/idsSlice.js"
 import { allGroupMessages } from "../../../../Features/messagesSlice.js";
 import { getSelectedGroupData, getUserToChatWithData, getLoggedInUserData, updateUsernameAndAvatar } from "../../../../Features/authSlice.js";
 import { SearchUser, SearchGroup } from "./OtherComponents.jsx";
-import { setAiChatLoggedInUserId } from "../../../../Features/aiBotSlice.js";
 
 const BlankImage = '/images/Blank-User-Image.png';
 
@@ -392,6 +391,7 @@ function Settings() {
 
 function SowlBotChatCard() {
    const dispatch = useDispatch();
+   // GET MODE FROM THE OUTLET CONTEXT:
    const { mode } = useOutletContext();
 
    // WHEN USER CLICKS ON THE AI BOT CARD IN SECONDARY SIDEBAR, IT SENDS AN EVENT TO THE SERVER AND WE GET THE LOGGED-IN ID BACK AND IF WE HAVE THE ID, WE SHOW THE AI CHAT:
