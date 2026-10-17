@@ -114,7 +114,7 @@ const start = async () => {
       // INGESTION OF DOCUMENTS BEFORE TAKING THE REQUESTS:
       await ingestionOfDocuments();
       httpServer.listen(port, () => {
-         console.log(`Server is listening on ${port}...`)
+         console.log(`Server is listening on port ${port}...`)
       })
    } catch (error) {
       console.log(error.message)
