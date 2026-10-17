@@ -13,6 +13,7 @@ import groupsRouter from './routes/Groups/groupList.js'
 import { joinGroupRoom, saveGroupMessageInDB, leaveGroupChatRoom, isUserTypingInGroup } from './sockets/groupSockets.js'
 import groupMessagesRouter from './routes/Messages/groupMessages.js'
 import { saveAiChatUserMsg_And_JoinAiRoom, showAiChat } from './sockets/aiChatSockets.js'
+import ingestionOfDocuments from './RAG-Pipeline/ingestion.js'
 
 const app = express();
 const httpServer = createServer(app);
@@ -110,6 +111,8 @@ const start = async () => {
    try {
       await connectToDB(process.env.MONGO_URI);
       console.log('CONNECTED TO DB');
+      // INGESTION OF DOCUMENTS BEFORE TAKING THE REQUESTS:
+      await ingestionOfDocuments();
       httpServer.listen(port, () => {
          console.log(`Server is listening on ${port}...`)
       })
