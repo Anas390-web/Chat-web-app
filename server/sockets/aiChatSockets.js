@@ -61,6 +61,9 @@ function saveAiChatUserMsg_And_JoinAiRoom(socket, io) {
          }
          // SOCKET JOINS THE AI CONVERSATION ID ROOM:
          socket.join(aiConvoId);
+
+         // EMIT THE RECEIVE MESSAGE EVENT:
+         socket.emit("receive-latest-msg", aiMessage);
       } catch (error) {
          console.log('ERROR OCCURRED WHILE CREATING AI CONVERSATION AND USER MESSAGE WITH AI IN DB' ,error.message);
          return;
