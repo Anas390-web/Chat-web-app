@@ -14,6 +14,7 @@ import { joinGroupRoom, saveGroupMessageInDB, leaveGroupChatRoom, isUserTypingIn
 import groupMessagesRouter from './routes/Messages/groupMessages.js'
 import { saveAiChatUserMsg_And_JoinAiRoom, showAiChat } from './sockets/aiChatSockets.js'
 import ingestionOfDocuments from './RAG-Pipeline/ingestion.js'
+import aiMsgsRouter from './routes/AiMessages/aiMessages.js'
 
 const app = express();
 const httpServer = createServer(app);
@@ -27,9 +28,10 @@ app.use(express.static('./public'))
 // ROUTES
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/contacts', contactsRouter);
-app.use('/api/v1/chats/messages', messageRouter)
-app.use('/api/v1/groups', groupsRouter)
-app.use('/api/v1/groups/messages', groupMessagesRouter)
+app.use('/api/v1/chats/messages', messageRouter);
+app.use('/api/v1/groups', groupsRouter);
+app.use('/api/v1/groups/messages', groupMessagesRouter);
+app.use('/api/v1/ai/chat', aiMsgsRouter);
 
 // SOCKET CONNECTION:
 const io = new Server(httpServer, {
