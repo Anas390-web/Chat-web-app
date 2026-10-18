@@ -15,6 +15,7 @@ import groupMessagesRouter from './routes/Messages/groupMessages.js'
 import { saveAiChatUserMsg_And_JoinAiRoom, showAiChat } from './sockets/aiChatSockets.js'
 import ingestionOfDocuments from './RAG-Pipeline/ingestion.js'
 import aiMsgsRouter from './routes/AiMessages/aiMessages.js'
+import finalAiResponse from './RAG-Pipeline/finalAiResponse.js'
 
 const app = express();
 const httpServer = createServer(app);
@@ -89,6 +90,8 @@ io.on('connection', (socket) => {
    isUserTypingInGroup(socket);
    // LEAVE GROUP CHAT ROOM:
    leaveGroupChatRoom(socket, io);
+   // AI RESPONSE IN CHAT:
+   finalAiResponse(socket, io);
    // UPON USER DISCONNECTING:
    socket.on('disconnect', () => {
       console.log('CLIENT DISCONNECTED', socket.id);
