@@ -23,8 +23,7 @@ const getAllAiChatMessages = async (req, res) => {
       // FIND ALL THE AI CHAT MESSAGES:
       const allAiChatMessages = await AiMessage.find(
          {
-            aiConversationId: aiChatConversation._id,
-            senderId: userId
+            aiConversationId: aiChatConversation._id
          }
       );
       
