@@ -31,11 +31,12 @@ function SowlBotChat() {
    // UPON AI CHAT MOUNTING SHOW MESSAGES:
    useEffect(() => {
 
-      // ADD THE LATEST MESSAGE TO THE ALL AI CHAT MESSAGES ARRAY:
+      // ADD THE LATEST USER MESSAGE TO THE ALL AI CHAT MESSAGES ARRAY:
       function handleReceiveLatestMsg(aiMessage) {
          dispatch(addLatestAiChatMessage(aiMessage))
       }
 
+      // RECIEVE LATEST USER MESSAGE IN THE AI/USER CHAT MESSAGE:
       socket.on("receive-latest-msg", handleReceiveLatestMsg);
 
       // DISPATCH GET ALL AI CHAT MESSAGES SO MESSAGES CAN BE MOUNTED UPON COMPONENT MOUNTING:
@@ -44,6 +45,18 @@ function SowlBotChat() {
       return (() => {
          socket.off("receive-latest-msg", handleReceiveLatestMsg);
       })
+   }, [dispatch])
+
+   // ADD THE LATEST AI RESPONSE/MESSAGE IN THE AI/USER CHAT MESSAGES ARRAY:
+   useEffect(() => {
+      function handleReceiveAiLatestResponse(aiResponse) {
+         dispatch(addLatestAiChatMessage(aiResponse))
+      }
+      socket.on("receive-ai-latest-response", handleReceiveAiLatestResponse)
+      
+      return () => {
+         socket.off("receive-ai-latest-response", handleReceiveAiLatestResponse)
+      }
    }, [dispatch])
 
    // HANDLE AI CHAT ESCAPE UPON USER CLICKS ON "ESCAPE" KEY:
