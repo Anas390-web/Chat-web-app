@@ -262,7 +262,11 @@ function AiMsgBubble() {
                         key={aiChatMessageDoc._id}
                         className="flex flex-col items-end">
 
-                        <div className="flex flex-col w-fit p-2 my-1.5 mr-6 rounded-md bg-cyan-100 text-black">
+                        <div
+                           className={`
+                              flex flex-col
+                              ${aiChatMessageDoc.messageContent.length > formatTime(aiChatMessageDoc.createdAt).length ? 'w-[40%]' : 'w-fit'}
+                              p-2 my-1.5 mr-6 rounded-md bg-cyan-100 text-black`}>
                            <div>
                               <p className="font-bold">You</p>
                               <p>{aiChatMessageDoc.messageContent}</p>
@@ -281,7 +285,12 @@ function AiMsgBubble() {
                         key={aiChatMessageDoc._id}
                         className="flex flex-col items-start">
 
-                        <div className="flex flex-col w-fit p-2 my-1.5 ml-6 rounded-md bg-white">
+                        <div
+                        className={`
+                           flex flex-col
+                           ${aiChatMessageDoc.messageContent.length > formatTime(aiChatMessageDoc.createdAt).length ? 'w-[50%]' : 'w-fit'}
+                           p-2 my-1.5 ml-6 rounded-md bg-white
+                        `}>
                            <div className="text-black">
                               <p className={`${color} font-bold`}>
                                  Sowl bot
