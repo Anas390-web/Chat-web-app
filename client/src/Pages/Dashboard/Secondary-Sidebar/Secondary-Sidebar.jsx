@@ -7,6 +7,7 @@ import { Chats, Groups, Settings, SowlBotChatCard } from './Components/ConvoComp
 import { AddUsersButton, AllUsersList, AddToGroupBtn, AddGroupDetails, ConfirmDeleteAccount } from './Components/OtherComponents.jsx';
 import socket from '../../../Socket/socket.js';
 import { handleScreen } from '../../../Features/screenSlice.js'
+import { removeGroupId } from '../../../Features/idsSlice.js';
 
 // FROM DASHBOARD
 function SecondarySideBar() {
@@ -72,6 +73,8 @@ function SecondarySideBar() {
       // WHEN USER SIGN OUT THE SESSION, CLOSE THE CONNECTION:
       socket.disconnect();
       dispatch(signOut());
+      // REMOVE GROUP ID WHEN USER SIGNS OUT/ LOGS OUT:
+      dispatch(removeGroupId());
       // NAVIGATION TO LOGIN PAGE:
       const token = localStorage.getItem("accessToken")
       if (!token) {
