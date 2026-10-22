@@ -33,11 +33,13 @@ const finalAiResponse = (socket, io) => {
          const retriever = await getRetriever();
 
          // GET RESPONSE FROM THE LLM PROMPT:
-         const answerTemplate = `Answer the user's question directly, sequentially, and concisely using only the provided context. Strictly avoid speculating or explaining missing system details. Format each list point on a new line. If you do not have the answer, state: "I don't have any information."
+         const answerTemplate = `Your name is Sowl. Answer the user's question directly & sequentially about the system information or general knowledge about the world. Remember the username. Strictly avoid explaining missing system information details. If you do not have the answer regarding system information, state: "I don't have information about this."
          system information: {system_information}
-         context: {conversation_history}
          user question: {userQuestion}
+         username: {username}
          answer: `
+         // CONTEXT/CONVERSATION HISTORY IS REMOVED AS IT EXCEEDS THE TOKEN LIMIT IN FEW MESSAGES.
+         // context: {conversation_history}
 
          const answerPrompt = PromptTemplate.fromTemplate(answerTemplate);
 
@@ -71,9 +73,13 @@ const finalAiResponse = (socket, io) => {
                system_information: async (input) => {
                   return await retrieverChain.invoke(input.standalone_Question)
                },
-               conversation_history: async (input) => {
-                  return input.original_input.conversation_history
+               username: (input) => {
+                  return input.original_input.username
                },
+               // REMOVING TO SAVE TOKENS:
+               // conversation_history: async (input) => {
+               //    return input.original_input.conversation_history
+               // },
                userQuestion: (input) => {
                   return input.original_input.userQuestion
                }
@@ -82,7 +88,7 @@ const finalAiResponse = (socket, io) => {
          ])
 
          // GET THE AI AND USER CONVERSATION:
-         const { userId } = socket.user;
+         const { userId, username } = socket.user;
 
          const conversation = await AiConversation.findOne(
             { senderId: userId }
@@ -102,7 +108,8 @@ const finalAiResponse = (socket, io) => {
 
          const response = await chain.invoke({
             userQuestion: aiMessage,
-            conversation_history: allAiChatMessages
+            conversation_history: allAiChatMessages,
+            username: username
          })
 
          const aiResponse = await AiMessage.create(
