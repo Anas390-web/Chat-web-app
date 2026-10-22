@@ -7,6 +7,7 @@ import socket from '../Socket/socket.js'
 import PageNotFound from '../Pages/Page-Not-Found/PageNotFound.jsx';
 import { removeGroupId } from '../Features/idsSlice.js';
 import { removeAiChatLoggedInUserId } from '../Features/aiBotSlice.js';
+import { allGroups } from '../Features/groupListSlice.js';
 
 function DashboardLayout() {
    const dispatch = useDispatch();
@@ -83,6 +84,7 @@ function DashboardLayout() {
 
    // GET THE ONLINE USERS FROM SERVER:
    useEffect(() => {
+      dispatch(allGroups());
       function handleOnlineUsers(onlineUsers) {
          dispatch(addOnlineUsers(onlineUsers));
       }
