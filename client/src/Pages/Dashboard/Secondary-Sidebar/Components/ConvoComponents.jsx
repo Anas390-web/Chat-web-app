@@ -163,14 +163,13 @@ function Groups() {
    const { searchedGroups } = useSelector((store) => store.auth);
 
    useEffect(() => {
-      dispatch(allGroups());
       // EMITTING JOIN-GROUP-ROOM EVENT UPON GROUPS COMPONENT MOUNTING:
       socket.emit('join-group-room')
       return () => {
          // LEAVE THE GROUP CHAT ROOM UPON UNMOUNTING:
          socket.emit('leave-group-chat-room');
       }
-   }, [dispatch])
+   }, [dispatch, socket])
 
    // WHEN USER CLICKS ON THE GROUP, DISPATCHING TO SAVE THE GROUP ID IN THE IDS STATE AND TO GET ALL THE MESSAGES OF THAT GROUP ID:
    function handleGroup(groupId) {
