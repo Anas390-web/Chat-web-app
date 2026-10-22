@@ -17,6 +17,9 @@ function Group() {
    // 2. GET THE GROUP ID FROM THE STORE ON WHICH USER CLICKS TO START CHAT:
    const { groupId } = useSelector((store) => store.ids);
 
+   let persistantGroupIdRef = useRef(null);
+   persistantGroupIdRef.current = groupId;
+
    // 3. TO SEND THE MESSAGE TO THE OTHER USERS:
    const [groupMessage, setGroupMessage] = useState('');
 
@@ -78,7 +81,7 @@ function Group() {
 
    // 4. RECEIVE THE LATEST GROUP MESSAGE AND APPEND IN THE ARRAY OF ALL THE GROUP MESSAGES:
    function handleReceiveGroupMessage(groupMessageDoc) {
-      if (groupMessageDoc.conversationId !== groupId) {
+      if (String(groupMessageDoc?.conversationId) !== persistantGroupIdRef?.current) {
          return;
       }
       dispatch(addLatestGroupMsg(groupMessageDoc));
@@ -89,7 +92,7 @@ function Group() {
       return () => {
          socket.off("receive-group-message", handleReceiveGroupMessage);
       }
-   }, [dispatch, groupId, socket])
+   }, [dispatch, socket])
 
    // 5. HANDLER FUNCTION TO GET OUT OF GROUP CHATS ON KEYDOWN:
    const { selectedGroupToChatData } = useSelector((store) => store.auth);
@@ -99,7 +102,7 @@ function Group() {
          dispatch(removeGroupId());
 
          // FOR GROUP CHAT MOBILE RESPONSIVENESS:
-         if(selectedGroupToChatData) {
+         if (selectedGroupToChatData) {
             dispatch(removeSelectedGroupData());
          }
       }
