@@ -147,8 +147,8 @@ function GroupMsgBubble() {
    return (
       <>
          {
-            allGroupMessagesDocs && allGroupMessagesDocs.length > 0 &&
-            allGroupMessagesDocs.map((groupMsgDoc) => {
+            allGroupMessagesDocs && allGroupMessagesDocs?.length > 0 &&
+            allGroupMessagesDocs?.map((groupMsgDoc) => {
                const isUserDeleted = groupMsgDoc?.senderId?.username?.split("_")[0].startsWith("deleted");
                // CONVERTING USERNAME TO STRING FOR A SAFER SIDE:
                const username = String(groupMsgDoc?.senderId?.username);
