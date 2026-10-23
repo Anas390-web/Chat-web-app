@@ -3,7 +3,10 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import express from 'express'
 import connectToDB from './connectDB/connectDB.js'
+import helmet from 'helmet'
 import cors from 'cors'
+import rateLimit from 'express-rate-limit'
+import { xss } from 'express-xss-sanitizer'
 import authRouter from './routes/Users/users.js'
 import contactsRouter from './routes/Contacts/contacts.js'
 import socketAuth from './middlewares/Auth/socketAuth.js'
@@ -22,11 +25,31 @@ const httpServer = createServer(app);
 const port = process.env.PORT || 3000;
 
 // MIDDLEWARES:
-app.use(cors({ origin: process.env.VITE_REACT_BASE_SERVER }))
-app.use(express.json())
-app.use(express.static('./public'))
+// SET SECURE HTTP HEADERS:
+app.use(helmet());
+app.use(cors({ origin: process.env.VITE_REACT_BASE_SERVER }));
 
-// ROUTES
+// RATE LIMITING (TO BLOCK SPAM):
+const limiter = rateLimit({
+   windowMs: 15 * 60 * 1000,
+   max: 100,
+   standardHeaders: true,
+   legacyHeaders: false,
+   ipv6Subnet: 56
+})
+
+app.use('/api/', limiter);
+
+// BODY PARSERS:
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express.static('./public'));
+
+// DATA SANITIZERS:
+// PREVENT CROSS SITE SCRIPTING ATTACKS:
+app.use(xss());
+
+// ROUTES:
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/contacts', contactsRouter);
 app.use('/api/v1/chats/messages', messageRouter);
@@ -56,14 +79,14 @@ io.on('connection', (socket) => {
 
    // DE-STRUCTURE FROM SOCKET USER AUTHENTICATION:
    const { userId } = socket.user;
-   
+
    // IF THE USER ID DOES NOT EXIST AS KEY THEN GIVE THE USERID KEY A SET AS IT VALUE;
-   if(!onlineUsersMap.has(userId)) {
+   if (!onlineUsersMap.has(userId)) {
       onlineUsersMap.set(userId, new Set());
    }
    // NOW GET THE SAVED USER ID:
    const socketsSet = onlineUsersMap.get(userId);
-   
+
    // ADD THE SOCKET.ID TO ITS SET: (.add is Set method)
    socketsSet.add(socket.id);
 
@@ -99,12 +122,12 @@ io.on('connection', (socket) => {
       // GETTING SOCKETS SET FROM INSIDE THE MAP:
       const usersSocketsSet = onlineUsersMap.get(userId);
       // IF SET OF USERS SOCKETS EXIST, DELETE THE SOCKET CONNECTION WHEN SOCKET IS DISCONNECTED:
-      if(usersSocketsSet) {
+      if (usersSocketsSet) {
          usersSocketsSet.delete(socket.id)
       }
 
       // IF ALL USER SOCKETS ARE DISCONNECTED, REMOVE THE USERID FROM THE ONLINE USERS MAP:
-      if(usersSocketsSet.size === 0) {
+      if (usersSocketsSet.size === 0) {
          onlineUsersMap.delete(userId);
       }
 
