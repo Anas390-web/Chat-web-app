@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 const initialState = {
    contactList: [],
+   contactsData: {},
    username: '',
    userImageSrc: '',
    isLoading: true,
@@ -49,8 +50,9 @@ const contactListSlice = createSlice({
             state.isLoading = true
          })
          .addCase(addUsers.fulfilled, (state, action) => {
-            state.isLoading = false,
-               state.contactList = action.payload.contactsList.contacts;
+            state.isLoading = false;
+            state.contactList = action.payload.contactsList.contacts;
+            state.contactsData = action.payload.contactsList;
          })
          .addCase(addUsers.rejected, (state, action) => {
             state.error = action.payload
