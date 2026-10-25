@@ -4,6 +4,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 const initialState = {
    allMessagesDocs: [],
    allGroupMessagesDocs: [],
+   allDescendingChatMsgsDocs: [],
    isLoading: true,
    error: ''
 }
@@ -64,6 +65,33 @@ export const allGroupMessages = createAsyncThunk(
    }
 )
 
+export const findLatestChatMessage = createAsyncThunk(
+   'messages/findLatestChatMessage',
+   async(_, thunkApi) => {
+      try {
+         const token = localStorage.getItem("accessToken");
+         const response = await fetch(`${import.meta.env.VITE_SERVER_MESSAGES_URL}/latest`, {
+            method: 'GET',
+            headers: {
+               'Authorization': `Bearer ${token}`,
+               'Content-type': 'application/json'
+            }
+         })
+         const data = await response.json();
+         console.log(data);
+         if(!response.ok) {
+            return thunkApi.rejectWithValue({
+               status: response.status,
+               message: data.msg
+            })
+         }
+         return data;
+      } catch (error) {
+         return thunkApi.rejectWithValue(error.message);
+      }
+   }
+)
+
 const messagesSlice = createSlice({
    name: 'messages',
    initialState,
@@ -100,6 +128,17 @@ const messagesSlice = createSlice({
          .addCase(allGroupMessages.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.payload
+         })
+         .addCase(findLatestChatMessage.pending, (state) => {
+            state.isLoading = true;
+         })
+         .addCase(findLatestChatMessage.fulfilled, (state, action) =>{
+            state.isLoading = false;
+            state.allDescendingChatMsgsDocs = action.payload.messages
+         })
+         .addCase(findLatestChatMessage.rejected, (state, action) =>{
+            state.isLoading = false;
+            state.error = action.payload;
          })
    }
 })
