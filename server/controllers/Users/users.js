@@ -1,4 +1,5 @@
 import { BadRequestError, UnauthenticatedError } from '../../errors/customApiErrors.js';
+import mongoose from 'mongoose';
 import { StatusCodes } from 'http-status-codes'
 import User from '../../models/Users/User.js'
 import Conversation from '../../models/Conversations/Conversation.js'
@@ -349,6 +350,12 @@ const searchUsers = async (req, res) => {
    try {
       // GET USERNAME FROM QUERY PARAMETERS:
       const username = req.query.username;
+      // DE-STRUCTURE USER ID FROM USER AUTH:
+      const { userId } = req.user;
+      const userObjectId = new mongoose.Types.ObjectId(userId);
+
+      // REGULAR EXPRESSION INSTANCE WITH SEARCHED QUERY:
+      const regex = new RegExp(username, 'i');
 
       // IF SEARCHED GROUP NAME IS EMPTY:
       if (!username || !username.trim()) {
@@ -357,9 +364,35 @@ const searchUsers = async (req, res) => {
          })
       }
       // FIND ALL THE USERS THAT HAVE THE NAME AND ITS LETTERS:
-      const searchedUsers = await User.find(
-         { username: { $regex: username, $options: 'i' } }
-      ).select("-password -email -accountStatus");
+      const conversations = await Conversation.find(
+         {
+            isGroup: false,
+            participants: userId
+         }
+      ).populate({
+         path: 'participants',
+         select: 'username avatar'
+      });
+
+      // THIS FILTER THE CONVERSATIONS FOR SEARCHED TEXT AND NOT THE FOR LOGIN USER:
+      const searchedUsers = conversations
+         .filter((convo) => {
+            const otherUser = convo.participants.find((user) =>
+               user._id.toString() !== userObjectId.toString() &&
+               regex.test(user.username)
+            );
+            return otherUser;
+         })
+         // THIS RETURNS ONLY THE USER THAT WAS IN FILTERED CONVERSATION:
+         .map((convo) => {
+            const otherUser = convo.participants.find(
+               (user) => user._id.toString() !== userObjectId.toString()
+            );
+            return {
+               _id: convo._id,
+               otherUser: otherUser
+            };
+         });
 
       // IF NO USERS FOUND:
       if (searchedUsers.length < 1) {
@@ -382,6 +415,8 @@ const searchUsers = async (req, res) => {
 
 const searchGroups = async (req, res) => {
    try {
+      // DE-STRUCTURE USER ID FROM USER AUTHENTICATION:
+      const { userId } = req.user;
       // GET USERNAME FROM QUERY PARAMETERS:
       const searchedGroupname = req.query.groupName;
 
@@ -393,7 +428,10 @@ const searchGroups = async (req, res) => {
       }
       // FIND THE SEARCHED GROUPS:
       const searchedGroups = await Conversation.find(
-         { groupName: { $regex: searchedGroupname, $options: 'i' } }
+         {
+            participants: userId,
+            groupName: { $regex: searchedGroupname, $options: 'i' }
+         }
       ).select("groupName");
 
       // IF GROUPS ARE NOT FOUND:
