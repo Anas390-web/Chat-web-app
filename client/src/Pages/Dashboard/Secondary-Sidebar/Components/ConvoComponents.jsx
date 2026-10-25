@@ -6,7 +6,7 @@ import { addUsers } from "../../../../Features/contactsSlice.js";
 import socket from "../../../../Socket/socket.js";
 import { allGroups } from "../../../../Features/groupListSlice.js";
 import { getPersonalChatId, getGroupId } from "../../../../Features/idsSlice.js";
-import { allGroupMessages } from "../../../../Features/messagesSlice.js";
+import { allGroupMessages, findLatestChatMessage } from "../../../../Features/messagesSlice.js";
 import { getSelectedGroupData, getUserToChatWithData, getLoggedInUserData, updateUsernameAndAvatar } from "../../../../Features/authSlice.js";
 import { SearchUser, SearchGroup } from "./OtherComponents.jsx";
 
@@ -21,11 +21,15 @@ function Chats({ users }) {
    const currentUsername = searchParams.get("username");
 
    // ACCESSING THE CONTACT LIST FROM THE CONTACTS STORE:
-   const { contactList } = useSelector((store) => store.contacts);
+   const { contactList, contactsData } = useSelector((store) => store.contacts);
+   
    const { mode } = useOutletContext();
 
    // ACCESSING THE SEARCHED USERS LIST FROM AUTH STORE:
    const { searchedUsers } = useSelector((store) => store.auth);
+
+   // ACCESSING THE DESCENDING ORDER CHAT MESSAGES LIST FROM MESSAGES STORE:
+   const { allDescendingChatMsgsDocs } = useSelector((store) => store.messages);
 
    // USER CLICKS ON THE CHAT AND IT BECOMES DARKER THAN OTHERS:
    const [selectedChatId, setSelectedChatId] = useState('');
@@ -47,6 +51,7 @@ function Chats({ users }) {
 
    useEffect(() => {
       dispatch(addUsers(users));
+      dispatch(findLatestChatMessage());
    }, [dispatch])
 
    return (
@@ -56,8 +61,7 @@ function Chats({ users }) {
             <>
                {
                   searchedUsers.map((user) => {
-                     const deletedContact = user?.username.split("_")[0];
-                     const isDeletedContact = deletedContact === 'deleted';
+                     const isDeletedContact = user?.otherUser?.username.startsWith("deleted");
                      return (
 
                         <div
@@ -82,7 +86,7 @@ function Chats({ users }) {
                                        isDeletedContact ?
                                           'Deleted_user'
                                           :
-                                          user?.username
+                                          user?.otherUser?.username
                                     }
                                  </p>
                                  <div></div>
@@ -100,9 +104,19 @@ function Chats({ users }) {
             :
             <>
                {
+                  contactList && allDescendingChatMsgsDocs &&
                   contactList.map((contact) => {
                      const deletedContact = contact?.username.split("_")[0];
                      const isDeletedContact = deletedContact === 'deleted';
+                     const latestMsg = allDescendingChatMsgsDocs.find(
+                        (msg) => {
+                           const isMsgFromContact = msg.senderId === contact._id;
+                           const isMsgFromLoginUser = msg.senderId === contactsData.storedBy && contactsData.storedBy === contact._id;
+                           return isMsgFromContact
+                        }
+                     )
+                     
+
                      return (
                         <div key={contact?._id} className={`flex gap-2 m-2 p-2 rounded-md shadow shadow-gray-700
                      ${mode === 'dark' ? 'border border-gray-600' : ' bg-white'}
@@ -131,7 +145,7 @@ function Chats({ users }) {
                                  <div></div>
                               </div>
                               <div>
-                                 <p className='font-light text-sm'>Latest message from chats</p>
+                                 <p className='font-light text-sm'>{latestMsg ? latestMsg.messageContent : 'No last message from user' }</p>
                               </div>
                            </div>
                         </div>
