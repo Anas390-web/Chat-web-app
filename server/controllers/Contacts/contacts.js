@@ -38,6 +38,9 @@ const addUsers = async (req, res) => {
 
    } catch (error) {
       console.log(error.message)
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+         msg: 'INTERNAL_SERVER_ERROR'
+      })
    }
 }
 
