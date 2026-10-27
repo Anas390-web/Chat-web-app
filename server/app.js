@@ -79,7 +79,7 @@ io.on('connection', (socket) => {
    console.log('CONNECTED WITH CLIENT', socket.id)
 
    // DE-STRUCTURE FROM SOCKET USER AUTHENTICATION:
-   const { userId } = socket.user;
+   const userId = socket.user;
    console.log('SOCKET USER OBJECT:', userId)
 
    // IF THE USER ID DOES NOT EXIST AS KEY THEN GIVE THE USERID KEY A SET AS IT VALUE;
