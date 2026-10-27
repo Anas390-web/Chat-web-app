@@ -14,7 +14,7 @@ const getAllAiChatMessages = async (req, res) => {
       )
 
       // IF THERE IS NO EXISTING CONVERSATION:
-      if(aiChatConversation.length < 1) {
+      if(!aiChatConversation) {
          return res.status(StatusCodes.BAD_REQUEST).json({
             msg: 'NO CONVERSATION WITH THIS USER ID EXISTS'
          })
@@ -25,7 +25,7 @@ const getAllAiChatMessages = async (req, res) => {
          {
             aiConversationId: aiChatConversation._id
          }
-      );
+      ) || [];
       
       // IF THERE ARE NO EXISTING MESSAGES:
       if (allAiChatMessages.length < 1) {
