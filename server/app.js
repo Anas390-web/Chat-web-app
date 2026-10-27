@@ -137,14 +137,17 @@ io.on('connection', (socket) => {
 
 // DB CONNECTION AND THEN LISTENS TO THE API REQUESTS:
 const start = async () => {
+
+   // LIST TO INCOMMING REQUESTS:
+   httpServer.listen(port, '0.0.0.0', () => {
+      console.log(`Server is listening on port ${port}...`)
+   })
+
    try {
       await connectToDB(process.env.MONGO_URI);
       console.log('CONNECTED TO DB');
       // INGESTION OF DOCUMENTS BEFORE TAKING THE REQUESTS:
       await ingestionOfDocuments();
-      httpServer.listen(port, '0.0.0.0', () => {
-         console.log(`Server is listening on port ${port}...`)
-      })
    } catch (error) {
       console.log(error.message)
    }
