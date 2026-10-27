@@ -1,5 +1,5 @@
 import express from 'express'
-import { getAllAiChatMessages } from '../../controllers/AiMessages/AiMessages.js';
+import { getAllAiChatMessages } from '../../controllers/AiMessages/aiMessages.js';
 import userAuthentication from '../../middlewares/Auth/auth.js'
 
 const aiMsgsRouter = express.Router();
