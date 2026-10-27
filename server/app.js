@@ -80,6 +80,7 @@ io.on('connection', (socket) => {
 
    // DE-STRUCTURE FROM SOCKET USER AUTHENTICATION:
    const { userId } = socket.user;
+   console.log('SOCKET USER OBJECT:', userId)
 
    // IF THE USER ID DOES NOT EXIST AS KEY THEN GIVE THE USERID KEY A SET AS IT VALUE;
    if (!onlineUsersMap.has(userId)) {
