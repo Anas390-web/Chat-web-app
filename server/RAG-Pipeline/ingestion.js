@@ -26,7 +26,7 @@ const ingestionOfDocuments = async () => {
          return;
       }
       // VECTOR STORE: CONVERTING TEXT INTO EMBEDDINGS AND UPLOADING TO THE COLLECTION:
-      const vectorStore = MongoDBAtlasVectorSearch.fromDocuments(
+      const vectorStore = await MongoDBAtlasVectorSearch.fromDocuments(
          chunksOutput,
          embeddings,
          {
