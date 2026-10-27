@@ -61,7 +61,7 @@ app.use('/api/v1/ai/chat', aiMsgsRouter);
 // SOCKET CONNECTION:
 const io = new Server(httpServer, {
    cors: {
-      origin: process.env.VITE_REACT_BASE_SERVER,
+      origin: "*",
       methods: ['GET', 'POST']
    }
 });
