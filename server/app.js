@@ -141,7 +141,7 @@ const start = async () => {
       console.log('CONNECTED TO DB');
       // INGESTION OF DOCUMENTS BEFORE TAKING THE REQUESTS:
       await ingestionOfDocuments();
-      httpServer.listen(port, () => {
+      httpServer.listen(port, '0.0.0.0', () => {
          console.log(`Server is listening on port ${port}...`)
       })
    } catch (error) {
