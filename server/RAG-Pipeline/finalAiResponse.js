@@ -21,7 +21,7 @@ const groqLlm = new ChatGroq({
 const finalAiResponse = (socket, io) => {
    socket.on("send-message-to-ai-chat", async (aiMessage) => {
       try {
-
+         console.log(aiMessage);
          // CONVERTING THE USER QUESTION TO STANDALONE QUESTION PROMPT:
          const standaloneQuestionTemplate = `Act as an AI assistant to convert user input into a clear, standalone question using conversation context. Shorten long queries to their core intent and expand brief ones with necessary context.
          question: {userQuestion}
@@ -111,11 +111,13 @@ const finalAiResponse = (socket, io) => {
             conversation_history: allAiChatMessages,
             username: username
          })
+         console.log(response);
 
          const aiResponse = await AiMessage.create(
             {
                aiConversationId: conversation._id,
-               messageContent: response
+               messageContent: response,
+               senderId: userId
             }
          )
          const aiResponseId = (aiResponse._id).toString();
