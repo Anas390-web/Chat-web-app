@@ -19,6 +19,10 @@ function SecondarySideBar() {
 
    // ACCESSING THE USER TO CHAT WITH DATA FROM AUTH STORE:
    const { selectedUserToChatData, selectedGroupToChatData } = useSelector((store) => store.auth);
+
+   // ACCESSING AI CHAT LOGGED IN USER ID FROM AI BOT STORE:
+   const { aiChatLoggedInUserId } = useSelector((store) => store.aiBot);
+
    // SELECTED USERS STATE FROM USERS LIST:
    const [users, setUsers] = useState([]);
 
@@ -118,7 +122,7 @@ function SecondarySideBar() {
    const { isMobileScreen } = useSelector((store) => store.screen);
 
    return (
-      <aside className={`h-screen overflow-hidden sm:w-70 lg:w-100 flex flex-col justify-start font-semibold border border-gray-600 shadow ${isMobileScreen && (selectedUserToChatData?._id || selectedGroupToChatData?._id) ? 'w-0' : 'w-full'}`}>
+      <aside className={`h-screen overflow-hidden sm:w-70 lg:w-100 flex flex-col justify-start font-semibold border border-gray-600 shadow ${isMobileScreen && (selectedUserToChatData?._id || selectedGroupToChatData?._id || aiChatLoggedInUserId) ? 'w-0' : 'w-full'}`}>
 
          <>
             <div className="bg-electric-cyan border-b border-gray-600 h-20 flex items-center justify-between px-4 shrink-0 relative">
