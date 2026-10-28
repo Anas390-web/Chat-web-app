@@ -78,7 +78,6 @@ export const findLatestChatMessage = createAsyncThunk(
             }
          })
          const data = await response.json();
-         console.log(data);
          if(!response.ok) {
             return thunkApi.rejectWithValue({
                status: response.status,
