@@ -116,8 +116,7 @@ const finalAiResponse = (socket, io) => {
          const aiResponse = await AiMessage.create(
             {
                aiConversationId: conversation._id,
-               messageContent: response,
-               senderId: userId
+               messageContent: response
             }
          )
          const aiResponseId = (aiResponse._id).toString();
