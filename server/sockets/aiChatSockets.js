@@ -1,4 +1,4 @@
-import AiConveration from '../models/AiConversation/AiConversation.js'
+import AiConversation from '../models/AiConversation/AiConversation.js'
 import AiMessage from '../models/AiMessages/AiMessages.js'
 
 
@@ -24,7 +24,7 @@ function saveAiChatUserMsg_And_JoinAiRoom(socket, io) {
          // DE-STRUCTURE THE USER ID FROM THE SOCKET AUTH:
          const { userId } = socket.user;
          // FIND OR CREATE THE AI CONVERSATION AND USER WHERE THIS USER ID EXISTS:
-         const aiConversation = await AiConveration.findOneAndUpdate(
+         const aiConversation = await AiConversation.findOneAndUpdate(
             { senderId: userId, chatType: 'ai' },
             {},
             { upsert: true, returnDocument: 'after', runValidators: true }
