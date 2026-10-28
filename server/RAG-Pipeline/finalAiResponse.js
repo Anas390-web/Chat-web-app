@@ -132,7 +132,8 @@ const finalAiResponse = (socket, io) => {
 
 
       } catch (error) {
-         console.log('ERROR:', error.message);
+         console.log('FULL ERROR OBJECT:', error);
+         console.log('FULL ERROR STACK:', error.stack);
       }
    })
 }
